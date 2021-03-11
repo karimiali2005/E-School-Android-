@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_40sdp"
+    android:layoutDirection="ltr"
+    android:background="@drawable/shape_border"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+ <ImageView
+     android:id="@+id/play"
+     android:layout_width="@dimen/_25sdp"
+     android:layout_height="@dimen/_25sdp"
+     android:layout_centerVertical="true"
+     android:layout_alignParentLeft="true"
+     android:layout_marginLeft="@dimen/_10sdp"
+     android:src="@drawable/ic_baseline_play_arrow_24"></ImageView>
+    <TextView
+        android:id="@+id/texttime"
+        android:layout_toRightOf="@+id/play"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:layout_height="wrap_content"
+        android:text="00/00"></TextView>
+    <SeekBar
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_5sdp"
+        android:layout_centerVertical="true"
+        android:id="@+id/seekbar"
+        android:layout_toRightOf="@+id/texttime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></SeekBar>
+</RelativeLayout>

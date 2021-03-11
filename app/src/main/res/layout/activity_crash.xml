@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:theme="@style/Theme.MaterialComponents.Light"
+    android:layout_height="match_parent"
+    tools:context=".CrashActivity"
+    android:orientation="vertical">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
+        app:cardElevation="@dimen/_7sdp">
+        <RelativeLayout
+            android:background="@color/text_color_w"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:visibility="invisible"
+                android:id="@+id/img_close"
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="@dimen/_5sdp"
+                android:src="@drawable/ic_baseline_close_24"
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/_2sdp"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/_5sdp">
+
+            </ImageView>
+
+
+            <TextView
+
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/img_close"
+                android:textColor="@color/text_color_b"
+                android:text="مدرسه دکت ر حسابی"></TextView>
+        </RelativeLayout>
+        ></com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_marginTop="@dimen/_10sdp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/text_color_b"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="متاسفانه خطایی رخ داده است متن خطا به شرح زیر می باشد "></TextView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_margin="@dimen/_15sdp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_borderbox_bgwhite">
+            <TextView
+                android:textIsSelectable="true"
+                android:padding="@dimen/_7sdp"
+                android:id="@+id/txt_eror"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/subtext_color"
+                android:text="خطایی ثبت نشده است"></TextView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

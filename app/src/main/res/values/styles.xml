@@ -1,0 +1,106 @@
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:ns2="http://schemas.android.com/apk/res-auto">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/text_color_w</item>
+        <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>
+
+    </style>
+
+    <style name="Widget.App.CircularProgressIndicator" parent="Widget.MaterialComponents.CircularProgressIndicator">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.CircularProgressIndicator</item>
+        <item name="trackThickness">20dp</item>
+    </style>
+    <style name="ThemeOverlay.App.CircularProgressIndicator" parent="">
+        <item name="colorPrimary">@color/text_color_w</item>
+    </style>
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">100dp</item>
+    </style>
+
+
+
+
+    <style name="TextInputLayout" parent="Base.Widget.MaterialComponents.TextInputLayout">
+        <item name="materialThemeOverlay">
+            @style/ThemeOverlay.App.TextInputLayout
+        </item>
+    </style>
+    <!--    TextInpute-->
+    <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+
+    </style>
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/text_color_b</item>
+        <item name="colorError">@color/text_color_danger</item>
+        <item name="materialThemeOverlay">
+            @style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+        <item name="boxCollapsedPaddingTop">0dp</item>
+        <item name="editTextStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
+    </style>
+    <style name="Base.Widget.MaterialComponents.TextInputEditText" parent="Widget.Design.TextInputEditText">
+        <item name="enforceMaterialTheme">true</item>
+        <item name="enforceTextAppearance">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:paddingStart" tools:ignore="NewApi">@dimen/_10sdp</item>
+        <item name="android:paddingEnd" tools:ignore="NewApi">@dimen/_10sdp</item>
+        <item name="android:paddingLeft">@dimen/_10sdp</item>
+        <item name="android:paddingRight">@dimen/_10sdp</item>
+        <!-- Edit text's default text size is 16sp which currently equals to 22dp total line height, so
+             we need a total of 34dp to get the 56dp height of the default layout. -->
+        <item name="android:paddingTop">@dimen/_10sdp</item>
+        <item name="android:paddingBottom">@dimen/_10sdp</item>
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="textInputLayoutFocusedRectEnabled">true</item>
+    </style>
+    <!--End TextInpute-->
+
+    <!--Drop Down-->
+    <style name="TextInputLayoutDropdown" parent="Base.Widget.MaterialComponents.TextInputLayout">
+
+        <item name="materialThemeOverlay">
+            @style/Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox2
+        </item>
+        <item name="endIconMode">dropdown_menu</item>
+
+
+    </style>
+
+    <style name="Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox2" parent="" >
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/text_color_b</item>
+        <item name="colorError">@color/text_color_danger</item>
+        <item name="autoCompleteTextViewStyle">@style/Base.Widget.MaterialComponents.TextInputEditText</item>
+    </style>
+    <style name="Base.Widget.MaterialComponents.TextView2" parent="">
+        <item name="enforceMaterialTheme">true</item>
+        <item name="enforceTextAppearance">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingStart" ns2:ignore="NewApi">@dimen/_8sdp</item>
+        <item name="android:paddingEnd" ns2:ignore="NewApi">@dimen/_8sdp</item>
+        <item name="android:paddingLeft">@dimen/_8sdp</item>
+        <item name="android:paddingRight">8sp</item>
+        <item name="android:paddingTop">@dimen/_8sdp</item>
+        <item name="android:paddingBottom">@dimen/_8sdp</item>
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:dropDownVerticalOffset">@dimen/mtrl_exposed_dropdown_menu_popup_vertical_offset</item>
+        <item name="android:popupElevation" ns2:ignore="NewApi" tools:targetApi="lollipop">@dimen/mtrl_exposed_dropdown_menu_popup_elevation</item>
+    </style>
+    <!--End Drop Down-->
+<!--Falotint Button-->
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+        <item name="colorSecondary">@color/text_color_w</item>
+        <item name="colorOnSecondary">@color/text_color_danger</item>
+        <item name="colorOnSurface">@color/text_color_b</item>
+    </style>
+    <!--End flatingButton-->
+</resources>

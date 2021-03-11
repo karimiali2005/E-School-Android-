@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">HesabiApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="NoInternetConnectionTitle">ارتباط برقرار نیست</string>
+    <string name="NoInternetConnectionBody">به نظر می رسد ارتباط اینترنت و وای فای شما قطع است.لطفا عوض کنید و دوبارهامتحان کنید.</string>
+    <string name="wait">لطفا صبر کنید</string>
+    <string name="FailerEror">خطا در برقراری ارتباط</string>
+    <string name="Eror">خطا در برقراری ارتباط لطفا مجداد تلاش کنید</string>
+    <string name="problam">خطا در برقراری ارتباط لطفا مجداد تلاش کنید</string>
+    <!--#######################TimeAgo########################-->
+</resources>

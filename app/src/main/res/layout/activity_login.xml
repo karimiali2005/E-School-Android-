@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textDirection="rtl"
+    android:layoutDirection="rtl"
+    tools:context=".Login">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:src="@drawable/logo1"></ImageView>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:padding="@dimen/_10sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="@dimen/_10sdp"
+            android:layout_margin="@dimen/_25sdp">
+            <RelativeLayout
+                android:background="#f8f1fa"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp">
+                <TextView
+                    android:layoutDirection="rtl"
+                    android:textDirection="rtl"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size"
+                    android:text="ورود به پنل دانش آموز-مدرسه دکتر حسابی کاشان"
+                    android:layout_gravity="center"
+                    ></TextView>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_marginTop="@dimen/_35sdp"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/TextInputLayout"
+                    app:helperTextTextColor="@color/text_color_danger"
+                    android:id="@+id/outlinedTextField"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="نام کاربری"
+                    >
+
+                    <com.hesabischool.hesabiapp.Clases.myEditetext.MohsenEditText
+                        android:id="@+id/edtusername"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/TextInputLayout"
+                    app:helperTextTextColor="@color/text_color_danger"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:id="@+id/outlinedTextField2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="کلمه عبور "
+                    >
+
+                    <com.hesabischool.hesabiapp.Clases.myEditetext.MohsenEditText
+                        android:id="@+id/edtpass"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:inputType="textPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_forget_pass"
+                    android:gravity="right"
+                    android:layoutDirection="rtl"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_width="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="@color/text_color_b"
+                    android:text="فراموش کردن کلمه عبور /نام کاربری ؟"
+                    android:textSize="@dimen/text_size"
+                    android:layout_height="wrap_content" />
+                <Button
+
+                    app:backgroundTint="@color/text_color_sucsses"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:id="@+id/btnlogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ورود"
+                    />
+                <LinearLayout
+                    android:layoutDirection="rtl"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:maxLines="1"
+                        android:textColor="@color/text_color_b"
+                        android:text=" حساب کاربری ندارید؟ "
+                        android:textSize="@dimen/text_size"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/txt_singin"
+                        android:layout_width="wrap_content"
+                        android:maxLines="1"
+                        android:text=" ثبت نام کنید"
+                        android:textColor="@color/text_color_b"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_size"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

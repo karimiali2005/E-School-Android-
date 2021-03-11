@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns2="http://schemas.android.com/apk/res-auto">
+
+    <style name="Base.Widget.MaterialComponents.TextView2" parent="">
+        <item name="enforceMaterialTheme">true</item>
+        <item name="enforceTextAppearance">true</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingStart" ns2:ignore="NewApi">@dimen/_8sdp</item>
+        <item name="android:paddingEnd" ns2:ignore="NewApi">@dimen/_8sdp</item>
+        <item name="android:paddingLeft">@dimen/_8sdp</item>
+        <item name="android:paddingRight">8sp</item>
+        <item name="android:paddingTop">@dimen/_8sdp</item>
+        <item name="android:paddingBottom">@dimen/_8sdp</item>
+        <item name="android:textAppearance">?attr/textAppearanceSubtitle1</item>
+        <item name="android:dropDownVerticalOffset">
+            @dimen/mtrl_exposed_dropdown_menu_popup_vertical_offset
+        </item>
+        <item name="android:popupElevation" ns2:ignore="NewApi">
+            @dimen/mtrl_exposed_dropdown_menu_popup_elevation
+        </item>
+    </style>
+</resources>
