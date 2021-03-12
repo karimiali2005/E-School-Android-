@@ -83,7 +83,11 @@ Call<GetDataFromServer3> StoreFile(@Part MultipartBody.Part file,@Query("tagLear
 
     @POST(api + "Member/RoomChatViewInsert")
     Call<Object> RoomChatViewInsert(@Query("roomChatId") int roomChatId,@Query("roomChatGroupId") int roomChatGroupId);
-////============================Factors============================
+//=============================PinAndUnpin======================================
+@POST(api + "Member/RoomChatPin")
+Call<GetDataFromServer3> RoomChatPin(@Query("roomChatGroupId") int roomChatGroupId,@Query("roomChatId") String roomChatId, @Query("isPin") boolean isPin);
+
+    ////============================Factors============================
 //@POST(api2+"Factor")
 //Call<vm_factor> Factor(@Query("Id") int orderId);
 //    //..................... EndFactors.............................
