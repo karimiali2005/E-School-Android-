@@ -71,6 +71,16 @@
                 android:src="@drawable/lessonwm_white"
                 android:layout_width="@dimen/_19sdp"
                 android:layout_height="@dimen/_19sdp"
+                android:scaleType="fitXY"
+                ></ImageView>
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/img_lock"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_width="@dimen/_19sdp"
+                android:layout_height="@dimen/_19sdp"
+                android:src="@drawable/ic_lock"
                 ></ImageView>
         </LinearLayout>
     </RelativeLayout>
@@ -152,15 +162,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
     <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/rel_fab"
+     android:layout_alignBottom="@+id/rec_chat"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/_15sdp"
         android:layout_marginBottom="@dimen/_5sdp"
-        android:layout_above="@+id/rel_message"
+
         android:layout_width="@dimen/_60sdp"
         android:layout_height="@dimen/_60sdp">
-
+        <TextView
+            android:visibility="gone"
+            android:layout_alignParentRight="true"
+            android:translationZ="@dimen/_100sdp"
+            android:padding="@dimen/_3sdp"
+            android:background="@drawable/shape_circel_backgeraund_succse"
+            android:id="@+id/txt_badeg"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:singleLine="true"
+            android:maxLines="1"
+            android:maxLength="3"
+            android:gravity="center"
+            android:textColor="@color/text_color_w"
+            android:textSize="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_2sdp"
+            app:layout_constraintLeft_toRightOf="@+id/txt_time"></TextView>
        <com.google.android.material.floatingactionbutton.FloatingActionButton
-           android:visibility="gone"
            android:id="@+id/fab_down"
            android:padding="@dimen/_5sdp"
            android:layout_centerInParent="true"
@@ -229,6 +258,7 @@ android:textColor="@color/text_color_sucsses"
             android:layout_gravity="center"></ImageView>
     </LinearLayout>
     <RelativeLayout
+
         android:id="@+id/rel_message"
         android:background="@color/text_color_w"
         android:layout_alignParentBottom="true"

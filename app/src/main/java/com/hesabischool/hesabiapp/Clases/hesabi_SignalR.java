@@ -62,56 +62,65 @@ public class hesabi_SignalR {
                 case "C":
                  //   RoomChatLeftShowResult rclst=new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage,new RoomChatLeftShowResult()).convert();
              //    app.Info.checkpage.callForCheangeMainChat.insertOrUpdate(rclst);
-
+app.Info.checkpage.callForCheangeMainChat.callGetDataFromServer();
                     break;
             }
-        }else if(app.Info.checkpage.curentActivity.equals("DetilsChat"))
+        }
+        else if(app.Info.checkpage.curentActivity.equals("DetilsChat"))
         {
-            switch (chatMessage.chatType) {
-                case "C":
-                    //Insert For View This Message For Curent User
-                    app.retrofit.retrofit().RoomChatViewInsert(chatMessage.roomChatId,chatMessage.groupId).enqueue(new Callback<Object>() {
-                        @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
-                            int x=0;
-                        }
+            if(app.Info.checkpage.roomchatright.RoomChatGroupID==chatMessage.groupId)
+            {
+                switch (chatMessage.chatType) {
+                    case "C":
+                        //Insert For View This Message For Curent User
+                        app.retrofit.retrofit().RoomChatViewInsert(chatMessage.roomChatId,chatMessage.groupId).enqueue(new Callback<Object>() {
+                            @Override
+                            public void onResponse(Call<Object> call, Response<Object> response) {
+                                int x=0;
+                            }
 
-                        @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
-int x=0;
-                        }
-                    });
-                    RoomChatLeftShowResult rclst=new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage,new RoomChatLeftShowResult()).convert();
-                  app.Info.checkpage.callForCheange.AddMessage(rclst);
-                    break;
-                case "D":
+                            @Override
+                            public void onFailure(Call<Object> call, Throwable t) {
+                                int x=0;
+                            }
+                        });
+                        RoomChatLeftShowResult rclst=new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage,new RoomChatLeftShowResult()).convert();
+                        app.Info.checkpage.callForCheange.AddMessage(rclst);
+                        break;
+                    case "D":
 
-                    app.Info.checkpage.callForCheange.DeleteMessage(chatMessage.roomChatId);
-                    break;
-                case "E":
-                    RoomChatLeftShowResult rclst2=new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage,new RoomChatLeftShowResult()).convert();
-                    app.Info.checkpage.callForCheange.updateMessage(chatMessage.roomChatId,rclst2);
-                    break;
-                case "P":
-                  //Todo pain
-                    break;
-                case "UP":
-                    //Todo unPain
-                    break;
-                case "L":
-                    //Todo lock
-                    break;
-                case "UL":
-                    //Todo unLock
-                    break;
-                case "DM":
-                    //Todo For Delete my message
-                    break;
-                case "DA":
-                    //Todo For Delete All message
-                    break;
+                        app.Info.checkpage.callForCheange.DeleteMessage(chatMessage.roomChatId);
+                        break;
+                    case "E":
+                        RoomChatLeftShowResult rclst2=new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage,new RoomChatLeftShowResult()).convert();
+                        app.Info.checkpage.callForCheange.updateMessage(chatMessage.roomChatId,rclst2);
+                        break;
+                    case "P":
+                        //Todo pain
+                        app.Info.checkpage.callForCheange.pinMessage(chatMessage);
+                        break;
+                    case "UP":
+                        //Todo unPain
+                        app.Info.checkpage.callForCheange.UnpinMessage(chatMessage);
+                        break;
+                    case "L":
+                        //Todo lock
+                        app.Info.checkpage.callForCheange.setLockAndUnLock(chatMessage,true);
+                        break;
+                    case "UL":
+                        //Todo unLock
+                        app.Info.checkpage.callForCheange.setLockAndUnLock(chatMessage,false);
+                        break;
+                    case "DM":
+                        //Todo For Delete my message
+                        break;
+                    case "DA":
+                        //Todo For Delete All message
+                        break;
 
+                }
             }
+
 
         }
     }
@@ -119,11 +128,23 @@ int x=0;
     private void StrtSignalR() {
         hubConnection.start().subscribe(() -> {
 // connected
+                  setToastToActivity("متصل گردید.",true);
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //hiden Lin
+                         setToastToActivity("",false);
+                        }
+                    }, 5000);
 int x=0;
 connected();
+app.Info.checkpage.callForCheangeMainChat.callGetDataFromServer();
                 },
                 error -> {
 // error
+                    setToastToActivity("در حال اتصال...",true);
+
                  String e= error.getMessage();
                     final Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(new Runnable() {
@@ -134,6 +155,20 @@ connected();
                     }, 5000);
                 });
 
+    }
+
+    private void setToastToActivity(String s, boolean b) {
+
+        if(app.Info.checkpage.curentActivity.equals("MainChat"))
+        {
+
+            app.Info.checkpage.callForCheangeMainChat.ToastMessage(s,b);
+
+        }
+        else if(app.Info.checkpage.curentActivity.equals("DetilsChat"))
+        {
+            app.Info.checkpage.callForCheange.ToastMessage(s,b);
+        }
     }
 
     private void connected() {

@@ -63,8 +63,8 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
         }
 
-        holder.txt_time.setText(vm.get(position).RoomChatDateString);
-      //  holder.txt_time.setText(getTimeAgo2(vm.get(position).RoomChatDate));
+       // holder.txt_time.setText(vm.get(position).RoomChatDateString);
+       holder.txt_time.setText(getTimeAgo2(vm.get(position).RoomChatDate));
 
         holder.constParent.setOnClickListener(new View.OnClickListener() {
             @Override

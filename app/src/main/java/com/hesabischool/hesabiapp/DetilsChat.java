@@ -1,5 +1,6 @@
 package com.hesabischool.hesabiapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +16,13 @@ import android.os.Bundle;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.security.keystore.StrongBoxUnavailableException;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,9 +54,11 @@ import com.hesabischool.hesabiapp.database.dbQuerySelect;
 import com.hesabischool.hesabiapp.viewmodel.vm_checkPage;
 import com.hesabischool.hesabiapp.viewmodel.vm_sendoflinechat;
 import com.hesabischool.hesabiapp.viewmodel.vm_upload;
+import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 
@@ -75,6 +83,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     EditText edt_chat;
     TextView txtnamegrupe;
     ImageView img_more;
+    ImageView img_lock;
     Context context;
     dbConnector db;
     dbQuerySelect dq;
@@ -87,6 +96,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     RoomChatLeftShowResult roomchatForEdite = new RoomChatLeftShowResult();
     LinearLayoutManager layoutManager;
     CircleProgress circle_progress;
+    RelativeLayout rel_message;
+    int countNewMessage = 0;
     int index = 0;
     int take = 30;
     int ofcet = 0;
@@ -98,12 +109,22 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     ImageView imgrplybox;
     TextView txt_parentname, txt_parenttext;
     Adaptor_detailsChat ma;
+    RelativeLayout rel_fab;
     LinearLayout lin_replay;
-
+    int roomchatId = 0;
     MaterialCardView card_pin;
     ImageView img_unpin;
     TextView txt_pin;
+    TextView txt_badeg;
+    int pastVisiblesItems=-1;
+    public static boolean islock = false;
+    ///
+    private int mScreenWidth = 0;
+    private int mHeaderItemWidth = 0;
+    private int mCellWidth = 0;
 
+    ///
+    RoomChatLeftPropertyResult rProperty = new RoomChatLeftPropertyResult();
     LayzyLoad layzyLoad = new LayzyLoad() {
         @Override
         public void call() {
@@ -244,25 +265,67 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         @Override
         public void gotoPostionItem(final int idRoomChat) {
             final int postion = findRoomChatLeft(idRoomChat);
-            if (postion != -1) {
+            if(index==-1)
+            {
+                Toast.makeText(context, "نتیجه ای یافت نشد ...", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                if (postion != -1) {
 
-                shimmerRecycler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
+                    shimmerRecycler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
 
-                        layoutManager.scrollToPosition(postion);
-                        ma.select = true;
-                        ma.notifyItemChanged(postion);
-                        //     ma.notifyDataSetChanged();
+                            layoutManager.scrollToPosition(postion);
+                            ma.select = true;
+                            ma.notifyItemChanged(postion);
+                            //     ma.notifyDataSetChanged();
 
+                        }
+                    });
+
+
+                } else {
+                    app.linProgress.showProgress(context,"در حال بررسی");
+                    if(app.net.isNetworkConnected(context))
+                    {
+                        app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, false, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
+                            @Override
+                            public void onResponse(Call<GetDataFromServer2> call, Response<GetDataFromServer2> response) {
+                                app.retrofit.erorRetrofit(response, context);
+                                app.linProgress.hideProgress(context);
+                                if (response.isSuccessful()) {
+                                    GetDataFromServer2 r = response.body();
+                                    GetDataFromServer rr = new GetDataFromServer();
+                                    rr.value.RoomChatLeftViewModel = r.value;
+                                    db.dq.addOrUpdateData(rr);
+                                    pagenuber++;
+                                    getdataFromSqlLite();
+                                    gotoPostionItem(idRoomChat);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<GetDataFromServer2> call, Throwable t) {
+                                app.retrofit.FailRetrofit(t, context);
+                                app.linProgress.hideProgress(context);
+                                getdataFromSqlLite();
+                                gotoPostionItem(idRoomChat);
+                            }
+                        });
+                    }else
+                    {
+
+                        app.linProgress.hideProgress(context);
+                        getdataFromSqlLite();
+                        gotoPostionItem(idRoomChat);
                     }
-                });
+
+                }
 
 
-            } else {
-                Toast.makeText(context, "LoadMore...", Toast.LENGTH_SHORT).show();
-                //Todo Load More
             }
         }
 
@@ -285,6 +348,130 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         @Override
         public void AddMessage(RoomChatLeftShowResult rchatleft) {
             loadrecNotifyAddMessageFromSignalR(rchatleft);
+        }
+
+        @Override
+        public RoomChatLeftPropertyResult getPeroperty() {
+            return rProperty;
+        }
+
+        @Override
+        public void pinMessage(ChatMessage chatMessage) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    card_pin.setVisibility(View.VISIBLE);
+                    String test = Html.fromHtml(chatMessage.textChat).toString();
+                    txt_pin.setText(test);
+                    roomchatId = chatMessage.roomChatId;
+                }
+            });
+
+        }
+
+        @Override
+        public void UnpinMessage(ChatMessage chatMessage) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    card_pin.setVisibility(View.GONE);
+                    txt_pin.setText("");
+                    roomchatId = 0;
+                }
+            });
+
+        }
+
+        @Override
+        public void SetpinMesage(RoomChatLeftShowResult rchatleft) {
+            app.progress.onCreateDialog(context);
+            app.retrofit.retrofit().RoomChatPin(rchatleft.RoomChatGroupID, rchatleft.RoomChatID, true).enqueue(new Callback<GetDataFromServer3>() {
+                @Override
+                public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
+                    app.retrofit.erorRetrofit(response, context);
+                    if (response.isSuccessful()) {
+                        card_pin.setVisibility(View.VISIBLE);
+                        ChatMessage cm = response.body().value;
+                        hesabi_SignalR.sendMessage(cm);
+                        pinMessage(cm);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetDataFromServer3> call, Throwable t) {
+                    app.retrofit.FailRetrofit(t, context);
+                }
+            });
+        }
+
+        @Override
+        public void setLockAndUnLock(ChatMessage chatMessage, boolean _islock) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    islock = _islock;
+                    if (app.Info.User.userTypeID == 4) {
+                        //Teacher
+                        if (islock) {
+                            img_lock.setImageResource(R.drawable.ic_lock);
+                        } else {
+                            img_lock.setImageResource(R.drawable.ic_unlocked);
+                        }
+                    } else {
+                        //todo disabel all more ( edite delete )
+
+                        if (islock) {
+                            rel_message.setVisibility(View.GONE);
+                        } else {
+                            rel_message.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            });
+
+
+        }
+
+        @Override
+        public void setCountNewMessage() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (countNewMessage <= 0) {
+                        txt_badeg.setVisibility(View.GONE);
+                    } else {
+                        txt_badeg.setVisibility(View.VISIBLE);
+                        txt_badeg.setText(String.valueOf(countNewMessage));
+
+                    }
+                }
+            });
+
+        }
+
+        @Override
+        public void ToastMessage(String message, boolean isshow) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(isshow)
+                    {
+                        if(app.check.EpmtyOrNull(message))
+                        {
+                            app.linProgress.showProgress(context);
+                        }else
+                        {
+                            app.linProgress.showProgress(context,message);
+
+                        }
+                    }else
+                    {
+                        app.linProgress.hideProgress(context);
+                    }
+                }
+            });
         }
 
 
@@ -323,7 +510,6 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         });
 
     }
-
 
 
     private void setEditeBox(RoomChatLeftShowResult rchatleft) {
@@ -397,14 +583,16 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             db = new dbConnector(context);
             shimmerRecycler = (RecyclerView) findViewById(R.id.rec_chat);
             layoutManager = new LinearLayoutManager(context);
-            SetCurentPage();
+
             rcharright = app.Info.checkpage.roomchatright;
             img_tag = findViewById(R.id.img_tag);
             img_more = findViewById(R.id.img_more);
             txtnamegrupe = findViewById(R.id.txt_hesabi);
             imgrplybox = findViewById(R.id.imgrplybox);
+            img_lock = findViewById(R.id.img_lock);
             txt_parenttext = findViewById(R.id.txt_parenttext);
             fab_down = findViewById(R.id.fab_down);
+            rel_fab = findViewById(R.id.rel_fab);
             txt_parentname = findViewById(R.id.txt_parentname);
             img_close = findViewById(R.id.img_close);
             img_send = findViewById(R.id.img_send);
@@ -414,7 +602,11 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             lin_replay = findViewById(R.id.lin_replay);
             circle_progress = findViewById(R.id.circle_progress);
             txt_pin = findViewById(R.id.txt_pin);
+            txt_badeg = findViewById(R.id.txt_badeg);
+            card_pin = findViewById(R.id.card_pin);
             img_unpin = findViewById(R.id.img_unpin);
+            rel_message = findViewById(R.id.rel_message);
+            SetCurentPage();
 
             edt_chat.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -495,9 +687,50 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     }
 });*/
             Risave();
+            pinAndUnpin();
         } catch (Exception ex) {
 
         }
+    }
+
+    private void pinAndUnpin() {
+
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (app.net.CheckCommunication(context)) {
+                    app.progress.onCreateDialog(context);
+                    app.retrofit.retrofit().RoomChatPin(rcharright.RoomChatGroupID, roomchatId, false).enqueue(new Callback<GetDataFromServer3>() {
+                        @Override
+                        public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
+                            app.retrofit.erorRetrofit(response, context);
+                            if (response.isSuccessful()) {
+                                card_pin.setVisibility(View.GONE);
+                                txt_pin.setText("");
+                                roomchatId = 0;
+                                ChatMessage cm = response.body().value;
+                                hesabi_SignalR.sendMessage(cm);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GetDataFromServer3> call, Throwable t) {
+                            app.retrofit.FailRetrofit(t, context);
+                        }
+                    });
+
+                }
+            }
+        });
+
+        card_pin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                c.gotoPostionItem(roomchatId);
+            }
+        });
+
+
     }
 
     private void SetCurentPage() {
@@ -588,6 +821,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                                 rr.value.RoomChatLeftViewModel = r.value;
                                 db.dq.addOrUpdateData(rr);
                                 pagenuber++;
+                                getpropertyChat();
                                 getdataFromSqlLite();
                             }
                         }
@@ -596,6 +830,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         public void onFailure(Call<GetDataFromServer2> call, Throwable t) {
                             //     app.retrofit.FailRetrofit(t, context);
                             app.linProgress.hideProgress(context);
+                            getpropertyChat();
+                            getdataFromSqlLite();
                         }
                     });
 
@@ -628,10 +864,95 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             } else {
                 app.linProgress.hideProgress(context);
                 //Todo go to sqllite
+                if (pagenuber == 1) {
+                    getpropertyChat();
+                }
                 getdataFromSqlLite();
             }
         } catch (Exception ex) {
             throw ex;
+        }
+    }
+
+    private void getpropertyChat() {
+        String where = " WHERE roomChatGroupID = " + String.valueOf(rcharright.RoomChatGroupID);
+        try {
+            List<RoomChatLeftPropertyResult> list = new ArrayList<>();
+            list = (List<RoomChatLeftPropertyResult>) dq.SelesctListArryWhere(new RoomChatLeftPropertyResult(), where);
+            rProperty = list.get(0);
+            if (rProperty != null && rProperty.PinRoomChatID != 0) {
+                Toast.makeText(context, String.valueOf(rProperty.PinRoomChatID), Toast.LENGTH_SHORT).show();
+                ChatMessage cm = new ChatMessage();
+                cm.textChat = rProperty.PinTextChat;
+                cm.roomChatId = rProperty.PinRoomChatID;
+                c.pinMessage(cm);
+            }
+            islock = rProperty.CloseChat;
+            PeropertySeting();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void PeropertySeting() {
+        if (app.Info.User.userTypeID == 4) {   //Teacher
+            img_lock.setVisibility(View.VISIBLE);
+        } else {
+            if (islock) {
+                rel_message.setVisibility(View.GONE);
+            } else {
+                rel_message.setVisibility(View.VISIBLE);
+            }
+        }
+        if (islock) {
+            img_lock.setImageResource(R.drawable.ic_lock);
+        } else {
+            img_lock.setImageResource(R.drawable.ic_unlocked);
+        }
+        img_lock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                islock = !rProperty.CloseChat;
+                SetLockAndUnLock(islock);
+            }
+        });
+
+        countNewMessage = rcharright.MessageNewNumber;
+        if (countNewMessage > 0) {
+            rel_fab.setVisibility(View.VISIBLE);
+            txt_badeg.setVisibility(View.VISIBLE);
+            if (countNewMessage > 99) {
+                txt_badeg.setText("+99");
+            } else {
+
+                txt_badeg.setText(String.valueOf(countNewMessage));
+            }
+        } else {
+            txt_badeg.setVisibility(View.GONE);
+        }
+    }
+
+    private void SetLockAndUnLock(boolean b) {
+        if (app.net.CheckCommunication(context)) {
+            app.progress.onCreateDialog(context);
+            app.retrofit.retrofit().RoomChatLock(rcharright.RoomChatGroupID, b).enqueue(new Callback<GetDataFromServer3>() {
+                @Override
+                public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
+                    app.retrofit.erorRetrofit(response, context);
+                    if (response.isSuccessful()) {
+                        //Todo set lock and UnLock in Interface
+                        hesabi_SignalR.sendMessage(response.body().value);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetDataFromServer3> call, Throwable t) {
+                    app.retrofit.FailRetrofit(t, context);
+                }
+            });
         }
     }
 
@@ -670,7 +991,32 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         for (int i = 0; i < lvm.size(); i++) {
             lvm2.add(0, lvm.get(i));
         }
-        layoutManager.scrollToPosition(lvm.size() - 1);
+        int size2 = -1;
+        if (countNewMessage > lvm.size()) {
+            if (index==-1)
+            {
+             size2=-1;
+                layoutManager.scrollToPosition(0);
+            }else
+            {
+
+            Risave();
+            }
+        } else {
+            if(countNewMessage>0)
+            {
+                size2 = lvm.size();
+                size2 = (size2 - countNewMessage);
+                layoutManager.scrollToPosition(size2);
+            }else
+            {
+                size2 = -1;
+                layoutManager.scrollToPosition(lvm.size()-1);
+            }
+
+        }
+
+
         //  LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         //  layoutManager.setReverseLayout(true);
         //  layoutManager.setStackFromEnd(true);
@@ -680,9 +1026,77 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         shimmerRecycler.setDrawingCacheEnabled(true);
         shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-        ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down);
+        ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down, size2);
         shimmerRecycler.setLayoutManager(layoutManager);
         shimmerRecycler.setAdapter(ma);
+        //=====================================
+        final boolean[] isdown = {true};
+        shimmerRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                  /*  if (dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = layoutManager.getChildCount();
+                        totalItemCount = layoutManager.getItemCount();
+                        pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+
+                            Log.v("...", " Reached Last Item");
+                            loadMoreVideos(searchVideos);
+                        }
+
+                    }*/
+                 pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+
+                if (countNewMessage > 0) {
+                    int size = ma.vm.size() - 1;
+                  int cc = size - pastVisiblesItems;
+if(cc<=countNewMessage)
+{
+    countNewMessage=cc;
+}
+                    c.setCountNewMessage();
+                }
+                if (dy > 0) {
+                    if (isdown[0]) {
+                        isdown[0] = false;
+                        //  int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                        if (pastVisiblesItems < ma.vm.size() - 2) {
+
+                            rel_fab.setVisibility(View.VISIBLE);
+                        } else {
+                            isdown[0] = true;
+                        }
+
+                    }
+                } else {
+                    if (!isdown[0]) {
+                        isdown[0] = true;
+                        rel_fab.setVisibility(View.GONE);
+                    }
+                }
+
+            }
+        });
+
+
+        fab_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rel_fab.setVisibility(View.GONE);
+                c.gotodown();
+            }
+        });
+
     }
 
     private void loadrecNotify() {
@@ -735,12 +1149,37 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         shimmerRecycler.post(new Runnable() {
             @Override
             public void run() {
+                int size=ma.vm.size()-1;
+                 boolean b=(size<=pastVisiblesItems)?true:false;
                 ma.vm.add(r);
-                //   layoutManager.scrollToPosition(ma.vm.size() - 1);
-                ma.notifyItemInserted(ma.vm.size() - 1);
-                ma.notifyDataSetChanged();
 
-//Todo ADD COUNT MESSAGE dont Read
+                ma.notifyItemInserted(ma.vm.size() - 1);
+
+                if (b||pastVisiblesItems==-1) {
+                    //IF scrrrole down => scrool To MEssage
+                    ma.size2=-1;
+                    c.gotodown();
+                }
+                else {
+                    //if scroole up=> show Text Message
+                    ma.notifyDataSetChanged();
+                    countNewMessage++;
+                    c.setCountNewMessage();
+                    if (countNewMessage > 0) {
+                        rel_fab.setVisibility(View.VISIBLE);
+                        txt_badeg.setVisibility(View.VISIBLE);
+                        if (countNewMessage > 99) {
+                            txt_badeg.setText("+99");
+                        } else {
+
+                            txt_badeg.setText(String.valueOf(countNewMessage));
+                        }
+                    } else {
+                        txt_badeg.setVisibility(View.GONE);
+                    }
+                }
+
+
 
             }
         });

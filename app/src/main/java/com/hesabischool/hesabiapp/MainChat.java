@@ -49,12 +49,43 @@ public class MainChat extends AppCompatActivity {
 
         @Override
         public void callGetDataFromServer() {
-            GetDataFromServer();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    GetDataFromServer();
+                }
+            });
+
         }
 
         @Override
         public void refresh() {
+
             Risave();
+        }
+
+        @Override
+        public void ToastMessage(String message, boolean isshow) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(isshow)
+                    {
+                        if(app.check.EpmtyOrNull(message))
+                        {
+                            app.linProgress.showProgress(context);
+                        }else
+                        {
+                        app.linProgress.showProgress(context,message);
+
+                        }
+                    }else
+                    {
+                        app.linProgress.hideProgress(context);
+                    }
+                }
+            });
         }
 
     };
@@ -103,6 +134,8 @@ public class MainChat extends AppCompatActivity {
         app.Info.checkpage.curentActivity = "MainChat";
         app.Info.checkpage.callForCheangeMainChat = c;
 
+        Risave();
+        GetDataFromServer();
         super.onResume();
     }
 

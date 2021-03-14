@@ -5,4 +5,5 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 public interface callForCheangeMainChat {
   public void callGetDataFromServer();
     public void refresh();
+public void ToastMessage(String message,boolean isshow);
 }

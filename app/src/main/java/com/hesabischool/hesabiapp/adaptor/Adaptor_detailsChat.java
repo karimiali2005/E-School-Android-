@@ -43,12 +43,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.halilibo.bvpkotlin.BetterVideoPlayer;
 import com.hesabischool.hesabiapp.Clases.Download;
 import com.hesabischool.hesabiapp.Clases.app;
+import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.Interfasces.LayzyLoad;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.Service.DownloadService;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
 import com.hesabischool.hesabiapp.viewmodel.vm_upload;
+import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.squareup.picasso.Picasso;
 
@@ -71,15 +74,17 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
     callForCheange callForCheange;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public static final String MESSAGE_PROGRESS = "message_progress";
-
-    public Adaptor_detailsChat(Context context, List<RoomChatLeftShowResult> vm, LayzyLoad layzyLoad, callForCheange callForCheange,FloatingActionButton fab_down) {
+    RoomChatLeftPropertyResult rPropertyResult;
+//For Message Dont Read
+   public int size2=-1;
+    public Adaptor_detailsChat(Context context, List<RoomChatLeftShowResult> vm, LayzyLoad layzyLoad, callForCheange callForCheange,FloatingActionButton fab_down ,int size2) {
         this.context = context;
         this.vm = vm;
         this.layzyLoad = layzyLoad;
         dqs = new dbQuerySelect(context);
         this.callForCheange = callForCheange;
         this.fab_down=fab_down;
-
+this.size2=size2;
     }
 
     @NonNull
@@ -105,14 +110,23 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
         switch (ismymesssage(position)) {
             case 0:
                 setchatForMe(holder, position);
-
                 break;
             case 1:
                 setchatForOther(holder, position);
-
                 break;
         }
+//Check For Show Message Dont Read
+        if(position==size2)
+        {
+            if(holder instanceof mysendchat)
+            {
+                ((mysendchat)holder).rel_noReadMessage.setVisibility(View.VISIBLE);
 
+            }else
+            {
+                ((othersendchat)holder).rel_noReadMessage.setVisibility(View.VISIBLE);
+            }
+        }
 
         if (position == scroled) {
             // its a last item
@@ -127,20 +141,7 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             select=false;
         }
 
-        if (position<getItemCount()-5)
-        {
-            fab_down.setVisibility(View.VISIBLE);
-            fab_down.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    fab_down.setVisibility(View.GONE);
-                    callForCheange.gotodown();
-                }
-            });
-        }else
-        {
-            fab_down.setVisibility(View.GONE);
-        }
+
     }
 
     private void setchatForMe(final RecyclerView.ViewHolder holder, final int position) {
@@ -166,7 +167,8 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             if (lvm.RoomChatParentID != 0) {
                 //todo has Parents
                 ((mysendchat) holder).rel_parent.setVisibility(View.VISIBLE);
-                ((mysendchat) holder).txt_sumrytextparents.setText(lvm.ParentTextChat);
+                String text=Html.fromHtml(lvm.ParentTextChat).toString();
+                ((mysendchat) holder).txt_sumrytextparents.setText(text);
                 ((mysendchat) holder).txtparentname.setText(lvm.ParentSenderName);
 
 
@@ -212,7 +214,8 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             if (lvm.RoomChatParentID != 0) {
                 //todo has Parents
                 ((mysendchat) holder).rel_parent.setVisibility(View.VISIBLE);
-                ((mysendchat) holder).txt_sumrytextparents.setText(lvm.ParentTextChat);
+                String text=Html.fromHtml(lvm.ParentTextChat).toString();
+                ((mysendchat) holder).txt_sumrytextparents.setText(text);
                 ((mysendchat) holder).txtparentname.setText(lvm.ParentSenderName);
 
 
@@ -276,39 +279,96 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
 
+
+        //=============================PopUp=========================
         ((mysendchat) holder).img_popup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final PopupMenu menu = new PopupMenu(context, ((mysendchat) holder).img_popup);
+              rPropertyResult=callForCheange.getPeroperty();
+              if(app.Info.User.userTypeID==1)
+              {
+                  //Student
+                  if(rPropertyResult.PermissionStudentChatDelete)
+                  {
+                      menu.getMenu().add("حذف");
+                  }
+                  if (rPropertyResult.PermissionStudentChatEdit)
+                  {
+                      menu.getMenu().add("ویرایش");
+                  }
+
+              }else if (app.Info.User.userTypeID==4)
+              {
+               //Teacher
+                  menu.getMenu().add("حذف");
+                  menu.getMenu().add("ویرایش");
+              }
+
                 menu.getMenu().add("پاسخ");
-                menu.getMenu().add("ویرایش");
-                menu.getMenu().add("حذف");
                 menu.getMenu().add("ارسال");
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-
-                        if (menuItem.getTitle().equals(menu.getMenu().getItem(0).getTitle())) {
-                            callForCheange.ReplayMessage(lvm,false);
-                        }
-                        else if (menuItem.getTitle().equals(menu.getMenu().getItem(1).getTitle())) {
-                            //Edite
-                            callForCheange.ReplayMessage(lvm,true);
-                        } else if (menuItem.getTitle().equals(menu.getMenu().getItem(2).getTitle())) {
-                            //Delete
-                            callForCheange.DialogDeleteMessage(lvm);
-                        } else if (menuItem.getTitle().equals(menu.getMenu().getItem(3).getTitle())) {
-                            //Forward
-                        }
-
-                        return false;
-                    }
-                });
-                menu.show();
+             openmenu(menu,lvm);
             }
         });
 
     }
+
+    private void openmenu(PopupMenu menu, RoomChatLeftShowResult lvm) {
+
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                if (menuItem.getTitle().equals("پاسخ")) {
+                    if(DetilsChat.islock&&app.Info.User.userTypeID!=4)
+                    {
+                        Toast.makeText(context, "امکان پاسخ وجود ندارد ", Toast.LENGTH_SHORT).show();
+
+                    }else
+                    {
+                        callForCheange.ReplayMessage(lvm,false);
+                    }
+
+                }
+                else if (menuItem.getTitle().equals("ویرایش")) {
+                    //Edite
+                    if(DetilsChat.islock&&app.Info.User.userTypeID!=4)
+                    {
+                        Toast.makeText(context, "امکان ویرایش وجود ندارد ", Toast.LENGTH_SHORT).show();
+
+                    }else
+                    {
+                        callForCheange.ReplayMessage(lvm,true);
+                    }
+
+                }
+                else if (menuItem.getTitle().equals("حذف")) {
+                    //Delete
+                    if(DetilsChat.islock&&app.Info.User.userTypeID!=4)
+                    {
+                        Toast.makeText(context, "امکان حذف وجود ندارد ", Toast.LENGTH_SHORT).show();
+
+                    }else
+                    {
+                        callForCheange.DialogDeleteMessage(lvm);
+                    }
+
+                }
+                else if (menuItem.getTitle().equals("ارسال")) {
+                    //Forward
+                    //todo Forward messsage
+                }
+                else if (menuItem.getTitle().equals("سنجاق")) {
+                    //Forward
+                }
+
+                return false;
+            }
+        });
+        menu.show();
+
+    }
+
 
     private void gotodowanloadfile_Video(final View v, final String filename, final String fileadress, final int position, final RecyclerView.ViewHolder holder) {
         ((LinearLayout) v).removeAllViews();
@@ -582,7 +642,8 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             if (lvm.RoomChatParentID != 0) {
                 //todo has Parents
                 ((othersendchat) holder).rel_parent.setVisibility(View.VISIBLE);
-                ((othersendchat) holder).txt_sumrytextparents.setText(lvm.ParentTextChat);
+                String text=Html.fromHtml(lvm.ParentTextChat).toString();
+                ((othersendchat) holder).txt_sumrytextparents.setText(text);
                 ((othersendchat) holder).txtparentname.setText(lvm.ParentSenderName);
 
 
@@ -619,7 +680,8 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             if (lvm.RoomChatParentID != 0) {
                 //todo has Parents
                 ((othersendchat) holder).rel_parent.setVisibility(View.VISIBLE);
-                ((othersendchat) holder).txt_sumrytextparents.setText(lvm.ParentTextChat);
+                String text=Html.fromHtml(lvm.ParentTextChat).toString();
+                ((othersendchat) holder).txt_sumrytextparents.setText(text);
                 ((othersendchat) holder).txtparentname.setText(lvm.ParentSenderName);
 
 
@@ -686,25 +748,23 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
         }
 
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        //=============================PopUp=========================
+        ((othersendchat) holder).img_popup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final PopupMenu menu = new PopupMenu(context, ((othersendchat) holder).img_popup);
-                menu.getMenu().add("One");
-                menu.getMenu().add("Two");
-                menu.getMenu().add("Three");
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        Toast.makeText(
-                                context,
-                                "You Clicked : " + menuItem.getTitle(),
-                                Toast.LENGTH_SHORT
-                        ).show();
-                        return false;
-                    }
-                });
-                menu.show();
+                rPropertyResult=callForCheange.getPeroperty();
+                if (app.Info.User.userTypeID==4)
+                {
+                    //Teacher
+                    menu.getMenu().add("حذف");
+                    menu.getMenu().add("ویرایش");
+                    menu.getMenu().add("سنجاق");
+                }
+
+                menu.getMenu().add("پاسخ");
+                menu.getMenu().add("ارسال");
+                openmenu(menu,lvm);
             }
         });
 
@@ -915,6 +975,7 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class mysendchat extends RecyclerView.ViewHolder {
         RelativeLayout rel_parent;
+        RelativeLayout rel_noReadMessage;
         TextView txtparentname, txt_sumrytextparents;
         RelativeLayout Rel;
         LinearLayout lin_text;
@@ -942,6 +1003,7 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
 
             Rel = itemView.findViewById(R.id.Rel);
+            rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
 
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
@@ -970,6 +1032,7 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
     public class othersendchat extends RecyclerView.ViewHolder {
         TextView txtnamesender;
         RelativeLayout Rel;
+        RelativeLayout rel_noReadMessage;
 
         RelativeLayout rel_parent;
         TextView txtparentname, txt_sumrytextparents;
@@ -995,6 +1058,7 @@ public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewH
             txtnamesender = itemView.findViewById(R.id.txtnamesender);
 
             rel_parent = itemView.findViewById(R.id.rel_parent);
+            rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
             txtparentname = itemView.findViewById(R.id.txtparentname);
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
 
