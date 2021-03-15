@@ -5,8 +5,8 @@ import com.hesabischool.hesabiapp.Interfasces.callForCheangeMainChat;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 
 public class vm_checkPage {
-    public String curentActivity;
- public RoomChatRightShowResult roomchatright;
+    public String curentActivity="";
+ public RoomChatRightShowResult roomchatright=new RoomChatRightShowResult();
 public callForCheange callForCheange;
 public callForCheangeMainChat callForCheangeMainChat;
 

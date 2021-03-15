@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917114364862",
+    "project_id": "hesabiapp-b7328",
+    "storage_bucket": "hesabiapp-b7328.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917114364862:android:32ac7cc096a1397f2f8fef",
+        "android_client_info": {
+          "package_name": "com.hesabischool.hesabiapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917114364862-sskcj7b6detts7avfcv7i0892k0t4dcu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBww5irLlrRfNmUUiilILnKG-i6bPHxmdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917114364862-sskcj7b6detts7avfcv7i0892k0t4dcu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

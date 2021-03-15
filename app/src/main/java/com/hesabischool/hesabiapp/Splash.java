@@ -9,19 +9,28 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.database.dbConnector;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class Splash extends AppCompatActivity {
 Context context;
 dbConnector db;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_splash);
         context =this;
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         db=new dbConnector(context);
         try {
             Handler handler=new Handler();
@@ -59,7 +68,26 @@ dbConnector db;
             app.Info.User.userID=c.getInt(c.getColumnIndex("userID"));
             app.Info.User.userTypeID=c.getInt(c.getColumnIndex("userTypeID"));
             app.Info.User.userTypeTitle=c.getString(c.getColumnIndex("userTypeTitle"));
+
+
+
             Intent i=new Intent(context,MainChat.class);
+            //=========================================Get ChatMessage If app Open By Notification ============================
+
+           String newString="";
+                Bundle extras = getIntent().getExtras();
+                if(extras != null) {
+                    newString= extras.getString("idc");
+                    if(!app.check.EpmtyOrNull(newString))
+                    {
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.putExtra("idc", newString);
+                    }
+                }
+
+            //=================================================================================================================
+
+
             startActivity(i);
             finish();
         }else

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ import com.hesabischool.hesabiapp.Interfasces.callForCheangeMainChat;
 import com.hesabischool.hesabiapp.Service.MyService;
 import com.hesabischool.hesabiapp.adaptor.Adaptor_chatRight;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
+import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatViewModel;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,8 +63,13 @@ public class MainChat extends AppCompatActivity {
 
         @Override
         public void refresh() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Risave();
+                }
+            });
 
-            Risave();
         }
 
         @Override
@@ -70,18 +78,14 @@ public class MainChat extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    if(isshow)
-                    {
-                        if(app.check.EpmtyOrNull(message))
-                        {
+                    if (isshow) {
+                        if (app.check.EpmtyOrNull(message)) {
                             app.linProgress.showProgress(context);
-                        }else
-                        {
-                        app.linProgress.showProgress(context,message);
+                        } else {
+                            app.linProgress.showProgress(context, message);
 
                         }
-                    }else
-                    {
+                    } else {
                         app.linProgress.hideProgress(context);
                     }
                 }
@@ -90,12 +94,14 @@ public class MainChat extends AppCompatActivity {
 
     };
 
-    public void GetDataFromServer()
-    {
+    public void GetDataFromServer() {
         hesabi_risave.GetdateFromServerFirst();
     }
 
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,12 +113,33 @@ public class MainChat extends AppCompatActivity {
             hesabi_SignalR hesabi_signalR = new hesabi_SignalR(context);
             dq = new dbQuerySelect(context);
             servIntent = new Intent(context, MyService.class);
-            hesabi_risave=new hesabi_Risave(context);
-            GetDataFromServer();
+            hesabi_risave = new hesabi_Risave(context);
+         //   GetDataFromServer();
             runService();
             Risave();
+            checkBundelNotification();
+
         } catch (Exception ex) {
             throw ex;
+        }
+    }
+
+    private void checkBundelNotification() {
+        String newString = "";
+        Bundle extras =getIntent().getExtras();
+        if (extras != null) {
+            newString = extras.getString("idc");
+            if (!app.check.EpmtyOrNull(newString)) {
+
+                Gson gson2 = new Gson();
+                //  TypeToken listType = TypeToken.getParameterized(List.class, Class.forName(ChatMessage));
+                Type listtype = new TypeToken<ChatMessage>() {
+                }.getType();
+                ChatMessage ch = gson2.fromJson(newString, listtype);
+                Toast.makeText(context, String.valueOf(ch.groupId), Toast.LENGTH_SHORT).show();
+                ma.gotoDetilsmessage(ch);
+
+            }
         }
     }
 
@@ -136,10 +163,35 @@ public class MainChat extends AppCompatActivity {
 
         Risave();
         GetDataFromServer();
+
         super.onResume();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
 
+        
+        String newString = "";
+
+        Bundle extras =intent.getExtras();
+        if (extras != null) {
+
+            newString = extras.getString("idc");
+            if (!app.check.EpmtyOrNull(newString)) {
+
+                Gson gson2 = new Gson();
+                //  TypeToken listType = TypeToken.getParameterized(List.class, Class.forName(ChatMessage));
+                Type listtype = new TypeToken<ChatMessage>() {
+                }.getType();
+                ChatMessage ch = gson2.fromJson(newString, listtype);
+                Toast.makeText(context, String.valueOf(ch.groupId), Toast.LENGTH_SHORT).show();
+                ma.gotoDetilsmessage(ch);
+
+            }
+        }
+    }
     @Override
     protected void onDestroy() {
         stopService(servIntent);
@@ -165,7 +217,6 @@ public class MainChat extends AppCompatActivity {
         shimmerRecycler.setLayoutManager(layoutManager);
         shimmerRecycler.setAdapter(ma);
     }
-
 
 
     private int findRoomChatLeft(int id) {

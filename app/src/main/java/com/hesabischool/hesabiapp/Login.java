@@ -24,6 +24,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
 
 import java.util.Collection;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,7 +36,10 @@ public class Login extends AppCompatActivity {
     Button btnlogin;
     checkInpute ci;
     dbConnector db;
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

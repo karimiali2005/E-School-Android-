@@ -2,11 +2,14 @@ package com.hesabischool.hesabiapp.adaptor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,6 +20,7 @@ import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.viewmodel.vm_checkPage;
+import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 
@@ -42,6 +46,58 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false);
         return new Adaptor_chatRight.MyviewHolder(view);
     }
+int gotomessage=0;
+    public void gotoDetilsmessage(ChatMessage ch) {
+        Toast.makeText(context,"Adaptor:"+ String.valueOf(gotomessage), Toast.LENGTH_SHORT).show();
+        if(gotomessage<10)
+        {
+            int position = findRoomChatRight(ch.groupId);
+
+            if (position == -2) {
+
+                gotomessage++;
+                final Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        gotoDetilsmessage(ch);
+                    }
+                }, 5000);
+
+            }else
+            {
+                gotomessage=0;
+                if (position != -1) {
+
+                    app.Info.checkpage.roomchatright = vm.get(position);
+                    Intent i = new Intent(context, DetilsChat.class);
+
+                    context.startActivity(i);
+                }
+            }
+
+        }else
+        {
+            gotomessage=0;
+        }
+
+
+
+    }
+
+    private int findRoomChatRight(int roomChatGroupID) {
+        if (vm == null || vm.size() < 1) {
+            return -2;
+        }
+        int i = -1;
+        for (RoomChatRightShowResult r : vm) {
+            i++;
+            if (r.RoomChatGroupID == roomChatGroupID) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     @Override
     public void onBindViewHolder(@NonNull Adaptor_chatRight.MyviewHolder holder, final int position) {
@@ -57,14 +113,13 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         }
         //Todo if For homeWork
         holder.txt_namegrupe.setText(vm.get(position).RoomChatTitle);
-        if(!app.check.EpmtyOrNull(vm.get(position).TextChat))
-        {
+        if (!app.check.EpmtyOrNull(vm.get(position).TextChat)) {
 
-        holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
+            holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
         }
 
-       // holder.txt_time.setText(vm.get(position).RoomChatDateString);
-       holder.txt_time.setText(getTimeAgo2(vm.get(position).RoomChatDate));
+        // holder.txt_time.setText(vm.get(position).RoomChatDateString);
+        holder.txt_time.setText(getTimeAgo2(vm.get(position).RoomChatDate));
 
         holder.constParent.setOnClickListener(new View.OnClickListener() {
             @Override

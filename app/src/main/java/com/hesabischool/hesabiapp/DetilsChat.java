@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -570,7 +572,10 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         }
         return -1;
     }
-
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -688,9 +693,15 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 });*/
             Risave();
             pinAndUnpin();
+            cancelNotification();
         } catch (Exception ex) {
 
         }
+    }
+
+    private void cancelNotification() {
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(rcharright.RoomChatGroupID);
     }
 
     private void pinAndUnpin() {
@@ -1084,7 +1095,10 @@ if(cc<=countNewMessage)
                         rel_fab.setVisibility(View.GONE);
                     }
                 }
-
+if(pastVisiblesItems==ma.vm.size()-1)
+{
+    rel_fab.setVisibility(View.GONE);
+}
             }
         });
 

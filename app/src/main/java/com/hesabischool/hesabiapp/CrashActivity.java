@@ -9,9 +9,15 @@ import android.widget.TextView;
 
 import com.hesabischool.hesabiapp.Clases.app;
 
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+
 public class CrashActivity extends AppCompatActivity {
     TextView txt_eror;
     Context context;
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
