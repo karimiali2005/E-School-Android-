@@ -66,14 +66,13 @@ public class app {
     }
     public static class baseUrl
     {
-        public static String signalr ="http://192.168.43.207:4478/chatGroupHub";
-     //   public static String signalr ="http://192.168.43.207:45457/chatGroupHub";
-       public static String retrofit ="http://192.168.43.207:4277/";
-     //  public static String retrofit ="http://192.168.43.207:45455/";
+     //   public static String signalr ="http://192.168.43.207:4478/chatGroupHub";
+    //   public static String retrofit ="http://192.168.43.207:4277/";
+    //   public static String retrofit ="http://192.168.43.207:45455/";
 
         //===========================Karimy================
-//        public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
-//        public static String retrofit ="http://192.168.1.3:45459/";
+        public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
+        public static String retrofit ="http://192.168.1.3:45459/";
     }
     public static class retrofit
     {

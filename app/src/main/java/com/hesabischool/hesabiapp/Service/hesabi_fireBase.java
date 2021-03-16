@@ -76,6 +76,7 @@ public class hesabi_fireBase extends FirebaseMessagingService {
             } else {
                 //app is open
 
+
                 if (app.Info.checkpage.roomchatright.RoomChatGroupID == ch.groupId) {
                     // dont send notifi
                 } else {

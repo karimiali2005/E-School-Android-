@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.Clases.checkInpute;
@@ -36,10 +39,12 @@ public class Login extends AppCompatActivity {
     Button btnlogin;
     checkInpute ci;
     dbConnector db;
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +52,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         try {
             context = this;
-            db=new dbConnector(context);
+            db = new dbConnector(context);
             ci = new checkInpute();
             edtpass = findViewById(R.id.edtpass);
             edtusername = findViewById(R.id.edtusername);
@@ -60,10 +65,13 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     if (ci.checkinput()) {
-                      LoginViewModel vmu=new LoginViewModel();
-                      vmu.usersName=edtusername.getText().toString();
-                      vmu.usersPass=edtpass.getText().toString();
-                      Send(vmu);
+                        LoginViewModel vmu = new LoginViewModel();
+                        vmu.usersName = edtusername.getText().toString();
+                        vmu.usersPass = edtpass.getText().toString();
+                        vmu.mobileName = getDeviceName();
+                        vmu.PlatfornName = getAndroidVersion();
+                        vmu.TokenFireBase= FirebaseInstanceId.getInstance().getToken();
+                        Send(vmu);
                     }
 
                 }
@@ -110,14 +118,12 @@ public class Login extends AppCompatActivity {
                 public void onResponse(Call<LoginUserResult> call, Response<LoginUserResult> response) {
                     app.retrofit.erorRetrofit(response, context);
                     if (response.isSuccessful()) {
-                        if(db.dq.AddOrUpdateUser(response.body()))
-                        {
-                            app.Info.User=response.body();
-                            Intent i=new Intent(context,MainChat.class);
+                        if (db.dq.AddOrUpdateUser(response.body())) {
+                            app.Info.User = response.body();
+                            Intent i = new Intent(context, MainChat.class);
                             startActivity(i);
-finish();
-                        }else
-                        {
+                            finish();
+                        } else {
                             Toast.makeText(context, R.string.problam, Toast.LENGTH_SHORT).show();
                         }
 
@@ -138,5 +144,40 @@ finish();
 
     }
 
+    public static String getAndroidVersion() {
+        String release = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        return "Android SDK: " + sdkVersion + " (" + release + ")";
+    }
 
+    public static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase.append(c);
+        }
+
+        return phrase.toString();
+    }
 }
