@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -17,6 +19,7 @@ import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.Clases.hesabi_Risave;
 import com.hesabischool.hesabiapp.Clases.hesabi_SignalR;
+import com.hesabischool.hesabiapp.Image.ImageLoader;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.Interfasces.callForCheangeMainChat;
 import com.hesabischool.hesabiapp.Service.MyService;
@@ -36,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +52,7 @@ public class MainChat extends AppCompatActivity {
     Adaptor_chatRight ma;
     RecyclerView shimmerRecycler;
     hesabi_Risave hesabi_risave;
+    ImageLoader imgLoader;
     callForCheangeMainChat c = new callForCheangeMainChat() {
 
         @Override
@@ -102,6 +107,7 @@ public class MainChat extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,19 +120,41 @@ public class MainChat extends AppCompatActivity {
             dq = new dbQuerySelect(context);
             servIntent = new Intent(context, MyService.class);
             hesabi_risave = new hesabi_Risave(context);
-         //   GetDataFromServer();
+            //   GetDataFromServer();
             runService();
             Risave();
             checkBundelNotification();
+            NavigationViewCheck();
 
         } catch (Exception ex) {
             throw ex;
         }
     }
 
+    private void NavigationViewCheck() {
+        NavigationView nav = findViewById(R.id.nav);
+        View headerView = nav.getHeaderView(0);
+//=======Header==========================
+        TextView htxt_name=headerView.findViewById(R.id.txt_name);
+        TextView htxt_mobile=headerView.findViewById(R.id.txt_mobile);
+        CircleImageView imgprofile=headerView.findViewById(R.id.img_profile);
+        htxt_name.setText(app.Info.User.fullName);
+        htxt_mobile.setText(app.Info.User.mobileNumber);
+
+        imgLoader = new ImageLoader(this);
+
+        String url = app.baseUrl.retrofit + app.baseUrl.picurl+"?picName="+app.Info.User.picName;
+
+        imgLoader.DisplayPicture(app.Info.User.userID,url, imgprofile);
+
+
+
+
+    }
+
     private void checkBundelNotification() {
         String newString = "";
-        Bundle extras =getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
         if (extras != null) {
             newString = extras.getString("idc");
             if (!app.check.EpmtyOrNull(newString)) {
@@ -168,14 +196,13 @@ public class MainChat extends AppCompatActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        
+
         String newString = "";
 
-        Bundle extras =intent.getExtras();
+        Bundle extras = intent.getExtras();
         if (extras != null) {
 
             newString = extras.getString("idc");
@@ -192,6 +219,7 @@ public class MainChat extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onDestroy() {
         stopService(servIntent);

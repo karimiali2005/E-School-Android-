@@ -118,6 +118,7 @@ this.size2=size2;
 //Check For Show Message Dont Read
         if(position==size2)
         {
+            size2=-1;
             if(holder instanceof mysendchat)
             {
                 ((mysendchat)holder).rel_noReadMessage.setVisibility(View.VISIBLE);
@@ -125,6 +126,17 @@ this.size2=size2;
             }else
             {
                 ((othersendchat)holder).rel_noReadMessage.setVisibility(View.VISIBLE);
+            }
+
+        }else
+        {
+            if(holder instanceof mysendchat)
+            {
+                ((mysendchat)holder).rel_noReadMessage.setVisibility(View.GONE);
+
+            }else
+            {
+                ((othersendchat)holder).rel_noReadMessage.setVisibility(View.GONE);
             }
         }
 
@@ -286,25 +298,26 @@ this.size2=size2;
             public void onClick(View view) {
                 final PopupMenu menu = new PopupMenu(context, ((mysendchat) holder).img_popup);
               rPropertyResult=callForCheange.getPeroperty();
-              if(app.Info.User.userTypeID==1)
-              {
-                  //Student
-                  if(rPropertyResult.PermissionStudentChatDelete)
-                  {
-                      menu.getMenu().add("حذف");
-                  }
-                  if (rPropertyResult.PermissionStudentChatEdit)
-                  {
-                      menu.getMenu().add("ویرایش");
-                  }
-
-              }else if (app.Info.User.userTypeID==4)
+//              if(app.Info.User.userTypeID==1)
+//              {
+//                  //Student
+//                  if(rPropertyResult.PermissionStudentChatDelete)
+//                  {
+//                      menu.getMenu().add("حذف");
+//                  }
+//                  if (rPropertyResult.PermissionStudentChatEdit)
+//                  {
+//                      menu.getMenu().add("ویرایش");
+//                  }
+//
+//              }
+              if (app.Info.User.userTypeID==4)
               {
                //Teacher
-                  menu.getMenu().add("حذف");
-                  menu.getMenu().add("ویرایش");
+                  menu.getMenu().add("سنجاق");
               }
-
+                menu.getMenu().add("حذف");
+                menu.getMenu().add("ویرایش");
                 menu.getMenu().add("پاسخ");
                 menu.getMenu().add("ارسال");
              openmenu(menu,lvm);
@@ -359,7 +372,8 @@ this.size2=size2;
                     //todo Forward messsage
                 }
                 else if (menuItem.getTitle().equals("سنجاق")) {
-                    //Forward
+                    //pin
+                    callForCheange.SetpinMesage(lvm);
                 }
 
                 return false;
@@ -748,6 +762,12 @@ this.size2=size2;
         }
 
 
+        ((othersendchat) holder).rel_parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callForCheange.gotoPostionItem(lvm.RoomChatParentID);
+            }
+        });
         //=============================PopUp=========================
         ((othersendchat) holder).img_popup.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -82,7 +82,8 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
-      android:layout_width="wrap_content"
+        android:id="@+id/nav"
+      android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="end"
         app:headerLayout="@layout/headermenubar"

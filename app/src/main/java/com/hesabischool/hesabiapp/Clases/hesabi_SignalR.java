@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.hesabischool.hesabiapp.database.dbConnector;
 import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.microsoft.signalr.HubConnection;
@@ -20,11 +21,12 @@ import retrofit2.Response;
 
 public class hesabi_SignalR {
     Context context;
-
+dbConnector db;
     public static HubConnection hubConnection;
 
     public hesabi_SignalR(Context context) {
         this.context = context;
+        this.db=new dbConnector(context);
         // MAP hubConnection= HubConnectionBuilder.create(app.baseUrl.signalr).withHeaders(map).build();
         hubConnection = HubConnectionBuilder.create(app.baseUrl.signalr).build();
         hubConnection.onClosed(new OnClosedCallback() {
@@ -34,6 +36,9 @@ public class hesabi_SignalR {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
+
+
                         StrtSignalR();
                     }
                 }, 5000);
@@ -64,7 +69,8 @@ public class hesabi_SignalR {
                     app.Info.checkpage.callForCheangeMainChat.callGetDataFromServer();
                     break;
             }
-        } else if (app.Info.checkpage.curentActivity.equals("DetilsChat")) {
+        }
+        else if (app.Info.checkpage.curentActivity.equals("DetilsChat")) {
             if (app.Info.checkpage.roomchatright.RoomChatGroupID == chatMessage.groupId) {
                 switch (chatMessage.chatType) {
                     case "C":
@@ -107,18 +113,46 @@ public class hesabi_SignalR {
                         //Todo unLock
                         app.Info.checkpage.callForCheange.setLockAndUnLock(chatMessage, false);
                         break;
-                    case "DM":
-                        //Todo For Delete my message
-                        break;
-                    case "DA":
-                        //Todo For Delete All message
-                        break;
+
 
                 }
             }
 
 
         }
+
+        if(chatMessage.chatType.equals("DM"))
+        {
+            //=========DeleteFrom sqlllite
+            try {
+                String where2 = " RoomChatID = " + String.valueOf(chatMessage.roomChatId);
+                db.dq.saveTosqlDelete(new RoomChatLeftShowResult(), where2);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            //==============End========================
+        }else if(chatMessage.chatType.equals("DA"))
+        {
+            //=========DeleteFrom sqlllite
+            try {
+                String where2 = " RoomChatID = " + String.valueOf(chatMessage.roomChatId);
+                db.dq.saveTosqlDelete(new RoomChatLeftShowResult(), where2);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            //==============End========================
+        }else if(chatMessage.chatType.equals("D"))
+        {
+            //=========DeleteFrom sqlllite
+            try {
+                String where2 = " RoomChatID = " + String.valueOf(chatMessage.roomChatId);
+                db.dq.saveTosqlDelete(new RoomChatLeftShowResult(), where2);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            //==============End========================
+        }
+
     }
 
     int x = 0;

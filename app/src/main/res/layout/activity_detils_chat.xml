@@ -228,7 +228,7 @@
     android:layout_height="@dimen/_20sdp"
 android:textColor="@color/text_color_sucsses"
     android:text=""
-    android:textSize="@dimen/text_size"
+    android:textSize="@dimen/_9sdp"
     android:textDirection="rtl"
     android:paddingRight="@dimen/_5sdp"
     android:paddingTop="@dimen/_3sdp"

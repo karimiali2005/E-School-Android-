@@ -6,7 +6,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:background="@drawable/header6"
-    android:layout_height="@dimen/_200sdp">
+    android:layout_height="wrap_content">
     <de.hdodenhof.circleimageview.CircleImageView
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -47,12 +47,16 @@
     android:layout_width="@dimen/_45sdp"
     android:layout_height="@dimen/_45sdp"
     android:background="@color/text_color_w"
-    android:elevation="@dimen/_5sdp"
+    app:elevation="1dp"
+    app:borderWidth="0dp"
+    android:layout_gravity="center"
+    app:pressedTranslationZ="1dp"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"
     android:layout_marginBottom="@dimen/_35sdp"
     app:tint="#66925b"
+
     style="@style/Widget.MaterialComponents.FloatingActionButton"
     android:src="@drawable/ic_profile"
     app:backgroundTint="@color/text_color_w"
@@ -65,7 +69,9 @@
         app:layout_constraintRight_toLeftOf="@+id/flo_profile"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="@dimen/_5sdp"
+        app:elevation="1dp"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="1dp"
         app:tint="#66925b"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:src="@drawable/ic_profile"
@@ -75,7 +81,9 @@
         android:layout_width="@dimen/_45sdp"
         android:layout_height="@dimen/_45sdp"
         android:background="@color/text_color_w"
-        android:elevation="@dimen/_5sdp"
+        app:elevation="1dp"
+        app:borderWidth="0dp"
+        app:pressedTranslationZ="1dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/flo_profile"
         app:layout_constraintBottom_toBottomOf="parent"

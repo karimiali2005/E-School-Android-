@@ -118,7 +118,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     ImageView img_unpin;
     TextView txt_pin;
     TextView txt_badeg;
-    int pastVisiblesItems=-1;
+    int pastVisiblesItems = -1;
     public static boolean islock = false;
     ///
     private int mScreenWidth = 0;
@@ -232,8 +232,23 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     app.retrofit.erorRetrofit(response, context);
                     if (response.isSuccessful()) {
                         c.DeleteMessage(rchatleft.RoomChatID);
-
-                        hesabi_SignalR.sendMessage(response.body().value);
+                        //=========DeleteFrom sqlllite
+                        try {
+                            String where2 = " RoomChatID = " + String.valueOf(rchatleft.RoomChatID);
+                            db.dq.saveTosqlDelete(new RoomChatLeftShowResult(), where2);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                        //==============End========================
+                        ChatMessage ch = response.body().value;
+                        if(ch.chatType.equals("DM"))
+                        {
+                            Toast.makeText(context, "به دلیل گذشت زمان فقط برای خودتان حذف گردید", Toast.LENGTH_SHORT).show();
+                        }if (ch.chatType.equals("D"))
+                        {
+                            Toast.makeText(context, "برای همه حذف گردید", Toast.LENGTH_SHORT).show();
+                        }
+                        hesabi_SignalR.sendMessage(ch);
                     }
                 }
 
@@ -252,7 +267,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     app.retrofit.erorRetrofit(response, context);
                     if (response.isSuccessful()) {
                         c.DeleteMessage(rchatleft.RoomChatID);
-
+                        //=========DeleteFrom sqlllite
+                        try {
+                            String where2 = " RoomChatID = " + String.valueOf(rchatleft.RoomChatID);
+                            db.dq.saveTosqlDelete(new RoomChatLeftShowResult(), where2);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                        //==============End========================
                         hesabi_SignalR.sendMessage(response.body().value);
                     }
                 }
@@ -267,12 +289,9 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         @Override
         public void gotoPostionItem(final int idRoomChat) {
             final int postion = findRoomChatLeft(idRoomChat);
-            if(index==-1)
-            {
+            if (index == -1 && postion == -1) {
                 Toast.makeText(context, "نتیجه ای یافت نشد ...", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
+            } else {
                 if (postion != -1) {
 
                     shimmerRecycler.post(new Runnable() {
@@ -290,9 +309,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
 
                 } else {
-                    app.linProgress.showProgress(context,"در حال بررسی");
-                    if(app.net.isNetworkConnected(context))
-                    {
+                    app.linProgress.showProgress(context, "در حال بررسی");
+                    if (app.net.isNetworkConnected(context)) {
                         app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, false, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
                             @Override
                             public void onResponse(Call<GetDataFromServer2> call, Response<GetDataFromServer2> response) {
@@ -317,8 +335,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                                 gotoPostionItem(idRoomChat);
                             }
                         });
-                    }else
-                    {
+                    } else {
 
                         app.linProgress.hideProgress(context);
                         getdataFromSqlLite();
@@ -458,18 +475,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                 @Override
                 public void run() {
 
-                    if(isshow)
-                    {
-                        if(app.check.EpmtyOrNull(message))
-                        {
+                    if (isshow) {
+                        if (app.check.EpmtyOrNull(message)) {
                             app.linProgress.showProgress(context);
-                        }else
-                        {
-                            app.linProgress.showProgress(context,message);
+                        } else {
+                            app.linProgress.showProgress(context, message);
 
                         }
-                    }else
-                    {
+                    } else {
                         app.linProgress.hideProgress(context);
                     }
                 }
@@ -572,10 +585,12 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         }
         return -1;
     }
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -706,7 +721,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
     private void pinAndUnpin() {
 
-        img_close.setOnClickListener(new View.OnClickListener() {
+        img_unpin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (app.net.CheckCommunication(context)) {
@@ -1004,25 +1019,21 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         }
         int size2 = -1;
         if (countNewMessage > lvm.size()) {
-            if (index==-1)
-            {
-             size2=-1;
+            if (index == -1) {
+                size2 = -1;
                 layoutManager.scrollToPosition(0);
-            }else
-            {
+            } else {
 
-            Risave();
+                Risave();
             }
         } else {
-            if(countNewMessage>0)
-            {
+            if (countNewMessage > 0) {
                 size2 = lvm.size();
                 size2 = (size2 - countNewMessage);
                 layoutManager.scrollToPosition(size2);
-            }else
-            {
+            } else {
                 size2 = -1;
-                layoutManager.scrollToPosition(lvm.size()-1);
+                layoutManager.scrollToPosition(lvm.size() - 1);
             }
 
         }
@@ -1065,15 +1076,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         }
 
                     }*/
-                 pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+                pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
 
                 if (countNewMessage > 0) {
                     int size = ma.vm.size() - 1;
-                  int cc = size - pastVisiblesItems;
-if(cc<=countNewMessage)
-{
-    countNewMessage=cc;
-}
+                    int cc = size - pastVisiblesItems;
+                    if (cc <= countNewMessage) {
+                        countNewMessage = cc;
+                    }
                     c.setCountNewMessage();
                 }
                 if (dy > 0) {
@@ -1095,10 +1105,9 @@ if(cc<=countNewMessage)
                         rel_fab.setVisibility(View.GONE);
                     }
                 }
-if(pastVisiblesItems==ma.vm.size()-1)
-{
-    rel_fab.setVisibility(View.GONE);
-}
+                if (pastVisiblesItems == ma.vm.size() - 1) {
+                    rel_fab.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -1107,7 +1116,16 @@ if(pastVisiblesItems==ma.vm.size()-1)
             @Override
             public void onClick(View view) {
                 rel_fab.setVisibility(View.GONE);
-                c.gotodown();
+                if (countNewMessage > 0) {
+                    int size2 = ma.vm.size();
+                    size2 = (size2 - countNewMessage);
+                    ma.size2 = size2;
+                    layoutManager.scrollToPosition(size2);
+                } else {
+
+                    c.gotodown();
+                }
+
             }
         });
 
@@ -1163,18 +1181,17 @@ if(pastVisiblesItems==ma.vm.size()-1)
         shimmerRecycler.post(new Runnable() {
             @Override
             public void run() {
-                int size=ma.vm.size()-1;
-                 boolean b=(size<=pastVisiblesItems)?true:false;
+                int size = ma.vm.size() - 1;
+                boolean b = (size <= pastVisiblesItems) ? true : false;
                 ma.vm.add(r);
 
                 ma.notifyItemInserted(ma.vm.size() - 1);
 
-                if (b||pastVisiblesItems==-1) {
+                if (b || pastVisiblesItems == -1) {
                     //IF scrrrole down => scrool To MEssage
-                    ma.size2=-1;
+                    ma.size2 = -1;
                     c.gotodown();
-                }
-                else {
+                } else {
                     //if scroole up=> show Text Message
                     ma.notifyDataSetChanged();
                     countNewMessage++;
@@ -1192,7 +1209,6 @@ if(pastVisiblesItems==ma.vm.size()-1)
                         txt_badeg.setVisibility(View.GONE);
                     }
                 }
-
 
 
             }

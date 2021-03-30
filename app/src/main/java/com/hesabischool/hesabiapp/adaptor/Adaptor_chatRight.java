@@ -46,11 +46,12 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false);
         return new Adaptor_chatRight.MyviewHolder(view);
     }
-int gotomessage=0;
+
+    int gotomessage = 0;
+
     public void gotoDetilsmessage(ChatMessage ch) {
-        Toast.makeText(context,"Adaptor:"+ String.valueOf(gotomessage), Toast.LENGTH_SHORT).show();
-        if(gotomessage<10)
-        {
+        Toast.makeText(context, "Adaptor:" + String.valueOf(gotomessage), Toast.LENGTH_SHORT).show();
+        if (gotomessage < 10) {
             int position = findRoomChatRight(ch.groupId);
 
             if (position == -2) {
@@ -64,9 +65,8 @@ int gotomessage=0;
                     }
                 }, 5000);
 
-            }else
-            {
-                gotomessage=0;
+            } else {
+                gotomessage = 0;
                 if (position != -1) {
 
                     app.Info.checkpage.roomchatright = vm.get(position);
@@ -76,11 +76,9 @@ int gotomessage=0;
                 }
             }
 
-        }else
-        {
-            gotomessage=0;
+        } else {
+            gotomessage = 0;
         }
-
 
 
     }
@@ -114,8 +112,15 @@ int gotomessage=0;
         //Todo if For homeWork
         holder.txt_namegrupe.setText(vm.get(position).RoomChatTitle);
         if (!app.check.EpmtyOrNull(vm.get(position).TextChat)) {
+            String value = vm.get(position).TextChat;
+            if (value.equals("null"))
+            {
+                holder.txt_lastMessaage.setText("رسانه");
 
-            holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
+            }else {
+
+                holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
+            }
         }
 
         // holder.txt_time.setText(vm.get(position).RoomChatDateString);
