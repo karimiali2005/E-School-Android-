@@ -2,7 +2,10 @@ package com.hesabischool.hesabiapp.adaptor;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -47,20 +50,20 @@ import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.Interfasces.LayzyLoad;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.R;
-import com.hesabischool.hesabiapp.Service.DownloadService;
+import com.hesabischool.hesabiapp.ForgerunadService.DownloadService;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
 import com.hesabischool.hesabiapp.viewmodel.vm_upload;
-import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -397,7 +400,9 @@ this.size2=size2;
                 if (checkPermission()) {
                     app.Info.Filename = filename;
                     app.Info.Fileadress = fileadress;
+                    app.Info.Fileview=v;
                     startDownload();
+                    app.Info.isAllowDowanload=false;
                 } else {
                     requestPermission();
                 }
@@ -409,19 +414,20 @@ this.size2=size2;
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction().equals(MESSAGE_PROGRESS)) {
+                if (intent.getAction().equals(MESSAGE_PROGRESS)&&app.Info.Fileview==v) {
+
 
                     Download download = intent.getParcelableExtra("download");
-                    progress.setProgress(download.getProgress());
+                  progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
 
-                        progress_text.setText("File Download Complete");
-                        ((LinearLayout) v).removeView(viewDowanload);
+                        progress_text.setText("دانلود کامل شد");
+                        ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         playVideo(holder, position);
-
+                        app.Info.isAllowDowanload=true;
                     } else {
 
-                        progress_text.setText(String.format("Downloaded (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
+                        progress_text.setText(String.format("دانلود (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
 
                     }
                 }
@@ -607,7 +613,9 @@ this.size2=size2;
                 if (checkPermission()) {
                     app.Info.Filename = filename;
                     app.Info.Fileadress = fileadress;
+                    app.Info.Fileview = v;
                     startDownload();
+                    app.Info.isAllowDowanload=false;
                 } else {
                     requestPermission();
                 }
@@ -619,19 +627,19 @@ this.size2=size2;
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction().equals(MESSAGE_PROGRESS)) {
+                if (intent.getAction().equals(MESSAGE_PROGRESS)&&app.Info.Fileview==v) {
 
                     Download download = intent.getParcelableExtra("download");
                     progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
 
-                        progress_text.setText("File Download Complete");
-                        ((LinearLayout) v).removeView(viewDowanload);
+                        progress_text.setText("فایل دانلود شد");
+                        ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         playAudeo(holder, position);
-
+                        app.Info.isAllowDowanload=true;
                     } else {
 
-                        progress_text.setText(String.format("Downloaded (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
+                        progress_text.setText(String.format("در حال دانلود (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
 
                     }
                 }
@@ -803,7 +811,9 @@ this.size2=size2;
                     int po = position;
                     app.Info.Filename = filename;
                     app.Info.Fileadress = urlAdress;
+                    app.Info.Fileview = v;
                     startDownload();
+                    app.Info.isAllowDowanload=false;
                 } else {
                     requestPermission();
                 }
@@ -815,19 +825,19 @@ this.size2=size2;
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if (intent.getAction().equals(MESSAGE_PROGRESS)) {
+                if (intent.getAction().equals(MESSAGE_PROGRESS)&&app.Info.Fileview==v) {
 
                     Download download = intent.getParcelableExtra("download");
                     progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
 
-                        progress_text.setText("File Download Complete");
-                        ((LinearLayout) v).removeView(viewDowanload);
+                        progress_text.setText("دانلود فایل کامل شد ");
+                        ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         showImage(holder, position);
-
+                        app.Info.isAllowDowanload=true;
                     } else {
 
-                        progress_text.setText(String.format("Downloaded (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
+                        progress_text.setText(String.format("در حال دانلود  (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
 
                     }
                 }
@@ -988,9 +998,37 @@ this.size2=size2;
 
     private void startDownload() {
 
-        Intent intent = new Intent(context, DownloadService.class);
-        (context).startService(intent);
+        if(app.Info.isAllowDowanload=true)
+        {
+            Intent intent = new Intent(context, DownloadService.class);
+            (context).startService(intent);
+        }else
+        {
+            Toast.makeText(context,"در حال دانلود فایلی هستید بعد از اتمام کار", Toast.LENGTH_SHORT).show();
+        }
 
+
+    }
+
+    private boolean isServiceRunning(String serviceName){
+        boolean serviceRunning = false;
+        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> l = am.getRunningServices(50);
+        Iterator<ActivityManager.RunningServiceInfo> i = l.iterator();
+        while (i.hasNext()) {
+            ActivityManager.RunningServiceInfo runningServiceInfo = i
+                    .next();
+
+            if(runningServiceInfo.service.getClassName().contains(serviceName)){
+
+
+                if(runningServiceInfo.foreground)
+                {
+                    serviceRunning = true;
+                }
+            }
+        }
+        return serviceRunning;
     }
 
     public class mysendchat extends RecyclerView.ViewHolder {
@@ -1000,20 +1038,14 @@ this.size2=size2;
         RelativeLayout Rel;
         LinearLayout lin_text;
         TextView txtmessage;
-
         LinearLayout lin_img;
         ImageView img_shower;
-
         ImageView img_issqllite;
-
         LinearLayout lin_audeo;
         //    AudioPlayerView audioplaey_shower;
-
         LinearLayout lin_video;
         //   BetterVideoPlayer betervideo_shower;
-
         TextView txt_countsee, txt_time;
-
         ImageView img_popup;
 
         public mysendchat(@NonNull View itemView) {
@@ -1021,31 +1053,20 @@ this.size2=size2;
             rel_parent = itemView.findViewById(R.id.rel_parent);
             txtparentname = itemView.findViewById(R.id.txtparentname);
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
-
             Rel = itemView.findViewById(R.id.Rel);
             rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
-
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
-
             lin_img = itemView.findViewById(R.id.lin_img);
             img_shower = itemView.findViewById(R.id.img_shower);
-
             img_issqllite = itemView.findViewById(R.id.img_issqllite);
-
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
-
             lin_video = itemView.findViewById(R.id.lin_video);
             //   betervideo_shower = itemView.findViewById(R.id.betervideo_shower);
-
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
-
-
             img_popup = itemView.findViewById(R.id.imgpopup);
-
-
         }
     }
 
@@ -1053,52 +1074,37 @@ this.size2=size2;
         TextView txtnamesender;
         RelativeLayout Rel;
         RelativeLayout rel_noReadMessage;
-
         RelativeLayout rel_parent;
         TextView txtparentname, txt_sumrytextparents;
-
         LinearLayout lin_text;
         TextView txtmessage;
-
         LinearLayout lin_img;
         ImageView img_shower;
-
         LinearLayout lin_audeo;
         //    AudioPlayerView audioplaey_shower;
-
         LinearLayout lin_video;
         //   BetterVideoPlayer betervideo_shower;
-
         TextView txt_countsee, txt_time;
-
         ImageView img_popup;
 
         public othersendchat(@NonNull View itemView) {
             super(itemView);
             txtnamesender = itemView.findViewById(R.id.txtnamesender);
-
             rel_parent = itemView.findViewById(R.id.rel_parent);
             rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
             txtparentname = itemView.findViewById(R.id.txtparentname);
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
-
             Rel = itemView.findViewById(R.id.Rel);
-
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
-
             lin_img = itemView.findViewById(R.id.lin_img);
             img_shower = itemView.findViewById(R.id.img_shower);
-
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
-
             lin_video = itemView.findViewById(R.id.lin_video);
             //     betervideo_shower = itemView.findViewById(R.id.betervideo_shower);
-
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
-
             img_popup = itemView.findViewById(R.id.imgpopup);
 
         }

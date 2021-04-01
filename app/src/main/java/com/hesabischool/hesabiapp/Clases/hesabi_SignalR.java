@@ -37,8 +37,6 @@ dbConnector db;
                     @Override
                     public void run() {
 
-
-
                         StrtSignalR();
                     }
                 }, 5000);

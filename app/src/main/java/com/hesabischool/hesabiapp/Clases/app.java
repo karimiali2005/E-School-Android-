@@ -59,6 +59,8 @@ public class app {
 
         public static String Filename ="";
         public static String Fileadress ="";
+        public static View Fileview =null;
+        public static boolean isAllowDowanload =true;
 
 
 
@@ -67,11 +69,11 @@ public class app {
     public static class baseUrl
     {
 
-        public static String signalr ="http://192.168.43.207:4478/chatGroupHub";
-      // public static String retrofit ="http://192.168.43.207:4277/";
+        public static String signalr ="http://192.168.85.143:4478/chatGroupHub";
+       public static String retrofit ="http://192.168.85.143:4277/";
 
        public static String picurl ="api1/Accounts/GetUserPic";
-       public static String retrofit ="http://192.168.43.207:45455/";
+      // public static String retrofit ="http://192.168.43.207:45455/";
 
         //===========================Karimy================
      //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";

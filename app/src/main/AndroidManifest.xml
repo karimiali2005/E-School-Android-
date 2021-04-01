@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <!--برای گرفتن اطلاعات از سمت فایربیس -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -40,7 +41,9 @@
         </activity>
 
         <service android:name=".Service.MyService" />
-        <service android:name=".Service.DownloadService" />
+        <service android:name=".ForgerunadService.DownloadService"
+            android:foregroundServiceType="dataSync"
+            />
         <service android:name=".Service.hesabi_fireBase">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

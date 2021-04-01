@@ -1,10 +1,11 @@
-package com.hesabischool.hesabiapp.Service;
+package com.hesabischool.hesabiapp.ForgerunadService;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
@@ -25,8 +26,6 @@ import java.io.OutputStream;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class DownloadService extends IntentService {
@@ -50,7 +49,7 @@ public class DownloadService extends IntentService {
                 .setContentText(" درحال دانلود فایل")
                 .setAutoCancel(true);
         notificationManager.notify(0, notificationBuilder.build());
-
+        Toast.makeText(this, "شروع دانلود", Toast.LENGTH_SHORT).show();
         initDownload();
 
     }
@@ -100,7 +99,7 @@ public class DownloadService extends IntentService {
         } catch (IOException e) {
 
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -154,6 +153,8 @@ public class DownloadService extends IntentService {
 
                     }catch (Exception ex)
                     {
+                        Toast.makeText(DownloadService.this, " دانلود با خطا روبرو شده است ", Toast.LENGTH_SHORT).show();
+                        onDestroy();
                         try {
                             throw ex;
                         } catch (IOException e) {
@@ -175,7 +176,7 @@ public class DownloadService extends IntentService {
 
         sendIntent(download);
         notificationBuilder.setProgress(100,download.getProgress(),false);
-        notificationBuilder.setContentText("Downloading file "+ download.getCurrentFileSize() +"/"+totalFileSize +" MB");
+        notificationBuilder.setContentText("در حال دانلود فایل "+ download.getCurrentFileSize() +"/"+totalFileSize +" MB");
         notificationManager.notify(0, notificationBuilder.build());
     }
 
@@ -194,9 +195,17 @@ public class DownloadService extends IntentService {
 
         notificationManager.cancel(0);
         notificationBuilder.setProgress(0,0,false);
-        notificationBuilder.setContentText("File Downloaded");
+        notificationBuilder.setContentText("فایل دانلود شد");
         notificationManager.notify(0, notificationBuilder.build());
 
+
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+              notificationManager.cancel(0);
+              onDestroy();
+            }
+        }, 5000);
     }
 
     @Override
