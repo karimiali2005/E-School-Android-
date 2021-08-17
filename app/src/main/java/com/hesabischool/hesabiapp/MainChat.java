@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,10 +17,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
+//import com.hesabischool.hesabiapp.Clases.ImageLoder_ASDE1373;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.Clases.hesabi_Risave;
 import com.hesabischool.hesabiapp.Clases.hesabi_SignalR;
-import com.hesabischool.hesabiapp.Image.ImageLoader;
+
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.Interfasces.callForCheangeMainChat;
 import com.hesabischool.hesabiapp.Service.MyService;
@@ -41,6 +43,7 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import com.hesabischool.hesabiapp.ImageCash.ImageLoader;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,7 +55,9 @@ public class MainChat extends AppCompatActivity {
     Adaptor_chatRight ma;
     RecyclerView shimmerRecycler;
     hesabi_Risave hesabi_risave;
-    ImageLoader imgLoader;
+   // ImageLoader imgLoader;
+    ImageLoader  imgLoader;
+
     callForCheangeMainChat c = new callForCheangeMainChat() {
 
         @Override
@@ -115,6 +120,7 @@ public class MainChat extends AppCompatActivity {
         setContentView(R.layout.activity_main_chat);
         try {
             context = this;
+
             shimmerRecycler = (RecyclerView) findViewById(R.id.rec_chat);
             hesabi_SignalR hesabi_signalR = new hesabi_SignalR(context);
             dq = new dbQuerySelect(context);
@@ -140,13 +146,18 @@ public class MainChat extends AppCompatActivity {
         CircleImageView imgprofile=headerView.findViewById(R.id.img_profile);
         htxt_name.setText(app.Info.User.fullName);
         htxt_mobile.setText(app.Info.User.mobileNumber);
+        imgLoader = new ImageLoader(context);
 
-        imgLoader = new ImageLoader(this);
+     //   imgLoader = new ImageLoder_ASDE1373(context);
 
-        String url = app.baseUrl.retrofit + app.baseUrl.picurl+"?picName="+app.Info.User.picName;
+     //   String url = app.baseUrl.retrofit + app.baseUrl.picurl+"?picName="+app.Info.User.picName;
 
-        imgLoader.DisplayPicture(app.Info.User.userID,url, imgprofile);
+   //     imgLoader.LoadImage(imgprofile);
 
+
+
+
+        imgLoader.DisplayPicture(app.Info.User.userID, imgprofile);
 
 
 

@@ -1,7 +1,6 @@
 package com.hesabischool.hesabiapp.Clases.RecordVoice;
 
 import android.media.AudioFormat;
-
 public interface AudioRecordConfig {
     int channelPositionMask();
 

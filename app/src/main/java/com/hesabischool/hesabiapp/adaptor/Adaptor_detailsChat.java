@@ -402,7 +402,7 @@ this.size2=size2;
                     app.Info.Fileadress = fileadress;
                     app.Info.Fileview=v;
                     startDownload();
-                    app.Info.isAllowDowanload=false;
+
                 } else {
                     requestPermission();
                 }
@@ -420,11 +420,11 @@ this.size2=size2;
                     Download download = intent.getParcelableExtra("download");
                   progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
-
+                        app.Info.isAllowDowanload=true;
                         progress_text.setText("دانلود کامل شد");
                         ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         playVideo(holder, position);
-                        app.Info.isAllowDowanload=true;
+
                     } else {
 
                         progress_text.setText(String.format("دانلود (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
@@ -615,7 +615,7 @@ this.size2=size2;
                     app.Info.Fileadress = fileadress;
                     app.Info.Fileview = v;
                     startDownload();
-                    app.Info.isAllowDowanload=false;
+
                 } else {
                     requestPermission();
                 }
@@ -632,11 +632,11 @@ this.size2=size2;
                     Download download = intent.getParcelableExtra("download");
                     progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
-
+                        app.Info.isAllowDowanload=true;
                         progress_text.setText("فایل دانلود شد");
                         ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         playAudeo(holder, position);
-                        app.Info.isAllowDowanload=true;
+
                     } else {
 
                         progress_text.setText(String.format("در حال دانلود (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
@@ -813,7 +813,7 @@ this.size2=size2;
                     app.Info.Fileadress = urlAdress;
                     app.Info.Fileview = v;
                     startDownload();
-                    app.Info.isAllowDowanload=false;
+
                 } else {
                     requestPermission();
                 }
@@ -830,11 +830,11 @@ this.size2=size2;
                     Download download = intent.getParcelableExtra("download");
                     progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
-
+                        app.Info.isAllowDowanload=true;
                         progress_text.setText("دانلود فایل کامل شد ");
                         ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
                         showImage(holder, position);
-                        app.Info.isAllowDowanload=true;
+
                     } else {
 
                         progress_text.setText(String.format("در حال دانلود  (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
@@ -999,7 +999,7 @@ this.size2=size2;
     private void startDownload() {
 
         if(app.Info.isAllowDowanload=true)
-        {
+        {  app.Info.isAllowDowanload=false;
             Intent intent = new Intent(context, DownloadService.class);
             (context).startService(intent);
         }else

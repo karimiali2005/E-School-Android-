@@ -1,7 +1,6 @@
 package com.hesabischool.hesabiapp.Clases.RecordVoice;
 
 import android.media.AudioRecord;
-
 interface Source {
     AudioRecord audioRecord();
 

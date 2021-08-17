@@ -16,6 +16,7 @@ import com.hesabischool.hesabiapp.viewmodel.vm_upload;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -123,6 +124,7 @@ try{
 	this.exec(create_TablesbYquery(new RoomChatLeftShowResult()));
 	this.exec(create_TablesbYquery(new vm_sendoflinechat()));
 	this.exec(create_TablesbYquery(new vm_upload()));
+	this.exec(create_TablesbYquery(new UserPicViewModel()));
 }catch (Exception ex)
 {
 	throw ex;

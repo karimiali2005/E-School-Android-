@@ -6,7 +6,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public interface PullTransport {
-
+    /**
+     * It starts to pull the {@link PullableSource} and transport it to
+     * {@link OutputStream}
+     *
+     * @param outputStream the OutputStream where we want to transport the pulled audio data.
+     * @throws IOException if there is any problem arise in pulling and transporting
+     */
     void start(OutputStream outputStream) throws IOException;
 
     //It immediately stop pulling PullableSource
@@ -15,9 +21,14 @@ public interface PullTransport {
     //Returns the pullableSource which is used for pulling
     PullableSource pullableSource();
 
-
+    /**
+     * Interface definition for a callback to be invoked when a chunk of audio is pulled from
+     * {@link PullableSource}.
+     */
     interface OnAudioChunkPulledListener {
-
+        /**
+         * Called when {@link PullableSource} is pulled and returned{@link AudioChunk}.
+         */
         void onAudioChunkPulled(AudioChunk audioChunk);
     }
 

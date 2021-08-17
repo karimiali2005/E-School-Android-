@@ -2,14 +2,17 @@ package com.hesabischool.hesabiapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -403,24 +406,29 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         @Override
         public void SetpinMesage(RoomChatLeftShowResult rchatleft) {
-            app.progress.onCreateDialog(context);
-            app.retrofit.retrofit().RoomChatPin(rchatleft.RoomChatGroupID, rchatleft.RoomChatID, true).enqueue(new Callback<GetDataFromServer3>() {
-                @Override
-                public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
-                    app.retrofit.erorRetrofit(response, context);
-                    if (response.isSuccessful()) {
-                        card_pin.setVisibility(View.VISIBLE);
-                        ChatMessage cm = response.body().value;
-                        hesabi_SignalR.sendMessage(cm);
-                        pinMessage(cm);
+            if(app.net.isNetworkConnected(context))
+            {
+                app.progress.onCreateDialog(context);
+                app.retrofit.retrofit().RoomChatPin(rchatleft.RoomChatGroupID, rchatleft.RoomChatID, true).enqueue(new Callback<GetDataFromServer3>() {
+                    @Override
+                    public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
+                        app.retrofit.erorRetrofit(response, context);
+                        if (response.isSuccessful()) {
+                            card_pin.setVisibility(View.VISIBLE);
+                            ChatMessage cm = response.body().value;
+                            hesabi_SignalR.sendMessage(cm);
+                            pinMessage(cm);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<GetDataFromServer3> call, Throwable t) {
-                    app.retrofit.FailRetrofit(t, context);
-                }
-            });
+                    @Override
+                    public void onFailure(Call<GetDataFromServer3> call, Throwable t) {
+                        app.retrofit.FailRetrofit(t, context);
+                    }
+                });
+
+            }
+
         }
 
         @Override
@@ -696,6 +704,9 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     showFileChooser();
                 }
             });
+            ActivityCompat.requestPermissions(DetilsChat.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO},
+                    1);
             RecordeVoice recordeVoice = new RecordeVoice(img_mic, c);
             recordeVoice.run();
             popup();
@@ -711,6 +722,31 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             cancelNotification();
         } catch (Exception ex) {
 
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(context, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 

@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 
 
-
 public interface PullableSource extends Source {
     /**
      * @return number of bytes to be read from @{@link Source}
@@ -97,8 +96,6 @@ public interface PullableSource extends Source {
             isEnableToBePulled(true);
             return audioRecord;
         }
-
-
     }
 
     class NoiseSuppressor extends Base {

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.DetilsChat;
+import com.hesabischool.hesabiapp.ImageCash.ImageLoader;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.viewmodel.vm_checkPage;
@@ -33,11 +34,13 @@ import static com.hesabischool.hesabiapp.Clases.Time.getTimeAgo2;
 
 public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.MyviewHolder> {
     Context context;
+
     public List<RoomChatRightShowResult> vm;
 
     public Adaptor_chatRight(Context context, List<RoomChatRightShowResult> vm) {
         this.context = context;
         this.vm = vm;
+
     }
 
     @NonNull
@@ -99,6 +102,10 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
 
     @Override
     public void onBindViewHolder(@NonNull Adaptor_chatRight.MyviewHolder holder, final int position) {
+
+        ImageLoader  imgLoader;
+        imgLoader = new ImageLoader(context);
+        imgLoader.DisplayPicture(vm.get(position).TeacherID, holder.img_profile);
         if (vm.get(position).MessageNewNumber != 0) {
             holder.txt_badeg.setVisibility(View.VISIBLE);
             if (vm.get(position).MessageNewNumber < 99) {
@@ -123,6 +130,7 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
             }
         }
 
+
         // holder.txt_time.setText(vm.get(position).RoomChatDateString);
         holder.txt_time.setText(getTimeAgo2(vm.get(position).RoomChatDate));
 
@@ -145,6 +153,7 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         TextView txt_namegrupe, txt_lastMessaage, txt_time, txt_badeg;
         CircleImageView img_profile;
         ConstraintLayout constParent;
+
 
         public MyviewHolder(@NonNull View itemView) {
             super(itemView);

@@ -8,8 +8,8 @@ public final class OmRecorder {
 
  /*   public static Recorder pcm(PullTransport pullTransport, File file) {
         return new Pcm(pullTransport, file);
-    }*/
-
+    }
+*/
     public static Recorder wav(PullTransport pullTransport, File file) {
         return new Wav(pullTransport, file);
     }

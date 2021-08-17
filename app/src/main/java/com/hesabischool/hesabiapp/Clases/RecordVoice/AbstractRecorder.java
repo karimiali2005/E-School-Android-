@@ -49,12 +49,10 @@ public abstract class AbstractRecorder implements Recorder {
         return outputStream;
     }
 
-    @Override public File stopRecording() throws IOException {
+    @Override public void stopRecording() throws IOException {
         pullTransport.stop();
         outputStream.flush();
         outputStream.close();
-        return null;
-
     }
 
     @Override public void pauseRecording() {

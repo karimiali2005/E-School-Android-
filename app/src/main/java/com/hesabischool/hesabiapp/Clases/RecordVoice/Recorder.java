@@ -3,10 +3,11 @@ package com.hesabischool.hesabiapp.Clases.RecordVoice;
 import java.io.File;
 import java.io.IOException;
 
+
 public interface Recorder {
     void startRecording();
 
-    File stopRecording() throws IOException;
+    void stopRecording() throws IOException;
 
     void pauseRecording();
 

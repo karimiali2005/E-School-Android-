@@ -2,7 +2,6 @@ package com.hesabischool.hesabiapp.Clases.RecordVoice;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
 public interface AudioChunk {
     double maxAmplitude();
 

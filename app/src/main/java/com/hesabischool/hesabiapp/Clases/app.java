@@ -69,11 +69,12 @@ public class app {
     public static class baseUrl
     {
 
-        public static String signalr ="http://192.168.85.143:4478/chatGroupHub";
-       public static String retrofit ="http://192.168.85.143:4277/";
+        public static String signalr ="http://192.168.201.143:45457/chatGroupHub";
+       //public static String retrofit ="http://192.168.234.143:4277/";
 
-       public static String picurl ="api1/Accounts/GetUserPic";
-      // public static String retrofit ="http://192.168.43.207:45455/";
+     //  public static String picurl ="api1/Accounts/GetUserPic";
+       public static String retrofit ="http://192.168.201.143:45455/";
+       public static String picUrl ="http://192.168.201.143:45459/";
 
         //===========================Karimy================
      //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
