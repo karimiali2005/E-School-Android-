@@ -94,14 +94,20 @@ public class dbQuery {
             for(RoomChatRightShowResult r:rcv.RoomChatRightShowResult)
             {
                 SaveTodatabase_RoomChatRight(r);
-                app.Info.checkpage.callForCheangeMainChat.refresh();
             }
+              app.Info.checkpage.callForCheangeMainChat.refresh();
         }
         if(rcv.RoomLiveShows!=null&&rcv.RoomLiveShows.size()>0)
         {
             for(RoomLiveViewModel r:rcv.RoomLiveShows)
             {
                 //todo save room live show
+                try {
+                   //saveTosqlAddOrUpdate(r,"RoomChatGroupTitle", String.valueOf(r.RoomChatGroupTitle));
+                    saveTosqlAddByDelete(r);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -228,7 +234,7 @@ try {
             String query = "SELECT * FROM "+nametabel+" WHERE "+ where;
             Cursor cu = null;
             cu = db.select(query);
-            if (cu.moveToNext()) {
+            if (cu!=null&&cu.moveToNext()) {
                 //Update
                 db.update(nametabel,values,where);
             }else

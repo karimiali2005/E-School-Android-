@@ -6,8 +6,12 @@ import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer5;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer6;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
 
@@ -97,6 +101,19 @@ Call<GetDataFromServer3> RoomChatLock(@Query("roomChatGroupId") int roomChatGrou
     //===================================Get user Pic Name==================================
     @GET(api + "Accounts/GetUserPic")
     Call<String> GetUserPic(@Query("picName") String picName);
-
+    //======================================RoomChatContact==================================
+    @GET(api + "Member/RoomChatContactShow")
+    Call<GetDataFromServer4> RoomChatContactShow();
+    //========================================RoomChatGroupInsert======================================
+    @POST(api + "Member/RoomChatGroupInsert")
+    Call<Object> RoomChatGroupInsert(@Query("teacherId")int teacherId,@Query("teacherTitle")String teacherTitle);
+//======================================ShowOnlineUser===========================================
+@GET(api + "Member/RoomChatGroupOnlineShow")
+Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int roomChatGroupId);
+//===================================================Forwarde==============================
+@POST(api + "Member/RoomChatForwardUserShow")
+Call<GetDataFromServer6> RoomChatForwardUserShow(@Query("roomChatId")int roomChatId, @Query("roomChatId")int roomChatGroupId);
+@GET(api + "Member/RoomChatForwardSend")
+Call<Object> RoomChatForwardSend(@Query("listId")String listRoomCharGrupeId,@Query("roomChatId")int roomChatId);
 
 }

@@ -37,9 +37,11 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -66,15 +68,23 @@ public class app {
 
 
     }
+    public static <T> List<T> copyList(List<T> source) {
+        List<T> dest = new ArrayList<T>();
+        for (T item : source) { dest.add(item); }
+        return dest;
+    }
     public static class baseUrl
     {
 
-        public static String signalr ="http://192.168.201.143:45457/chatGroupHub";
+        public static String signalr ="http://192.168.157.143:45457/chatGroupHub";
+      //  public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
        //public static String retrofit ="http://192.168.234.143:4277/";
 
      //  public static String picurl ="api1/Accounts/GetUserPic";
-       public static String retrofit ="http://192.168.201.143:45455/";
-       public static String picUrl ="http://192.168.201.143:45459/";
+       public static String retrofit ="http://192.168.157.143:45455/";
+     //  public static String retrofit ="https://api.hesabischool.com/";
+      public static String picUrl ="http://192.168.157.143:45459/";
+     //  public static String picUrl ="https://pic.hesabischool.com/";
 
         //===========================Karimy================
      //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
@@ -261,6 +271,41 @@ public class app {
 
             try{
              //   ImageView img_close=_view.findViewById(R.id.img_close);
+                ImageView img_close = null;
+                img_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        dimos_dialog(alert);
+                    }
+                });
+            }catch (Exception ex)
+            {
+
+            }
+         /*       ImageView img_close=_view.findViewById(R.id.img_close);
+                img_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        dimos_dialog(alert);
+                    }
+                });*/
+
+
+            return alert;
+        }
+        public static AlertDialog show_dialog(final Context context, final View _view,boolean cancel)
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            alertDialogBuilder.setView(_view);
+            final AlertDialog alert = alertDialogBuilder.create();
+            alert.setCancelable(cancel);
+            alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            alert.show();
+
+            try{
+                //   ImageView img_close=_view.findViewById(R.id.img_close);
                 ImageView img_close = null;
                 img_close.setOnClickListener(new View.OnClickListener() {
                     @Override

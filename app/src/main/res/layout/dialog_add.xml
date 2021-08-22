@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@drawable/bg_chat"
+    android:layoutDirection="rtl"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/_35sdp"
+    android:background="@color/colorPrimary"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="چت جدید"
+        android:gravity="center"
+        android:textColor="@color/text_color_w"
+        android:textSize="@dimen/_15sdp"
+        ></TextView>
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp">
+        <EditText
+            android:id="@+id/edt_search"
+           android:paddingBottom="@dimen/_3sdp"
+            android:paddingTop="@dimen/_3sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:paddingLeft="@dimen/_25sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_border"
+            android:hint="جستجو"
+            ></EditText>
+        <ImageView
+            android:paddingLeft="@dimen/_7sdp"
+            android:layout_alignTop="@+id/edt_search"
+            android:layout_alignBottom="@+id/edt_search"
+            android:layout_alignLeft="@+id/edt_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search_black"></ImageView>
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rec_chat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/_10sdp"></androidx.recyclerview.widget.RecyclerView>
+</LinearLayout>

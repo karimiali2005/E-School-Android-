@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedIds"
+    >
+
+    <group
+
+        android:id="@+id/group"
+        android:checkableBehavior="all">
+
+
+         <item
+            android:id="@+id/menu_azmon"
+            android:icon="@drawable/iconly_light_paper_2x"
+            android:title="آزمون" />
+        <item
+            android:id="@+id/menu_taklif"
+            android:icon="@drawable/ic_share"
+            android:title="تکالیف" />
+        <item
+            android:id="@+id/menu_karname"
+            android:icon="@drawable/ic_bookmark"
+            android:title="کارنامه" />
+        <item
+            android:id="@+id/menu_exit"
+            android:icon="@drawable/ic_exit"
+            android:title="خروج" />
+    </group>
+</menu>

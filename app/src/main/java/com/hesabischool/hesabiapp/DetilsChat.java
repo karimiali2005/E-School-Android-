@@ -49,8 +49,12 @@ import com.hesabischool.hesabiapp.Clases.ProgressRequestBody;
 import com.hesabischool.hesabiapp.Clases.RecordVoice.RecordeVoice;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.Clases.hesabi_SignalR;
+import com.hesabischool.hesabiapp.ImageCash.ImageLoader;
 import com.hesabischool.hesabiapp.Interfasces.LayzyLoad;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
+import com.hesabischool.hesabiapp.adaptor.Adaptor_ContentShow;
+import com.hesabischool.hesabiapp.adaptor.Adaptor_ForwardShow;
+import com.hesabischool.hesabiapp.adaptor.Adaptor_OnlineShow;
 import com.hesabischool.hesabiapp.adaptor.Adaptor_chatRight;
 import com.hesabischool.hesabiapp.adaptor.Adaptor_detailsChat;
 import com.hesabischool.hesabiapp.database.dbConnector;
@@ -62,6 +66,12 @@ import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer5;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer6;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatForwardUser;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatGroupOnlineViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
@@ -77,6 +87,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -84,7 +95,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetilsChat extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
-    ImageView img_tag, img_send, img_mic, img_file;
+    ImageView img_tag, img_send, img_mic, img_file,img_tag2;
+    CircleImageView img_profile;
     EditText edt_chat;
     TextView txtnamegrupe;
     ImageView img_more;
@@ -95,6 +107,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     boolean isEdite = false;
     FloatingActionButton fab_down;
     boolean taglearn = false;
+    boolean taglearnFilter = false;
     RecyclerView shimmerRecycler;
     RoomChatRightShowResult rcharright = new RoomChatRightShowResult();
     List<RoomChatLeftShowResult> lvm = new ArrayList<>();
@@ -123,6 +136,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     TextView txt_badeg;
     int pastVisiblesItems = -1;
     public static boolean islock = false;
+    ImageLoader  imgLoader;
     ///
     private int mScreenWidth = 0;
     private int mHeaderItemWidth = 0;
@@ -300,7 +314,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     shimmerRecycler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
 
                             layoutManager.scrollToPosition(postion);
                             ma.select = true;
@@ -614,6 +628,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
             rcharright = app.Info.checkpage.roomchatright;
             img_tag = findViewById(R.id.img_tag);
+            img_tag2 = findViewById(R.id.img_tag2);
+            img_profile = findViewById(R.id.img_profile);
             img_more = findViewById(R.id.img_more);
             txtnamegrupe = findViewById(R.id.txt_hesabi);
             imgrplybox = findViewById(R.id.imgrplybox);
@@ -635,6 +651,61 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             img_unpin = findViewById(R.id.img_unpin);
             rel_message = findViewById(R.id.rel_message);
             SetCurentPage();
+            img_tag2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   // Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                    //todo tag
+                    taglearnFilter=!taglearnFilter;
+                    if(taglearnFilter)
+                    {
+                        img_tag2.setImageResource(R.drawable.lessonb);
+                    }else
+                    {
+                        img_tag2.setImageResource(R.drawable.lessonwm_white);
+
+                    }
+Risave();
+
+                }
+            });
+
+
+            imgLoader = new ImageLoader(context);
+
+            imgLoader.DisplayPicture(rcharright.UserIDPic, img_profile);
+
+img_profile.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+        View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
+        RecyclerView res=vds.findViewById(R.id.rec_chat);
+        EditText edtsearch=vds.findViewById(R.id.edt_search);
+        final List<RoomChatGroupOnlineViewModel>[] vm = new List[]{new ArrayList<>()};
+
+      AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
+
+        app.progress.onCreateDialog(context);
+        app.retrofit.retrofit().RoomChatGroupOnlineShow(rcharright.RoomChatGroupID).enqueue(new Callback<GetDataFromServer5>() {
+            @Override
+            public void onResponse(Call<GetDataFromServer5> call, Response<GetDataFromServer5> response) {
+                app.retrofit.erorRetrofit(response,context);
+                if(response.isSuccessful())
+                {
+                    vm[0] =response.body().value;
+                    SetRecyclerShowContextResualt(res,vm[0],a);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetDataFromServer5> call, Throwable t) {
+app.retrofit.FailRetrofit(t,context);
+            }
+        });
+    }
+});
 
             edt_chat.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -717,6 +788,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         RecordeVoice();
     }
 });*/
+
             Risave();
             pinAndUnpin();
             cancelNotification();
@@ -724,6 +796,22 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         }
     }
+
+    private void SetRecyclerShowContextResualt(RecyclerView r, List<RoomChatGroupOnlineViewModel> vm, AlertDialog aa) {
+
+        r.removeAllViews();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.scrollToPosition(0);
+        r.setLayoutManager(layoutManager);
+        r.setHasFixedSize(true);
+        r.setItemViewCacheSize(20);
+        r.setDrawingCacheEnabled(true);
+        r.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Adaptor_OnlineShow a = new Adaptor_OnlineShow(context, vm,aa);
+        r.setLayoutManager(layoutManager);
+        r.setAdapter(a);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -938,12 +1026,13 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
     private void getpropertyChat() {
         String where = " WHERE roomChatGroupID = " + String.valueOf(rcharright.RoomChatGroupID);
+
         try {
             List<RoomChatLeftPropertyResult> list = new ArrayList<>();
             list = (List<RoomChatLeftPropertyResult>) dq.SelesctListArryWhere(new RoomChatLeftPropertyResult(), where);
             rProperty = list.get(0);
             if (rProperty != null && rProperty.PinRoomChatID != 0) {
-                Toast.makeText(context, String.valueOf(rProperty.PinRoomChatID), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(context, String.valueOf(rProperty.PinRoomChatID), Toast.LENGTH_SHORT).show();
                 ChatMessage cm = new ChatMessage();
                 cm.textChat = rProperty.PinTextChat;
                 cm.roomChatId = rProperty.PinRoomChatID;
@@ -1024,6 +1113,10 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             //  lvm = (List<RoomChatLeftShowResult>) dq.SelesctListOrderByAscndingAndWhereTakeAndOfcet(new RoomChatLeftShowResult(), " roomChatDate", "roomChatGroupID", String.valueOf(rcharright.RoomChatGroupID), take, ofcet);
             String where = " WHERE roomChatGroupID = " + String.valueOf(rcharright.RoomChatGroupID);
             where += " AND roomChatDelete = 0 ";
+            if(taglearnFilter)
+            {
+                where+="AND TagLearn = 1";
+            }
             lvm = (List<RoomChatLeftShowResult>) dq.SelesctListOrderByDesendingAndWhereArryTakeAndOfcet(new RoomChatLeftShowResult(), "roomChatDate", where, take, ofcet);
 
             if (lvm == null || lvm.size() < 1) {

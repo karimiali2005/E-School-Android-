@@ -19,6 +19,7 @@ import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.ImageCash.ImageLoader;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
+import com.hesabischool.hesabiapp.MainChat;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.viewmodel.vm_checkPage;
 import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
@@ -26,6 +27,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,6 +36,7 @@ import static com.hesabischool.hesabiapp.Clases.Time.getTimeAgo2;
 
 public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.MyviewHolder> {
     Context context;
+    ImageLoader  imgLoader;
 
     public List<RoomChatRightShowResult> vm;
 
@@ -99,13 +102,15 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         }
         return -1;
     }
-
+boolean s=false;
     @Override
     public void onBindViewHolder(@NonNull Adaptor_chatRight.MyviewHolder holder, final int position) {
-
-        ImageLoader  imgLoader;
+        MainChat.postionItem=position;
         imgLoader = new ImageLoader(context);
-        imgLoader.DisplayPicture(vm.get(position).TeacherID, holder.img_profile);
+
+        imgLoader.DisplayPicture(vm.get(position).UserIDPic, holder.img_profile);
+
+
         if (vm.get(position).MessageNewNumber != 0) {
             holder.txt_badeg.setVisibility(View.VISIBLE);
             if (vm.get(position).MessageNewNumber < 99) {
@@ -118,17 +123,68 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
         }
         //Todo if For homeWork
         holder.txt_namegrupe.setText(vm.get(position).RoomChatTitle);
-        if (!app.check.EpmtyOrNull(vm.get(position).TextChat)) {
+      //  if (!app.check.EpmtyOrNull(vm.get(position).TextChat)) {
             String value = vm.get(position).TextChat;
-            if (value.equals("null"))
+            if (app.check.EpmtyOrNull(value)|| value.equals("null"))
             {
-                holder.txt_lastMessaage.setText("رسانه");
+                List<String> mime_types_images = new ArrayList<>();
+                mime_types_images.add("image/jpeg");
+                mime_types_images.add("image/jpg");
+                mime_types_images.add("image/png");
+                mime_types_images.add("image/gif");
+
+                List<String> mime_types_audios = new ArrayList<>();
+                mime_types_audios.add("audio/wav");
+                mime_types_audios.add("audio/mp3");
+                mime_types_audios.add("audio/ogg");
+                mime_types_audios.add("audio/mpeg");
+                mime_types_audios.add("audio/mp4");
+                mime_types_audios.add("audio/aac");
+                mime_types_audios.add("video/ogg");
+
+
+                List<String> mime_types_videos = new ArrayList<>();
+                mime_types_videos.add("video/mp4");
+                mime_types_videos.add("video/webm");
+                mime_types_videos.add("video/quicktime");
+
+                if (mime_types_images.indexOf(vm.get(position).Mimetype) >= 0) {
+                    //todo Image
+                    String KindFile="";
+                    KindFile="تصویر";
+                    holder.txt_lastMessaage.setText(KindFile);
+                } else if (mime_types_audios.indexOf(vm.get(position).Mimetype) >= 0) {//audio
+                  //todo music
+                    String KindFile="";
+                    KindFile="صدا";
+                    holder.txt_lastMessaage.setText(KindFile);
+//End Audeo
+                } else if (mime_types_videos.indexOf(vm.get(position).Mimetype) >= 0) {
+                   //todo video
+                    String KindFile="";
+                    KindFile="ویدئو";
+                    holder.txt_lastMessaage.setText(KindFile);
+                }else if(app.check.EpmtyOrNull(vm.get(position).Mimetype)|| vm.get(position).Mimetype.equals("null"))
+                {
+                    String KindFile="";
+
+                    holder.txt_lastMessaage.setText(KindFile);
+                }
+                else {
+                    //todo For unkonw File
+                    String KindFile="";
+                    KindFile="فایل";
+                    holder.txt_lastMessaage.setText(KindFile);
+                }
+
+
+
 
             }else {
 
                 holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));
             }
-        }
+    //    }
 
 
         // holder.txt_time.setText(vm.get(position).RoomChatDateString);

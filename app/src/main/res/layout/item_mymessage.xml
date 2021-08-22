@@ -59,7 +59,7 @@
                 android:paddingEnd="@dimen/_3sdp"
                 android:paddingTop="@dimen/_3sdp"
                 android:paddingBottom="@dimen/_3sdp"
-                android:layout_height="@dimen/_35sdp">
+                android:layout_height="wrap_content">
                 <TextView
                     android:singleLine="true"
                     android:id="@+id/txtparentname"
@@ -74,6 +74,7 @@
                 <TextView
                     android:singleLine="true"
                     android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_below="@+id/txtparentname"
                     android:id="@+id/txt_sumrytextparents"
                     android:layout_marginRight="@dimen/_6sdp"

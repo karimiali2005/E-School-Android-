@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
+    android:id="@+id/drawer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,6 +14,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="false">
         <RelativeLayout
+
     android:id="@+id/rel_toolbar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_40sdp"
@@ -41,6 +43,7 @@
                     android:textSize="@dimen/_7sdp"></TextView>
             </LinearLayout>
     <ImageView
+        android:id="@+id/ic_menu"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
@@ -61,10 +64,57 @@
     android:layout_alignParentLeft="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-
+<ImageView
+    android:id="@+id/img_search"
+    android:layout_marginLeft="@dimen/_3sdp"
+    android:layout_marginRight="@dimen/_3sdp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_search"></ImageView>
+    <ImageView
+        android:id="@+id/img_add"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_3sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"></ImageView>
+    <ImageView
+        android:id="@+id/img_live"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginRight="@dimen/_3sdp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_live_streaming"></ImageView>
 </LinearLayout>
 </RelativeLayout>
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/rel_searchbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@color/colorPrimary"
+            >
+           <EditText
+               android:layout_marginLeft="@dimen/_25sdp"
+               android:layout_marginRight="@dimen/_10sdp"
+               android:singleLine="true"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:hint="جستجوکنید"
+               android:id="@+id/edt_search"
+
+               ></EditText>
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_alignTop="@+id/edt_search"
+                android:layout_alignBottom="@+id/edt_search"
+                android:layout_width="@dimen/_25sdp"
+                android:layout_height="@dimen/_25sdp"
+                android:src="@drawable/ic_baseline_arrow_back_ios_24"></ImageView>
+        </RelativeLayout>
 <androidx.recyclerview.widget.RecyclerView
+    android:scrollbars="vertical"
     android:id="@+id/rec_chat"
     android:layout_marginTop="@dimen/_45sdp"
     android:layout_width="match_parent"
@@ -82,11 +132,13 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
+        android:layoutDirection="rtl"
         android:id="@+id/nav"
       android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="end"
         app:headerLayout="@layout/headermenubar"
+app:menu="@menu/menu_main"
         />
 
 </androidx.drawerlayout.widget.DrawerLayout>

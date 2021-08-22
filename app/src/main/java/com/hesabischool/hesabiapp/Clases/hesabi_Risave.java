@@ -19,11 +19,11 @@ public class hesabi_Risave {
         db=new dbConnector(context);
     }
     public void GetdateFromServerFirst() {
-        app.linProgress.showProgress(context,"درحال بررسی ....");
+       // app.linProgress.showProgress(context,"درحال بررسی ....");
         ((Activity) context).runOnUiThread(new Runnable() {
             public void run() {
                 try {
-                    Toast.makeText(context, "ServiceRun", Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(context, "ServiceRun", Toast.LENGTH_SHORT).show();
                     if (app.net.isNetworkConnected(context)) {
                         try {
                             app.retrofit.retrofit().RoomChatRight().enqueue(new Callback<GetDataFromServer>() {

@@ -35,13 +35,17 @@
                 android:textColor="@color/text_color_w"
                 android:textSize="@dimen/_7sdp"></TextView>
         </LinearLayout>
-        <ImageView
-            android:id="@+id/imh_hamberger"
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_menu"></ImageView>
+            android:id="@+id/img_profile"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:src="@color/mdtp_transparent_black"
+            ></de.hdodenhof.circleimageview.CircleImageView>
         <TextView
             android:id="@+id/txt_hesabi"
             android:layout_width="wrap_content"
@@ -51,7 +55,7 @@
             android:textColor="@color/text_color_w"
            android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/_5sdp"
-          android:layout_toLeftOf="@+id/imh_hamberger"
+          android:layout_toLeftOf="@+id/img_profile"
             ></TextView>
         <LinearLayout
             android:layoutDirection="ltr"

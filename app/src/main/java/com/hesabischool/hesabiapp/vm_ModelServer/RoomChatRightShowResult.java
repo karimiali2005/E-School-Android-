@@ -29,4 +29,11 @@ public class RoomChatRightShowResult {
     public int HomeWorkNewNumber ;
     @SerializedName("picName")
     public String PicName ;
+    @SerializedName("mimetype")
+    public String Mimetype ;
+    @SerializedName("userIDPic")
+    public int UserIDPic ;
+
+    public RoomChatRightShowResult() {
+    }
 }

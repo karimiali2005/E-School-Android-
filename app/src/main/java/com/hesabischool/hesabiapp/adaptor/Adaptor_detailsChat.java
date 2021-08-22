@@ -20,12 +20,15 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -40,6 +43,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -53,6 +57,8 @@ import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.ForgerunadService.DownloadService;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
 import com.hesabischool.hesabiapp.viewmodel.vm_upload;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer6;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatForwardUser;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 
@@ -62,6 +68,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -373,6 +383,63 @@ this.size2=size2;
                 else if (menuItem.getTitle().equals("ارسال")) {
                     //Forward
                     //todo Forward messsage
+                    if(app.net.CheckCommunication(context))
+                    {
+                        //todo goto get list
+                        View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
+                        RecyclerView res=vds.findViewById(R.id.rec_chat);
+                        EditText edtsearch=vds.findViewById(R.id.edt_search);
+                        final List<RoomChatForwardUser>[] vm2 = new List[]{new ArrayList<>()};
+                        AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
+                        edtsearch.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+
+                                List<RoomChatForwardUser> _vm = new ArrayList<>();
+                                for(RoomChatForwardUser item:vm2[0])
+                                {
+                                    if(item.GroupTitle.contains(editable.toString()))
+                                    {
+                                        _vm.add(item);
+                                    }
+
+                                }
+                                SetRecyclerShowForwardContextResualt(res,_vm,a);
+
+                            }
+                        });
+
+                        app.progress.onCreateDialog(context);
+                        app.retrofit.retrofit().RoomChatForwardUserShow(lvm.RoomID,lvm.RoomChatGroupID).enqueue(new Callback<GetDataFromServer6>() {
+                            @Override
+                            public void onResponse(Call<GetDataFromServer6> call, Response<GetDataFromServer6> response) {
+                                app.retrofit.erorRetrofit(response,context);
+                                if(response.isSuccessful())
+                                {
+                                    vm2[0] =response.body().value;
+                                    SetRecyclerShowForwardContextResualt(res,vm2[0],a);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<GetDataFromServer6> call, Throwable t) {
+                                app.retrofit.FailRetrofit(t,context);
+                            }
+                        });
+
+
+
+                    }
                 }
                 else if (menuItem.getTitle().equals("سنجاق")) {
                     //pin
@@ -384,6 +451,21 @@ this.size2=size2;
         });
         menu.show();
 
+    }
+
+    private void SetRecyclerShowForwardContextResualt(RecyclerView r, List<RoomChatForwardUser> vm, AlertDialog aa) {
+
+        r.removeAllViews();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.scrollToPosition(0);
+        r.setLayoutManager(layoutManager);
+        r.setHasFixedSize(true);
+        r.setItemViewCacheSize(20);
+        r.setDrawingCacheEnabled(true);
+        r.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        Adaptor_ForwardShow a = new Adaptor_ForwardShow(context, vm,aa);
+        r.setLayoutManager(layoutManager);
+        r.setAdapter(a);
     }
 
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -131,6 +132,9 @@ public class hesabi_fireBase extends FirebaseMessagingService {
     }
 
     private void notifi_when_app_run(String json) {
+
+       // Toast.makeText(context, "FireBasww", Toast.LENGTH_SHORT).show();
+        
         Gson gson2 = new Gson();
 
         Type listtype=new TypeToken<ChatMessage>(){}.getType();

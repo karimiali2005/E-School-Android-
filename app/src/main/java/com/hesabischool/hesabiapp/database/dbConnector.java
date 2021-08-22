@@ -16,6 +16,7 @@ import com.hesabischool.hesabiapp.viewmodel.vm_upload;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomLiveViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
 
 import java.io.File;
@@ -125,6 +126,7 @@ try{
 	this.exec(create_TablesbYquery(new vm_sendoflinechat()));
 	this.exec(create_TablesbYquery(new vm_upload()));
 	this.exec(create_TablesbYquery(new UserPicViewModel()));
+	this.exec(create_TablesbYquery(new RoomLiveViewModel()));
 }catch (Exception ex)
 {
 	throw ex;
@@ -163,6 +165,17 @@ try{
 
 
 	}
+	public void DeleteValueAllTable()
+	{
+		delete_Tables("User");
+		delete_TablesbYquery(new RoomChatRightShowResult());
+		delete_TablesbYquery(new RoomLiveViewModel());
+		delete_TablesbYquery(new RoomChatLeftPropertyResult());
+		delete_TablesbYquery(new RoomChatLeftShowResult());
+		delete_TablesbYquery(new vm_sendoflinechat());
+		delete_TablesbYquery(new vm_upload());
+		delete_TablesbYquery(new UserPicViewModel());
+	}
 	private <T> String create_TablesbYquery(T c)
 	{
 
@@ -190,6 +203,14 @@ try{
 		}
 	qery+=");";
 		return qery;
+	}
+	private <T> String delete_TablesbYquery(T c)
+	{
+
+		String nametabel =c.getClass().getSimpleName();
+		String query ="delete from "+nametabel;
+		this.exec(query);
+		return null;
 	}
 	public void  drop_Tables(String table)	{
 		//Drop Table

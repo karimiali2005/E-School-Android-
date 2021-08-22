@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class ImageLoader {
     int stub_id= R.drawable.ic_launcher_background;
     String urlGetName = app.baseUrl.picUrl + "GetUserPicName"+"?userId=";
     String urlGetPic = app.baseUrl.picUrl + "GetUserPic"+"?userId=";
-
+    ArrayList<Integer> cashimage=new ArrayList<Integer>();
     public void DisplayPicture(int userId , CircleImageView imageView)
     {
         urlGetName=urlGetName+userId;
@@ -72,6 +73,9 @@ public class ImageLoader {
         _imageView=imageView;
         _userProfileId=userId;
         ReceiveUserPicName();
+    }
+    private int getCategoryPos(int category) {
+        return cashimage.indexOf(category);
     }
 
     public void DisplayImage( ImageView imageView)
@@ -235,6 +239,13 @@ public class ImageLoader {
 
     //region ReceiveUserPicName
     private void ReceiveUserPicName() {
+        int value=getCategoryPos(_userProfileId);
+        if(value>=0)
+        {
+          //  DisplayImage(_imageView);
+        }else
+        {
+
         if (isNetworkConnected()) {
             Receive();
             /*final Receive receive = new Receive();
@@ -243,6 +254,8 @@ public class ImageLoader {
         else
         {
             DisplayImage(_imageView);
+        }
+         cashimage.add(_userProfileId);
         }
 
     }
