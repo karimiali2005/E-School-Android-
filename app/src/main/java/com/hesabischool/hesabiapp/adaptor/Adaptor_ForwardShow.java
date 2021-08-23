@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +44,7 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
     @NonNull
     @Override
     public Adaptor_ForwardShow.MyviewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_chat, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_forward, viewGroup, false);
         return new Adaptor_ForwardShow.MyviewHolder(view);
     }
 
@@ -54,6 +56,19 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
         holder.txt_badeg.setVisibility(View.GONE);
         holder.txt_time.setVisibility(View.GONE);
         holder.txt_namegrupe.setText(vm.get(position).GroupTitle);
+        holder.ch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if(b)
+                {
+                    app.Info.forwardList.add(vm.get(position).GroupID);
+                }else
+                {
+                    app.Info.forwardList.remove(vm.get(position).GroupID);
+                }
+            }
+        });
 
     }
 
@@ -66,6 +81,7 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
         TextView txt_namegrupe, txt_lastMessaage, txt_time, txt_badeg;
         CircleImageView img_profile;
         ConstraintLayout constParent;
+        CheckBox ch;
         public MyviewHolder(@NonNull View itemView) {
             super(itemView);
             txt_namegrupe = itemView.findViewById(R.id.txt_namegrupe);
@@ -74,6 +90,7 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
             txt_badeg = itemView.findViewById(R.id.txt_badeg);
             img_profile = itemView.findViewById(R.id.img_profile);
             constParent = itemView.findViewById(R.id.constParent);
+            ch = itemView.findViewById(R.id.ch);
         }
     }
 }

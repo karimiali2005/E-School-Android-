@@ -385,12 +385,59 @@ this.size2=size2;
                     //todo Forward messsage
                     if(app.net.CheckCommunication(context))
                     {
+                        app.Info.forwardList=new ArrayList<>();
                         //todo goto get list
-                        View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
+                        View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_forward);
+                        AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
                         RecyclerView res=vds.findViewById(R.id.rec_chat);
                         EditText edtsearch=vds.findViewById(R.id.edt_search);
+                        Button btnsend=vds.findViewById(R.id.btn_send);
+                        ImageView img_close=vds.findViewById(R.id.img_close);
+btnsend.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        if(app.Info.forwardList!=null&&app.Info.forwardList.size()>0)
+        {
+            String listitem="";
+            for (int item:app.Info.forwardList)
+            {
+                listitem+=String.valueOf(item)+",";
+            }
+            app.progress.onCreateDialog(context);
+            app.retrofit.retrofit().RoomChatForwardSend(listitem,lvm.RoomChatID).enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    app.retrofit.erorRetrofit(response,context);
+                    if(response.isSuccessful())
+                    {
+                        Toast.makeText(context, "با موفقیت ارسال شد", Toast.LENGTH_SHORT).show();
+                        app.Dialog_.dimos_dialog(a);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+app.retrofit.FailRetrofit(t,context);
+                }
+            });
+        }
+        else
+        {
+            Toast.makeText(context, "هیچ موردی برای ارسال انتخاب نشده است ", Toast.LENGTH_SHORT).show();
+        }
+    }
+});
                         final List<RoomChatForwardUser>[] vm2 = new List[]{new ArrayList<>()};
-                        AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
+
+                        img_close.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                app.Dialog_.dimos_dialog(a);
+                            }
+                        });
+
+
                         edtsearch.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

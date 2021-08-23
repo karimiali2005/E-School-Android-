@@ -27,6 +27,7 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -96,8 +97,12 @@ import retrofit2.Response;
 
 public class DetilsChat extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
     ImageView img_tag, img_send, img_mic, img_file,img_tag2;
+    RelativeLayout rel_searchbar;
+    RelativeLayout rel_toolbar;
     CircleImageView img_profile;
+    ImageView img_back;
     EditText edt_chat;
+    EditText edt_search;
     TextView txtnamegrupe;
     ImageView img_more;
     ImageView img_lock;
@@ -532,11 +537,50 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         } else if (menuItem.getTitle().equals(menu.getMenu().getItem(1).getTitle())) {
                             //Edite
 
-                        } else if (menuItem.getTitle().equals(menu.getMenu().getItem(2).getTitle())) {
-                            //Delete
+                        }
+                        else if (menuItem.getTitle().equals("جستجو")) {
+                            //Search
+                            edt_search.setText("");
+                            rel_searchbar.setVisibility(View.VISIBLE);
+                            rel_toolbar.setVisibility(View.GONE);
+                            edt_search.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                        } else if (menuItem.getTitle().equals(menu.getMenu().getItem(3).getTitle())) {
-                            //Forward
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable editable) {
+
+                                    try {
+                                        String where= " WHERE RoomChatGroupID = " + String.valueOf(rcharright.RoomChatGroupID);
+                                        where += " AND TextChat LIKE "+"'%"+editable.toString()+"%'";
+                                        List<RoomChatLeftShowResult> vm = (List<RoomChatLeftShowResult>) dq.SelesctListArryWhere(new RoomChatLeftShowResult(),where);
+ if(vm!=null&&vm.size()>0)
+ {
+     c.gotoPostionItem(vm.get(0).RoomChatID);
+ }else
+ {
+     Toast.makeText(context, "نتیجه ای یافت نشد...", Toast.LENGTH_SHORT).show();
+ }
+
+
+
+                                    } catch (ClassNotFoundException e) {
+                                        e.printStackTrace();
+                                    } catch (IllegalAccessException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                            });
+
                         }
 
                         return false;
@@ -620,6 +664,11 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         setContentView(R.layout.activity_detils_chat);
 
         context = this;
+        rel_searchbar=findViewById(R.id.rel_searchbar);
+        rel_toolbar=findViewById(R.id.rel_toolbar);
+        edt_search=findViewById(R.id.edt_search);
+        img_back=findViewById(R.id.img_back);
+
         try {
             dq = new dbQuerySelect(context);
             db = new dbConnector(context);
@@ -675,6 +724,15 @@ Risave();
 
             imgLoader.DisplayPicture(rcharright.UserIDPic, img_profile);
 
+            img_back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "click", Toast.LENGTH_SHORT).show();
+                    edt_search.setText("");
+                    rel_toolbar.setVisibility(View.VISIBLE);
+                    rel_searchbar.setVisibility(View.GONE);
+                }
+            });
 img_profile.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
