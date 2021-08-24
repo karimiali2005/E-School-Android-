@@ -17,6 +17,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -24,6 +25,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
@@ -108,8 +110,9 @@ Call<GetDataFromServer3> RoomChatLock(@Query("roomChatGroupId") int roomChatGrou
     @POST(api + "Member/RoomChatGroupInsert")
     Call<Object> RoomChatGroupInsert(@Query("teacherId")int teacherId,@Query("teacherTitle")String teacherTitle);
 //======================================ShowOnlineUser===========================================
+
 @GET(api + "Member/RoomChatGroupOnlineShow")
-Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int roomChatGroupId);
+Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int roomChatGroupId,@Query("userListOnline") List<Double> userListOnline);
 //===================================================Forwarde==============================
 @POST(api + "Member/RoomChatForwardUserShow")
 Call<GetDataFromServer6> RoomChatForwardUserShow(@Query("roomChatId")int roomChatId, @Query("roomChatGroupId")int roomChatGroupId);

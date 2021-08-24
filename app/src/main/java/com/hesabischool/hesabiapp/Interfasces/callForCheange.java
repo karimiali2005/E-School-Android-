@@ -7,6 +7,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 
 import java.io.File;
+import java.util.Map;
 
 public interface callForCheange {
     public void updateMessage(int oldroomChatd,RoomChatLeftShowResult newr);
@@ -27,4 +28,5 @@ public interface callForCheange {
 public void setLockAndUnLock(ChatMessage chatMessage,boolean _islock);
 public void setCountNewMessage();
     public void ToastMessage(String message,boolean isshow);
+    public void GetUserOnlineShow(Map<String, Integer> meta);
 }

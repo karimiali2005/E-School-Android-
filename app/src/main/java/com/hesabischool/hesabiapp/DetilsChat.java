@@ -82,10 +82,14 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -96,6 +100,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetilsChat extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
+    TextView txt_postion,txt_des;
+    ImageView img_next,img_pre;
+    RelativeLayout rel_searchdes;
     ImageView img_tag, img_send, img_mic, img_file,img_tag2;
     RelativeLayout rel_searchbar;
     RelativeLayout rel_toolbar;
@@ -516,8 +523,60 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             });
         }
 
+        @Override
+        public void GetUserOnlineShow(Map<String, Integer> meta) {
+
+           ShowDialogOnlineUser(meta);
+        }
+
 
     };
+
+    private void ShowDialogOnlineUser(Map<String, Integer> meta) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
+                RecyclerView res=vds.findViewById(R.id.rec_chat);
+                EditText edtsearch=vds.findViewById(R.id.edt_search);
+                final List<RoomChatGroupOnlineViewModel>[] vm = new List[]{new ArrayList<>()};
+
+                AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
+                List<Double> itemvalue=new ArrayList<>();
+
+
+for (int i=0;i<meta.size();i++)
+{
+    Object myKey = meta.keySet().toArray()[i];
+    Object myValue = meta.get(myKey);
+    Double ss= (Double) myValue;
+    itemvalue.add(ss);
+    int y=0;
+ //itemvalue.add((Integer) meta.values().toArray()[i]);
+
+}
+                app.progress.onCreateDialog(context);
+                app.retrofit.retrofit().RoomChatGroupOnlineShow(rcharright.RoomChatGroupID, itemvalue).enqueue(new Callback<GetDataFromServer5>() {
+                    @Override
+                    public void onResponse(Call<GetDataFromServer5> call, Response<GetDataFromServer5> response) {
+                        app.retrofit.erorRetrofit(response,context);
+                        if(response.isSuccessful())
+                        {
+                            vm[0] =response.body().value;
+                            SetRecyclerShowContextResualt(res,vm[0],a);
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GetDataFromServer5> call, Throwable t) {
+                        app.retrofit.FailRetrofit(t,context);
+                    }
+                });
+            }
+        });
+
+
+    }
 
     private void popup() {
         img_more.setOnClickListener(new View.OnClickListener() {
@@ -543,6 +602,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                             edt_search.setText("");
                             rel_searchbar.setVisibility(View.VISIBLE);
                             rel_toolbar.setVisibility(View.GONE);
+
                             edt_search.addTextChangedListener(new TextWatcher() {
                                 @Override
                                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -562,10 +622,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                                         where += " AND TextChat LIKE "+"'%"+editable.toString()+"%'";
                                         List<RoomChatLeftShowResult> vm = (List<RoomChatLeftShowResult>) dq.SelesctListArryWhere(new RoomChatLeftShowResult(),where);
  if(vm!=null&&vm.size()>0)
- {
-     c.gotoPostionItem(vm.get(0).RoomChatID);
+ {rel_searchdes.setVisibility(View.VISIBLE);
+           String resultvalue=String.valueOf(vm.size())+" مورد یافت شد " ;
+           txt_des.setText(resultvalue);
+            ResultSerachAction(vm,vm.size(),0);
+            c.gotoPostionItem(vm.get(0).RoomChatID);
  }else
  {
+     rel_searchdes.setVisibility(View.GONE);
      Toast.makeText(context, "نتیجه ای یافت نشد...", Toast.LENGTH_SHORT).show();
  }
 
@@ -589,6 +653,56 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                 menu.show();
             }
         });
+
+    }
+
+    private void ResultSerachAction(List<RoomChatLeftShowResult> vm,int totalSize, int index) {
+        if(index==0)
+        {
+
+            img_pre.setVisibility(View.INVISIBLE);
+        }else  if(totalSize>1)
+        {
+            img_pre.setVisibility(View.VISIBLE);
+        }
+
+        if(index==totalSize-1)
+        {
+            img_next.setVisibility(View.INVISIBLE);
+        }else  if(totalSize>1)
+        {
+            img_next.setVisibility(View.VISIBLE);
+        }
+
+        c.gotoPostionItem(index);
+
+        img_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int i=index+1;
+                if(i==totalSize-1)
+                {
+                    img_next.setVisibility(View.INVISIBLE);
+                }
+                c.gotoPostionItem(vm.get(i).RoomChatID);
+                ResultSerachAction(vm,totalSize,i);
+            }
+        });
+
+        img_pre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int i=index-1;
+                if(i==0)
+                {
+                    img_pre.setVisibility(View.INVISIBLE);
+                }
+                c.gotoPostionItem(vm.get(i).RoomChatID);
+                ResultSerachAction(vm,totalSize,i);
+            }
+        });
+
+        txt_postion.setText(String.valueOf(index+1));
 
     }
 
@@ -668,6 +782,11 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         rel_toolbar=findViewById(R.id.rel_toolbar);
         edt_search=findViewById(R.id.edt_search);
         img_back=findViewById(R.id.img_back);
+        txt_des=findViewById(R.id.txt_des);
+        txt_postion=findViewById(R.id.txt_postion);
+        img_next=findViewById(R.id.img_next);
+        img_pre=findViewById(R.id.img_pre);
+        rel_searchdes=findViewById(R.id.rel_searchdes);
 
         try {
             dq = new dbQuerySelect(context);
@@ -731,37 +850,14 @@ Risave();
                     edt_search.setText("");
                     rel_toolbar.setVisibility(View.VISIBLE);
                     rel_searchbar.setVisibility(View.GONE);
+                    rel_searchdes.setVisibility(View.GONE);
                 }
             });
 img_profile.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
-        Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
-        View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
-        RecyclerView res=vds.findViewById(R.id.rec_chat);
-        EditText edtsearch=vds.findViewById(R.id.edt_search);
-        final List<RoomChatGroupOnlineViewModel>[] vm = new List[]{new ArrayList<>()};
+        hesabi_SignalR.GetOnlineUser();
 
-      AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
-
-        app.progress.onCreateDialog(context);
-        app.retrofit.retrofit().RoomChatGroupOnlineShow(rcharright.RoomChatGroupID).enqueue(new Callback<GetDataFromServer5>() {
-            @Override
-            public void onResponse(Call<GetDataFromServer5> call, Response<GetDataFromServer5> response) {
-                app.retrofit.erorRetrofit(response,context);
-                if(response.isSuccessful())
-                {
-                    vm[0] =response.body().value;
-                    SetRecyclerShowContextResualt(res,vm[0],a);
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetDataFromServer5> call, Throwable t) {
-app.retrofit.FailRetrofit(t,context);
-            }
-        });
     }
 });
 

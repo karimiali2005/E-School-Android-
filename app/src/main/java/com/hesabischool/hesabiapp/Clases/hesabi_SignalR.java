@@ -13,6 +13,9 @@ import com.microsoft.signalr.HubConnectionBuilder;
 import com.microsoft.signalr.HubConnectionState;
 import com.microsoft.signalr.OnClosedCallback;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.Disposable;
 import retrofit2.Call;
@@ -54,6 +57,13 @@ dbConnector db;
 
 
         }, ChatMessage.class, String.class);
+
+        Map<String,Integer> map =  new HashMap<String,Integer>();
+        hubConnection.on("ReceiveMessageAdmin", (chatMessage) -> {
+            String h_cID = hubConnection.getConnectionId();
+            app.Info.checkpage.callForCheange.GetUserOnlineShow(chatMessage);
+
+        }, map.getClass());
     }
 
     private void Calculating(ChatMessage chatMessage) {
@@ -68,7 +78,7 @@ dbConnector db;
                     break;
             }
         }
-        else if (app.Info.checkpage.curentActivity.equals("DetilsChat")) {
+            else if (app.Info.checkpage.curentActivity.equals("DetilsChat")) {
             if (app.Info.checkpage.roomchatright.RoomChatGroupID == chatMessage.groupId) {
                 switch (chatMessage.chatType) {
                     case "C":
@@ -211,6 +221,14 @@ dbConnector db;
         if (hubConnection != null) {
             if (hubConnection.getConnectionState() == HubConnectionState.CONNECTED) {
                 hubConnection.invoke("SendMessage", chatMessage);
+            }
+        }
+    }
+    public static void GetOnlineUser() {
+        //  hubConnection.send("SendMessage",chatMessage);
+        if (hubConnection != null) {
+            if (hubConnection.getConnectionState() == HubConnectionState.CONNECTED) {
+                hubConnection.invoke("GetUserOnlineHub");
             }
         }
     }

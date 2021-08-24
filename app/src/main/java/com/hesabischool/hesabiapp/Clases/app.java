@@ -77,14 +77,14 @@ public class app {
     public static class baseUrl
     {
 
-        public static String signalr ="http://192.168.153.143:45457/chatGroupHub";
+        public static String signalr ="http://192.168.80.143:45457/chatGroupHub";
     //    public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
        //public static String retrofit ="http://192.168.234.143:4277/";
 
      //  public static String picurl ="api1/Accounts/GetUserPic";
-       public static String retrofit ="http://192.168.153.143:45455/";
+       public static String retrofit ="http://192.168.80.143:45455/";
       // public static String retrofit ="https://api.hesabischool.com/";
-      public static String picUrl ="http://192.168.153.143:45459/";
+      public static String picUrl ="http://192.168.80.143:45459/";
      //  public static String picUrl ="https://pic.hesabischool.com/";
 
         //===========================Karimy================
