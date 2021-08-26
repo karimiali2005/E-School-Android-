@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,52 +38,61 @@ public class Adaptor_OnlineShow extends RecyclerView.Adapter<Adaptor_OnlineShow.
         this.context = context;
         this.vm = vm;
         this.alertDialog=alertDialog;
-        imgLoader = new ImageLoader(context);
+
     }
 
     @NonNull
     @Override
     public Adaptor_OnlineShow.MyviewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_chat, viewGroup, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_forward, viewGroup, false);
         return new Adaptor_OnlineShow.MyviewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Adaptor_OnlineShow.MyviewHolder holder, int position) {
 
-
+        imgLoader = new ImageLoader(context);
         imgLoader.DisplayPicture(vm.get(position).UserID, holder.img_profile);
-        holder.txt_badeg.setVisibility(View.GONE);
-        holder.txt_time.setVisibility(View.GONE);
-        holder.txt_namegrupe.setText(vm.get(position).FullName);
-        holder.constParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              //  app.Info.checkpage.roomchatright = vm.get(position);
-              //  Intent i = new Intent(context, DetilsChat.class);
-              //  context.startActivity(i);
-                app.progress.onCreateDialog(context);
-            app.retrofit.retrofit().RoomChatGroupInsert(vm.get(position).UserID,vm.get(position).FullName).enqueue(new Callback<Object>() {
-                @Override
-                public void onResponse(Call<Object> call, Response<Object> response) {
-                    app.retrofit.erorRetrofit(response,context);
-                    if(response.isSuccessful())
-                    {
-                        app.Dialog_.dimos_dialog(alertDialog);
-                        Toast.makeText(context, "با موفقیت انجام گردید", Toast.LENGTH_SHORT).show();
-                      //  app.Info.checkpage.roomchatright = vm.get(position);
-                       // Intent i = new Intent(context, DetilsChat.class);
-                      //  context.startActivity(i);
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<Object> call, Throwable t) {
-app.retrofit.FailRetrofit(t,context);
-                }
-            });
-            }
-        });
+    if(vm.get(position).IsOnline)
+    {
+    holder.img_online.setImageResource(R.drawable.shape_online);
+    }
+    else
+    {
+        holder.img_online.setImageResource(R.drawable.shape_ofline);
+
+    }
+
+        holder.txt_namegrupe.setText(vm.get(position).FullName);
+//        holder.constParent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//              //  app.Info.checkpage.roomchatright = vm.get(position);
+//              //  Intent i = new Intent(context, DetilsChat.class);
+//              //  context.startActivity(i);
+//                app.progress.onCreateDialog(context);
+//            app.retrofit.retrofit().RoomChatGroupInsert(vm.get(position).UserID,vm.get(position).FullName).enqueue(new Callback<Object>() {
+//                @Override
+//                public void onResponse(Call<Object> call, Response<Object> response) {
+//                    app.retrofit.erorRetrofit(response,context);
+//                    if(response.isSuccessful())
+//                    {
+//                        app.Dialog_.dimos_dialog(alertDialog);
+//                        Toast.makeText(context, "با موفقیت انجام گردید", Toast.LENGTH_SHORT).show();
+//                      //  app.Info.checkpage.roomchatright = vm.get(position);
+//                       // Intent i = new Intent(context, DetilsChat.class);
+//                      //  context.startActivity(i);
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Object> call, Throwable t) {
+//app.retrofit.FailRetrofit(t,context);
+//                }
+//            });
+//            }
+//        });
     }
 
     @Override
@@ -93,6 +104,8 @@ app.retrofit.FailRetrofit(t,context);
         TextView txt_namegrupe, txt_lastMessaage, txt_time, txt_badeg;
         CircleImageView img_profile;
         ConstraintLayout constParent;
+        CheckBox ch;
+        ImageView img_online;
         public MyviewHolder(@NonNull View itemView) {
             super(itemView);
             txt_namegrupe = itemView.findViewById(R.id.txt_namegrupe);
@@ -101,6 +114,11 @@ app.retrofit.FailRetrofit(t,context);
             txt_badeg = itemView.findViewById(R.id.txt_badeg);
             img_profile = itemView.findViewById(R.id.img_profile);
             constParent = itemView.findViewById(R.id.constParent);
+            img_online = itemView.findViewById(R.id.img_online);
+            ch = itemView.findViewById(R.id.ch);
+            ch.setVisibility(View.GONE);
+            img_online.setVisibility(View.VISIBLE);
+
         }
     }
 }

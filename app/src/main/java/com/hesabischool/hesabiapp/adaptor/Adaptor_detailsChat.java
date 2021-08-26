@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -263,7 +264,9 @@ this.size2=size2;
                     gotodowanloadfile_Image(((mysendchat) holder).lin_img, lvm.Filename, urlAdress, position, holder);
                 }
 
-            } else if (mime_types_audios.indexOf(lvm.MimeType) >= 0) {//audio
+            }
+            else if (mime_types_audios.indexOf(lvm.MimeType) >= 0)
+            {//audio
                 ((mysendchat) holder).lin_audeo.setVisibility(View.VISIBLE);
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
                     playAudeo(holder, position);
@@ -274,7 +277,8 @@ this.size2=size2;
 
 
 //End Audeo
-            } else if (mime_types_videos.indexOf(lvm.MimeType) >= 0) {
+            }
+            else if (mime_types_videos.indexOf(lvm.MimeType) >= 0) {
                 //video
                 ((mysendchat) holder).lin_video.setVisibility(View.VISIBLE);
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
@@ -288,11 +292,22 @@ this.size2=size2;
 
             } else {
                 //todo For unkonw File
-                ((mysendchat) holder).lin_video.removeAllViews();
-                TextView text = new TextView(context);
-                text.setText("File Not unknow....");
-                ((mysendchat) holder).lin_video.setVisibility(View.VISIBLE);
-                ((mysendchat) holder).lin_video.addView(text);
+                ((mysendchat) holder).lin_file.setVisibility(View.VISIBLE);
+                if (fileExist(lvm.RoomChatID, lvm.Filename)) {
+                    //Show Video
+
+                    showFile(holder, position);
+                }
+                else {
+                    //doawnload
+                    gotodowanloadfile_File(((mysendchat) holder).lin_video, lvm.Filename, urlAdress, position, holder);
+
+                }
+//                ((mysendchat) holder).lin_video.removeAllViews();
+//                TextView text = new TextView(context);
+//                text.setText("File Not unknow....");
+//                ((mysendchat) holder).lin_video.setVisibility(View.VISIBLE);
+//                ((mysendchat) holder).lin_video.addView(text);
             }
 
         }
@@ -336,6 +351,50 @@ this.size2=size2;
              openmenu(menu,lvm);
             }
         });
+
+    }
+
+    private void showFile(RecyclerView.ViewHolder holder, int position) {
+
+
+        if (holder instanceof mysendchat) {
+            ((mysendchat) holder).lin_file.removeAllViews();
+        } else {
+            //TODO FOR OTHER
+            ((othersendchat) holder).lin_file.removeAllViews();
+        }
+        View viewFILE = View.inflate(context, R.layout.item_open_file, null);
+        final Button btn_download = viewFILE.findViewById(R.id.btn_download);
+
+        btn_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // File file = new File(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
+
+                Intent target = new Intent(Intent.ACTION_VIEW);
+
+                //target.setDataAndType(Uri.fromFile(file),"application/pdf");
+                // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
+                target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
+
+                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                Intent intent = Intent.createChooser(target, "Open File");
+                try {
+                    context.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    // Instruct the user to install a PDF reader here, or something
+                }
+            }
+        });
+
+
+        if (holder instanceof mysendchat) {
+            ((mysendchat) holder).lin_file.addView(viewFILE);
+        } else {
+            //todo
+            ((othersendchat) holder).lin_file.addView(viewFILE);
+        }
 
     }
 
@@ -527,6 +586,7 @@ app.retrofit.FailRetrofit(t,context);
             @Override
             public void onClick(View view) {
                 if (checkPermission()) {
+                    btndowanload.setClickable(false);
                     app.Info.Filename = filename;
                     app.Info.Fileadress = fileadress;
                     app.Info.Fileview=v;
@@ -548,6 +608,58 @@ app.retrofit.FailRetrofit(t,context);
 
                     Download download = intent.getParcelableExtra("download");
                   progress.setProgress(download.getProgress());
+                    if (download.getProgress() == 100) {
+                        app.Info.isAllowDowanload=true;
+                        progress_text.setText("دانلود کامل شد");
+                        ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
+                        playVideo(holder, position);
+
+                    } else {
+
+                        progress_text.setText(String.format("دانلود (%d/%d) MB", download.getCurrentFileSize(), download.getTotalFileSize()));
+
+                    }
+                }
+            }
+        };
+        LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MESSAGE_PROGRESS);
+        bManager.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void gotodowanloadfile_File(final View v, final String filename, final String fileadress, final int position, final RecyclerView.ViewHolder holder) {
+        ((LinearLayout) v).removeAllViews();
+        final View viewDowanload = View.inflate(context, R.layout.item_dowanload_file, null);
+        Button btndowanload = viewDowanload.findViewById(R.id.btn_download);
+        final TextView progress_text = viewDowanload.findViewById(R.id.progress_text);
+        final ProgressBar progress = viewDowanload.findViewById(R.id.progress);
+        ((LinearLayout) v).addView(viewDowanload);
+        btndowanload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkPermission()) {
+                    app.Info.Filename = filename;
+                    app.Info.Fileadress = fileadress;
+                    app.Info.Fileview=v;
+                    startDownload();
+
+                } else {
+                    requestPermission();
+                }
+            }
+        });
+
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent.getAction().equals(MESSAGE_PROGRESS)&&app.Info.Fileview==v) {
+
+
+                    Download download = intent.getParcelableExtra("download");
+                    progress.setProgress(download.getProgress());
                     if (download.getProgress() == 100) {
                         app.Info.isAllowDowanload=true;
                         progress_text.setText("دانلود کامل شد");
@@ -866,7 +978,8 @@ app.retrofit.FailRetrofit(t,context);
                 }
 
 
-            } else if (mime_types_audios.indexOf(lvm.MimeType) >= 0) {//audio
+            }
+            else if (mime_types_audios.indexOf(lvm.MimeType) >= 0) {//audio
                 ((othersendchat) holder).lin_audeo.setVisibility(View.VISIBLE);
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
                     playAudeo(holder, position);
@@ -877,7 +990,8 @@ app.retrofit.FailRetrofit(t,context);
 
 
 //End Audeo
-            } else if (mime_types_videos.indexOf(lvm.MimeType) >= 0) {
+            }
+            else if (mime_types_videos.indexOf(lvm.MimeType) >= 0) {
                 //video
                 ((othersendchat) holder).lin_video.setVisibility(View.VISIBLE);
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
@@ -889,13 +1003,20 @@ app.retrofit.FailRetrofit(t,context);
 
                 }
 
-            } else {
-                //todo For unkonw File
-                TextView text = new TextView(context);
-                text.setText("File Not unknow....");
-                ((othersendchat) holder).lin_video.addView(text);
             }
+            else {
+                //todo For unkonw File
+                ((othersendchat) holder).lin_file.setVisibility(View.VISIBLE);
+                if (fileExist(lvm.RoomChatID, lvm.Filename)) {
+                    //Show Video
 
+                    showFile(holder, position);
+                }
+                else {
+                    //doawnload
+                    gotodowanloadfile_File(((othersendchat) holder).lin_video, lvm.Filename, urlAdress, position, holder);
+
+                }}
         }
 
 
@@ -1131,6 +1252,7 @@ app.retrofit.FailRetrofit(t,context);
         {  app.Info.isAllowDowanload=false;
             Intent intent = new Intent(context, DownloadService.class);
             (context).startService(intent);
+            Toast.makeText(context,"شروع دانلود...", Toast.LENGTH_SHORT).show();
         }else
         {
             Toast.makeText(context,"در حال دانلود فایلی هستید بعد از اتمام کار", Toast.LENGTH_SHORT).show();
@@ -1171,6 +1293,7 @@ app.retrofit.FailRetrofit(t,context);
         ImageView img_shower;
         ImageView img_issqllite;
         LinearLayout lin_audeo;
+        LinearLayout lin_file;
         //    AudioPlayerView audioplaey_shower;
         LinearLayout lin_video;
         //   BetterVideoPlayer betervideo_shower;
@@ -1192,6 +1315,7 @@ app.retrofit.FailRetrofit(t,context);
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
             lin_video = itemView.findViewById(R.id.lin_video);
+            lin_file = itemView.findViewById(R.id.lin_file);
             //   betervideo_shower = itemView.findViewById(R.id.betervideo_shower);
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
@@ -1210,6 +1334,7 @@ app.retrofit.FailRetrofit(t,context);
         LinearLayout lin_img;
         ImageView img_shower;
         LinearLayout lin_audeo;
+        LinearLayout lin_file;
         //    AudioPlayerView audioplaey_shower;
         LinearLayout lin_video;
         //   BetterVideoPlayer betervideo_shower;
@@ -1231,6 +1356,7 @@ app.retrofit.FailRetrofit(t,context);
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
             lin_video = itemView.findViewById(R.id.lin_video);
+            lin_file = itemView.findViewById(R.id.lin_file);
             //     betervideo_shower = itemView.findViewById(R.id.betervideo_shower);
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);

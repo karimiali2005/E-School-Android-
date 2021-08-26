@@ -315,11 +315,23 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             });
         }
 
+        boolean isFirst=true;
+        AlertDialog alterloading=null;
         @Override
         public void gotoPostionItem(final int idRoomChat) {
             final int postion = findRoomChatLeft(idRoomChat);
+            if(isFirst)
+            {
+              View vd= app.Dialog_.dialog_creat(context,R.layout.dialog_loading);
+                alterloading= app.Dialog_.show_dialog(context,vd);
+               isFirst=false;
+
+            }
             if (index == -1 && postion == -1) {
                 Toast.makeText(context, "نتیجه ای یافت نشد ...", Toast.LENGTH_SHORT).show();
+                isFirst=true;
+                app.Dialog_.dimos_dialog(alterloading);
+
             } else {
                 if (postion != -1) {
 
@@ -332,7 +344,9 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                             ma.select = true;
                             ma.notifyItemChanged(postion);
                             //     ma.notifyDataSetChanged();
-
+                          //  app.progress.tryDismiss();
+                            isFirst=true;
+                            app.Dialog_.dimos_dialog(alterloading);
                         }
                     });
 
@@ -340,7 +354,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                 } else {
                     app.linProgress.showProgress(context, "در حال بررسی");
                     if (app.net.isNetworkConnected(context)) {
-                        app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, false, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
+                        app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, taglearn, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
                             @Override
                             public void onResponse(Call<GetDataFromServer2> call, Response<GetDataFromServer2> response) {
                                 app.retrofit.erorRetrofit(response, context);
@@ -369,12 +383,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         app.linProgress.hideProgress(context);
                         getdataFromSqlLite();
                         gotoPostionItem(idRoomChat);
+
                     }
 
                 }
 
 
             }
+          //  app.progress.tryDismiss();
         }
 
         @Override
@@ -535,13 +551,49 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     private void ShowDialogOnlineUser(Map<String, Integer> meta) {
         runOnUiThread(new Runnable() {
             public void run() {
-                View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_add);
+                View vds=app.Dialog_.dialog_creat(context,R.layout.dialog_onlineshow);
                 RecyclerView res=vds.findViewById(R.id.rec_chat);
                 EditText edtsearch=vds.findViewById(R.id.edt_search);
+                ImageView img_close=vds.findViewById(R.id.img_close);
+
                 final List<RoomChatGroupOnlineViewModel>[] vm = new List[]{new ArrayList<>()};
 
                 AlertDialog a= app.Dialog_.show_dialog(context,vds,true);
-                List<Double> itemvalue=new ArrayList<>();
+                img_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        app.Dialog_.dimos_dialog(a);
+                    }
+                });
+                edtsearch.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                        List<RoomChatGroupOnlineViewModel> _vm = new ArrayList<>();
+                        for(RoomChatGroupOnlineViewModel item:vm[0])
+                        {
+                            if(item.FullName.contains(editable.toString()))
+                            {
+                                _vm.add(item);
+                            }
+
+                        }
+                        SetRecyclerShowContextResualt(res,_vm,a);
+
+                    }
+                });
+
+                String itemvalue="";
 
 
 for (int i=0;i<meta.size();i++)
@@ -549,9 +601,7 @@ for (int i=0;i<meta.size();i++)
     Object myKey = meta.keySet().toArray()[i];
     Object myValue = meta.get(myKey);
     Double ss= (Double) myValue;
-    itemvalue.add(ss);
-    int y=0;
- //itemvalue.add((Integer) meta.values().toArray()[i]);
+    itemvalue+=String.valueOf(myValue)+",";
 
 }
                 app.progress.onCreateDialog(context);
@@ -819,6 +869,21 @@ for (int i=0;i<meta.size();i++)
             img_unpin = findViewById(R.id.img_unpin);
             rel_message = findViewById(R.id.rel_message);
             SetCurentPage();
+            img_tag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if(taglearn)
+                    {
+                     img_tag.setImageResource(R.drawable.lessonb);
+                    }
+                    else
+                    {
+                        img_tag.setImageResource(R.drawable.lessonwm_white);
+                    }
+                    taglearn=!taglearn;
+                }
+            });
             img_tag2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -833,7 +898,9 @@ for (int i=0;i<meta.size();i++)
                         img_tag2.setImageResource(R.drawable.lessonwm_white);
 
                     }
-Risave();
+                    ofcet=0;
+                    pagenuber=1;
+                    Risave();
 
                 }
             });
@@ -1114,7 +1181,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
             app.linProgress.showProgress(context);
             if (app.net.isNetworkConnected(context)) {
                 if (pagenuber == 1) {
-                    app.retrofit.retrofit().RoomChatLeft(rcharright.RoomChatGroupID, rcharright.RoomChatGroupType, false, rcharright.MessageNewNumber, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, pagenuber, 30, rcharright.PicName, rcharright.RoomChatTitle).enqueue(new Callback<GetDataFromServer2>() {
+                    app.retrofit.retrofit().RoomChatLeft(rcharright.RoomChatGroupID, rcharright.RoomChatGroupType, taglearn, rcharright.MessageNewNumber, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, pagenuber, 30, rcharright.PicName, rcharright.RoomChatTitle).enqueue(new Callback<GetDataFromServer2>() {
                         @Override
                         public void onResponse(Call<GetDataFromServer2> call, Response<GetDataFromServer2> response) {
                             //     app.retrofit.erorRetrofit(response, context);
@@ -1140,7 +1207,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                     });
 
                 } else {
-                    app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, false, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
+                    app.retrofit.retrofit().RoomChatLeft2(rcharright.RoomChatGroupID, taglearn, pagenuber, 30, true, true).enqueue(new Callback<GetDataFromServer2>() {
                         @Override
                         public void onResponse(Call<GetDataFromServer2> call, Response<GetDataFromServer2> response) {
                             app.retrofit.erorRetrofit(response, context);
@@ -1321,30 +1388,32 @@ img_profile.setOnClickListener(new View.OnClickListener() {
 
         }
 
+        if(lvm2!=null&&lvm2.size()>0)
+        {
+            //  LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            //  layoutManager.setReverseLayout(true);
+            //  layoutManager.setStackFromEnd(true);
+            shimmerRecycler.removeAllViews();
+            shimmerRecycler.setLayoutManager(layoutManager);
+            shimmerRecycler.setHasFixedSize(true);
+            shimmerRecycler.setItemViewCacheSize(30);
 
-        //  LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        //  layoutManager.setReverseLayout(true);
-        //  layoutManager.setStackFromEnd(true);
-        shimmerRecycler.setLayoutManager(layoutManager);
-        shimmerRecycler.setHasFixedSize(true);
-        shimmerRecycler.setItemViewCacheSize(30);
-
-        shimmerRecycler.setDrawingCacheEnabled(true);
-        shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
-        ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down, size2);
-        shimmerRecycler.setLayoutManager(layoutManager);
-        shimmerRecycler.setAdapter(ma);
-        //=====================================
-        final boolean[] isdown = {true};
-        shimmerRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+            shimmerRecycler.setDrawingCacheEnabled(true);
+            shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+            ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down, size2);
+            shimmerRecycler.setLayoutManager(layoutManager);
+            shimmerRecycler.setAdapter(ma);
+            //=====================================
+            final boolean[] isdown = {true};
+            shimmerRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
 
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                   /*  if (dy > 0) //check for scroll down
                     {
                         visibleItemCount = layoutManager.getChildCount();
@@ -1359,40 +1428,44 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                         }
 
                     }*/
-                pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+                    pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
 
-                if (countNewMessage > 0) {
-                    int size = ma.vm.size() - 1;
-                    int cc = size - pastVisiblesItems;
-                    if (cc <= countNewMessage) {
-                        countNewMessage = cc;
-                    }
-                    c.setCountNewMessage();
-                }
-                if (dy > 0) {
-                    if (isdown[0]) {
-                        isdown[0] = false;
-                        //  int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-
-                        if (pastVisiblesItems < ma.vm.size() - 2) {
-
-                            rel_fab.setVisibility(View.VISIBLE);
-                        } else {
-                            isdown[0] = true;
+                    if (countNewMessage > 0) {
+                        int size = ma.vm.size() - 1;
+                        int cc = size - pastVisiblesItems;
+                        if (cc <= countNewMessage) {
+                            countNewMessage = cc;
                         }
-
+                        c.setCountNewMessage();
                     }
-                } else {
-                    if (!isdown[0]) {
-                        isdown[0] = true;
+                    if (dy > 0) {
+                        if (isdown[0]) {
+                            isdown[0] = false;
+                            //  int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                            if (pastVisiblesItems < ma.vm.size() - 2) {
+
+                                rel_fab.setVisibility(View.VISIBLE);
+                            } else {
+                                isdown[0] = true;
+                            }
+
+                        }
+                    } else {
+                        if (!isdown[0]) {
+                            isdown[0] = true;
+                            rel_fab.setVisibility(View.GONE);
+                        }
+                    }
+                    if (pastVisiblesItems == ma.vm.size() - 1) {
                         rel_fab.setVisibility(View.GONE);
                     }
                 }
-                if (pastVisiblesItems == ma.vm.size() - 1) {
-                    rel_fab.setVisibility(View.GONE);
-                }
-            }
-        });
+            });
+
+
+
+        }
 
 
         fab_down.setOnClickListener(new View.OnClickListener() {

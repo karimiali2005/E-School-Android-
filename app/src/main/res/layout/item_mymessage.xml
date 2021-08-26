@@ -134,6 +134,15 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/lin_file"
+                android:visibility="gone"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+            <LinearLayout
                 android:layoutDirection="ltr"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_15sdp">

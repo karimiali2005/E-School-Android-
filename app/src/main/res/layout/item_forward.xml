@@ -11,6 +11,18 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_width="@dimen/_25sdp"
         android:layout_height="@dimen/_25sdp"></CheckBox>
+    <ImageView
+        android:id="@+id/img_online"
+        android:visibility="gone"
+        android:src="@drawable/shape_ofline"
+        android:layout_marginRight="@dimen/_5sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="@dimen/_12sdp"
+        android:layout_height="@dimen/_12sdp">
+
+    </ImageView>
 <de.hdodenhof.circleimageview.CircleImageView
     android:id="@+id/img_profile"
     android:layout_width="@dimen/_35sdp"

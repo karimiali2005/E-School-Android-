@@ -38,7 +38,7 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
         this.context = context;
         this.vm = vm;
         this.alertDialog=alertDialog;
-        imgLoader = new ImageLoader(context);
+
     }
 
     @NonNull
@@ -51,7 +51,7 @@ public class Adaptor_ForwardShow extends RecyclerView.Adapter<Adaptor_ForwardSho
     @Override
     public void onBindViewHolder(@NonNull Adaptor_ForwardShow.MyviewHolder holder, int position) {
 
-
+        imgLoader = new ImageLoader(context);
         imgLoader.DisplayPicture(vm.get(position).UserID, holder.img_profile);
         holder.txt_badeg.setVisibility(View.GONE);
         holder.txt_time.setVisibility(View.GONE);

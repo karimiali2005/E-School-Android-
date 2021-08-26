@@ -112,7 +112,7 @@ Call<GetDataFromServer3> RoomChatLock(@Query("roomChatGroupId") int roomChatGrou
 //======================================ShowOnlineUser===========================================
 
 @GET(api + "Member/RoomChatGroupOnlineShow")
-Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int roomChatGroupId,@Query("userListOnline") List<Double> userListOnline);
+Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int roomChatGroupId,@Query("userListOnline")String userListOnline);
 //===================================================Forwarde==============================
 @POST(api + "Member/RoomChatForwardUserShow")
 Call<GetDataFromServer6> RoomChatForwardUserShow(@Query("roomChatId")int roomChatId, @Query("roomChatGroupId")int roomChatGroupId);

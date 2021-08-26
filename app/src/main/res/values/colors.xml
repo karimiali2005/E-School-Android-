@@ -9,4 +9,5 @@
     <color name="text_color_sucsses">#24b86d</color>
     <color name="text_color_danger">#BF031F</color>
     <color name="subtext_color">#E9A2A2A2</color>
+    <color name="bg_transparen_Loading">#F7000000</color>
 </resources>

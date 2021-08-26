@@ -13,6 +13,8 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -77,15 +79,15 @@ public class app {
     public static class baseUrl
     {
 
-        public static String signalr ="http://192.168.80.143:45457/chatGroupHub";
-    //    public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
+       // public static String signalr ="http://192.168.55.143:45457/chatGroupHub";
+        public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
        //public static String retrofit ="http://192.168.234.143:4277/";
 
      //  public static String picurl ="api1/Accounts/GetUserPic";
-       public static String retrofit ="http://192.168.80.143:45455/";
-      // public static String retrofit ="https://api.hesabischool.com/";
-      public static String picUrl ="http://192.168.80.143:45459/";
-     //  public static String picUrl ="https://pic.hesabischool.com/";
+     //  public static String retrofit ="http://192.168.55.143:45455/";
+       public static String retrofit ="https://api.hesabischool.com/";
+     // public static String picUrl ="http://192.168.55.143:45459/";
+       public static String picUrl ="https://pic.hesabischool.com/";
 
         //===========================Karimy================
      //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
@@ -263,11 +265,12 @@ public class app {
         //نمایش دیالوگ
         public static AlertDialog show_dialog(final Context context, final View _view)
         {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.myFullscreenAlertDialogStyle);
             alertDialogBuilder.setView(_view);
             final AlertDialog alert = alertDialogBuilder.create();
             alert.setCancelable(false);
             alert.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
             alert.show();
 
             try{
