@@ -145,7 +145,7 @@ int sizeForSend=0;
                     GetDataFromServer3 lr = response.body();
                  //   GetDataFromServer rl = new GetDataFromServer();
                     hesabi_SignalR.sendMessage(lr.value);
-                    RoomChatLeftShowResult rclst=new ConvertChatmessageToRoomChatShowLeftResualt(lr.value,finalRcl).convert();
+                    RoomChatLeftShowResult rclst=new ConvertChatmessageToRoomChatShowLeftResualt(lr.value).convert();
                  //   rl.value.RoomChatLeftViewModel.RoomChatLeftShowResult.add(rclst);
                     String where = " RoomChatID = " + String.valueOf(lastIdRoomChat);
                     where += " AND IsSqlLite = 1";

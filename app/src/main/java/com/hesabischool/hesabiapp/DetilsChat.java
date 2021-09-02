@@ -170,8 +170,10 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         public void updateMessage(int oldroomchatId, RoomChatLeftShowResult newr) {
 
             final int index = findRoomChatLeft(oldroomchatId);
+                Toast.makeText(context, "update1"+newr.TextChat, Toast.LENGTH_SHORT).show();
 
             if (index != -1) {
+                Toast.makeText(context, "update"+newr.TextChat, Toast.LENGTH_SHORT).show();
                 ma.vm.set(index, newr);
                 shimmerRecycler.post(new Runnable() {
                     @Override
@@ -317,20 +319,34 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         boolean isFirst=true;
         AlertDialog alterloading=null;
+        int shomarande=0;
+        int ifshmarande=2;
         @Override
         public void gotoPostionItem(final int idRoomChat) {
             final int postion = findRoomChatLeft(idRoomChat);
             if(isFirst)
             {
-              View vd= app.Dialog_.dialog_creat(context,R.layout.dialog_loading);
-                alterloading= app.Dialog_.show_dialog(context,vd);
-               isFirst=false;
+                shomarande++;
+
+                if(shomarande>ifshmarande)
+                {
+                    View vd= app.Dialog_.dialog_creat(context,R.layout.dialog_loading);
+                    alterloading= app.Dialog_.show_dialog(context,vd);
+                    isFirst=false;
+                }
+
+
 
             }
             if (index == -1 && postion == -1) {
-                Toast.makeText(context, "نتیجه ای یافت نشد ...", Toast.LENGTH_SHORT).show();
-                isFirst=true;
-                app.Dialog_.dimos_dialog(alterloading);
+                //Toast.makeText(context, "نتیجه ای یافت نشد ...", Toast.LENGTH_SHORT).show();
+                if(shomarande>ifshmarande)
+                {
+                    shomarande=0;
+                    isFirst=true;
+                    app.Dialog_.dimos_dialog(alterloading);
+                }
+
 
             } else {
                 if (postion != -1) {
@@ -345,8 +361,13 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                             ma.notifyItemChanged(postion);
                             //     ma.notifyDataSetChanged();
                           //  app.progress.tryDismiss();
-                            isFirst=true;
-                            app.Dialog_.dimos_dialog(alterloading);
+                            if(shomarande>ifshmarande)
+                            {
+                                shomarande=0;
+                                isFirst=true;
+                                app.Dialog_.dimos_dialog(alterloading);
+                            }
+
                         }
                     });
 
@@ -872,16 +893,16 @@ for (int i=0;i<meta.size();i++)
             img_tag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    taglearn=!taglearn;
                     if(taglearn)
                     {
-                     img_tag.setImageResource(R.drawable.lessonb);
+                     img_tag.setImageResource(R.drawable.lessonselect);
                     }
                     else
                     {
-                        img_tag.setImageResource(R.drawable.lessonwm_white);
+                        img_tag.setImageResource(R.drawable.lessonb);
                     }
-                    taglearn=!taglearn;
+
                 }
             });
             img_tag2.setOnClickListener(new View.OnClickListener() {
@@ -1118,7 +1139,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                 if (response.isSuccessful()) {
                     GetDataFromServer3 lr = response.body();
                     //   GetDataFromServer rl = new GetDataFromServer();
-                    RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value, roomchatForEdite).convert();
+                    RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value).convert();
                     c.updateMessage(roomchatForEdite.RoomChatID, rclst);
 
                     removeReplyBox();
@@ -1657,7 +1678,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                         GetDataFromServer3 lr = response.body();
                         //   GetDataFromServer rl = new GetDataFromServer();
                         hesabi_SignalR.sendMessage(lr.value);
-                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value, r).convert();
+                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value).convert();
                         //   rl.value.RoomChatLeftViewModel.RoomChatLeftShowResult.add(rclst);
                         String where = " WHERE RoomChatID = " + String.valueOf(lastIdRoomChat);
                         //   where += " AND IsSqlLite = 1";
@@ -1713,7 +1734,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                         GetDataFromServer3 lr = response.body();
                         //   GetDataFromServer rl = new GetDataFromServer();
                         hesabi_SignalR.sendMessage(lr.value);
-                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value, r).convert();
+                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(lr.value).convert();
                         //   rl.value.RoomChatLeftViewModel.RoomChatLeftShowResult.add(rclst);
                         String where = " WHERE RoomChatID = " + String.valueOf(lastIdRoomChat);
                         //   where += " AND IsSqlLite = 1";

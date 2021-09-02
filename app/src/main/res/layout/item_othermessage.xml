@@ -197,6 +197,22 @@
                     android:text="22:15"
                     android:textColor="#666666"
                     android:textSize="@dimen/_8sdp"></TextView>
+
+                <TextView
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:id="@+id/txt_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="19dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_7sdp"
+                    android:background="@drawable/shape_borderradiuse"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:singleLine="true"
+                    android:text="محتوای آموزشی"
+                    android:textColor="#666666"
+                    android:textSize="@dimen/_4sdp"></TextView>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

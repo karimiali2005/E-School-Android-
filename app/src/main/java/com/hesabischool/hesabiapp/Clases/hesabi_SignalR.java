@@ -94,7 +94,7 @@ dbConnector db;
                                 int x = 0;
                             }
                         });
-                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage, new RoomChatLeftShowResult()).convert();
+                        RoomChatLeftShowResult rclst = new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage).convert();
                         app.Info.checkpage.callForCheange.AddMessage(rclst);
                         break;
                     case "D":
@@ -102,7 +102,7 @@ dbConnector db;
                         app.Info.checkpage.callForCheange.DeleteMessage(chatMessage.roomChatId);
                         break;
                     case "E":
-                        RoomChatLeftShowResult rclst2 = new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage, new RoomChatLeftShowResult()).convert();
+                        RoomChatLeftShowResult rclst2 = new ConvertChatmessageToRoomChatShowLeftResualt(chatMessage).convert();
                         app.Info.checkpage.callForCheange.updateMessage(chatMessage.roomChatId, rclst2);
                         break;
                     case "P":

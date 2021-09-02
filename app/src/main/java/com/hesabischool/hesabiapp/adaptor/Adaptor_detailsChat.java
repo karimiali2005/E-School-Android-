@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -173,11 +174,27 @@ this.size2=size2;
     private void setchatForMe(final RecyclerView.ViewHolder holder, final int position) {
         ((mysendchat) holder).lin_video.removeAllViews();
         ((mysendchat) holder).lin_audeo.removeAllViews();
+       // ((mysendchat) holder).lin_img.removeAllViews();
+        ((mysendchat) holder).lin_file.removeAllViews();
+
         ((mysendchat) holder).lin_img.setVisibility(View.GONE);
+        ((mysendchat) holder).lin_video.setVisibility(View.GONE);
+        ((mysendchat) holder).lin_audeo.setVisibility(View.GONE);
+        ((mysendchat) holder).lin_file.setVisibility(View.GONE);
+
 
 
 
         final RoomChatLeftShowResult lvm = vm.get(position);
+
+        if(lvm.TagLearn)
+        {
+            ((mysendchat) holder).txttag.setVisibility(View.VISIBLE);
+        }else
+        {
+            ((mysendchat) holder).txttag.setVisibility(View.GONE);
+        }
+
         ((mysendchat) holder).Rel.setTag(lvm.RoomChatID);
         ((mysendchat) holder).txt_time.setText(lvm.RoomChatDateString);
         ((mysendchat) holder).txt_countsee.setText(String.valueOf(lvm.RoomChatViewNumber));
@@ -200,7 +217,7 @@ this.size2=size2;
 
             } else {
                 //todo No parents
-
+                ((mysendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
             String message = Html.fromHtml(lvm.TextChat).toString();
@@ -247,17 +264,17 @@ this.size2=size2;
 
             } else {
                 //todo No parents
-
+                ((mysendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
             String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
-                ((mysendchat) holder).img_shower.setVisibility(View.GONE);
+
                 ((mysendchat) holder).lin_img.setVisibility(View.VISIBLE);
 
 
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
-
+                 //   ((mysendchat) holder).img_shower.setVisibility(View.VISIBLE);
                     showImage(holder, position);
                 } else {
                     //Todo Dowanload file
@@ -290,7 +307,8 @@ this.size2=size2;
 
                 }
 
-            } else {
+            }
+            else {
                 //todo For unkonw File
                 ((mysendchat) holder).lin_file.setVisibility(View.VISIBLE);
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
@@ -300,7 +318,7 @@ this.size2=size2;
                 }
                 else {
                     //doawnload
-                    gotodowanloadfile_File(((mysendchat) holder).lin_video, lvm.Filename, urlAdress, position, holder);
+                    gotodowanloadfile_File(((mysendchat) holder).lin_file, lvm.Filename, urlAdress, position, holder);
 
                 }
 //                ((mysendchat) holder).lin_video.removeAllViews();
@@ -375,6 +393,8 @@ this.size2=size2;
 
                 //target.setDataAndType(Uri.fromFile(file),"application/pdf");
                 // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
+
+
                 target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
 
                 target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -526,7 +546,7 @@ app.retrofit.FailRetrofit(t,context);
                         });
 
                         app.progress.onCreateDialog(context);
-                        app.retrofit.retrofit().RoomChatForwardUserShow(lvm.RoomID,lvm.RoomChatGroupID).enqueue(new Callback<GetDataFromServer6>() {
+                        app.retrofit.retrofit().RoomChatForwardUserShow(lvm.RoomChatID,lvm.RoomChatGroupID).enqueue(new Callback<GetDataFromServer6>() {
                             @Override
                             public void onResponse(Call<GetDataFromServer6> call, Response<GetDataFromServer6> response) {
                                 app.retrofit.erorRetrofit(response,context);
@@ -634,7 +654,13 @@ app.retrofit.FailRetrofit(t,context);
         Button btndowanload = viewDowanload.findViewById(R.id.btn_download);
         final TextView progress_text = viewDowanload.findViewById(R.id.progress_text);
         final ProgressBar progress = viewDowanload.findViewById(R.id.progress);
-        ((LinearLayout) v).addView(viewDowanload);
+        if (holder instanceof mysendchat) {
+            ((mysendchat) holder).lin_file.addView(viewDowanload);
+        } else {
+            //todo
+            ((othersendchat) holder).lin_file.addView(viewDowanload);
+        }
+       // ((LinearLayout) v).addView(viewDowanload);
         btndowanload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -664,7 +690,7 @@ app.retrofit.FailRetrofit(t,context);
                         app.Info.isAllowDowanload=true;
                         progress_text.setText("دانلود کامل شد");
                         ((LinearLayout) app.Info.Fileview).removeView(viewDowanload);
-                        playVideo(holder, position);
+                        showFile(holder, position);
 
                     } else {
 
@@ -894,11 +920,31 @@ app.retrofit.FailRetrofit(t,context);
     }
 
     private void setchatForOther(final RecyclerView.ViewHolder holder, int position) {
+        ((othersendchat) holder).lin_video.removeAllViews();
+        ((othersendchat) holder).lin_audeo.removeAllViews();
+       // ((othersendchat) holder).lin_img.removeAllViews();
+        ((othersendchat) holder).lin_file.removeAllViews();
+
+        ((othersendchat) holder).lin_img.setVisibility(View.GONE);
+        ((othersendchat) holder).lin_video.setVisibility(View.GONE);
+        ((othersendchat) holder).lin_audeo.setVisibility(View.GONE);
+        ((othersendchat) holder).lin_file.setVisibility(View.GONE);
+
+
         RoomChatLeftShowResult lvm = vm.get(position);
         ((othersendchat) holder).Rel.setTag(lvm.RoomChatID);
         ((othersendchat) holder).txt_time.setText(lvm.RoomChatDateString);
         ((othersendchat) holder).txt_countsee.setText(String.valueOf(lvm.RoomChatViewNumber));
         ((othersendchat) holder).txtnamesender.setText(lvm.SenderName);
+
+        if(lvm.TagLearn)
+        {
+            ((othersendchat) holder).txttag.setVisibility(View.VISIBLE);
+        }else
+        {
+            ((othersendchat) holder).txttag.setVisibility(View.GONE);
+        }
+
         if (app.check.EpmtyOrNull(lvm.Filename)) {
             ((othersendchat) holder).lin_text.setVisibility(View.VISIBLE);
             // File is Text
@@ -912,7 +958,7 @@ app.retrofit.FailRetrofit(t,context);
 
             } else {
                 //todo No parents
-
+                ((othersendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
             String message = Html.fromHtml(lvm.TextChat).toString();
@@ -950,13 +996,13 @@ app.retrofit.FailRetrofit(t,context);
 
             } else {
                 //todo No parents
-
+                ((othersendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
             String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
                 ((othersendchat) holder).lin_img.setVisibility(View.VISIBLE);
-                ((othersendchat) holder).img_shower.setVisibility(View.GONE);
+
                /* urlAdress=app.Info.Path1+urlAdress;
                 ((othersendchat) holder).lin_img.setVisibility(View.VISIBLE);
                 //Image
@@ -970,7 +1016,7 @@ app.retrofit.FailRetrofit(t,context);
                     }
                 });*/
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
-
+                    ((othersendchat) holder).img_shower.setVisibility(View.VISIBLE);
                     showImage(holder, position);
                 } else {
                     //Todo Dowanload file
@@ -1014,7 +1060,7 @@ app.retrofit.FailRetrofit(t,context);
                 }
                 else {
                     //doawnload
-                    gotodowanloadfile_File(((othersendchat) holder).lin_video, lvm.Filename, urlAdress, position, holder);
+                    gotodowanloadfile_File(((othersendchat) holder).lin_file, lvm.Filename, urlAdress, position, holder);
 
                 }}
         }
@@ -1217,11 +1263,23 @@ app.retrofit.FailRetrofit(t,context);
         String pathname = getLocalPathFile(roomChatId);
         if (app.check.EpmtyOrNull(pathname)) {
             File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
-            Uri urifile = Uri.fromFile(outputFile);
+           // Uri urifile = Uri.fromFile(outputFile);
+            Uri urifile ;
+            if (Build.VERSION.SDK_INT < 24) {
+                urifile = Uri.fromFile(outputFile);
+            } else {
+                urifile = Uri.parse(outputFile.getPath()); // My work-around for new SDKs, worked for me in Android 10 using Solid Explorer Text Editor as the external editor.
+            }
             return urifile;
         } else {
 
-            Uri urifile = Uri.fromFile(new File(pathname));
+            //Uri urifile = Uri.fromFile(new File(pathname));
+            Uri urifile;
+            if (Build.VERSION.SDK_INT < 24) {
+                urifile = Uri.fromFile(new File(pathname));
+            } else {
+                urifile = Uri.parse(new File(pathname).getPath()); // My work-around for new SDKs, worked for me in Android 10 using Solid Explorer Text Editor as the external editor.
+            }
             return urifile;
         }
 
@@ -1289,6 +1347,7 @@ app.retrofit.FailRetrofit(t,context);
         RelativeLayout Rel;
         LinearLayout lin_text;
         TextView txtmessage;
+        TextView txttag;
         LinearLayout lin_img;
         ImageView img_shower;
         ImageView img_issqllite;
@@ -1319,12 +1378,14 @@ app.retrofit.FailRetrofit(t,context);
             //   betervideo_shower = itemView.findViewById(R.id.betervideo_shower);
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
+            txttag = itemView.findViewById(R.id.txt_tag);
             img_popup = itemView.findViewById(R.id.imgpopup);
         }
     }
 
     public class othersendchat extends RecyclerView.ViewHolder {
         TextView txtnamesender;
+        TextView txttag;
         RelativeLayout Rel;
         RelativeLayout rel_noReadMessage;
         RelativeLayout rel_parent;
@@ -1344,6 +1405,7 @@ app.retrofit.FailRetrofit(t,context);
         public othersendchat(@NonNull View itemView) {
             super(itemView);
             txtnamesender = itemView.findViewById(R.id.txtnamesender);
+            txttag = itemView.findViewById(R.id.txt_tag);
             rel_parent = itemView.findViewById(R.id.rel_parent);
             rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
             txtparentname = itemView.findViewById(R.id.txtparentname);
