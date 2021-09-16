@@ -51,11 +51,15 @@ public class RoomChatLeftShowResult {
     public String RoomChatDateString;
     @SerializedName("isSqlLite")
     public boolean IsSqlLite=false;
+    @SerializedName("roomChatGroupTitle")
+    public String RoomChatGroupTitle="-";
+    @SerializedName("roomChatGroupType")
+    public int RoomChatGroupType=1;
 
     public RoomChatLeftShowResult() {
     }
 
-    public RoomChatLeftShowResult(int roomChatID, String roomChatDate, int senderID, String senderName, int recieverID, String recieverName, int roomID, int teacherID, int courseID, String textChat, String filename, boolean tagLearn, boolean roomChatDelete, String roomChatUpdate, int roomChatParentID, boolean attachMsg, int roomChatGroupID, String parentSenderName, String parentTextChat, int roomChatViewNumber, String mimeType, String roomChatDateString, boolean isSqlLite) {
+    public RoomChatLeftShowResult(int roomChatID, String roomChatDate, int senderID, String senderName, int recieverID, String recieverName, int roomID, int teacherID, int courseID, String textChat, String filename, boolean tagLearn, boolean roomChatDelete, String roomChatUpdate, int roomChatParentID, boolean attachMsg, int roomChatGroupID, String parentSenderName, String parentTextChat, int roomChatViewNumber, String mimeType, String roomChatDateString, boolean isSqlLite,String roomChatGroupTitle,int roomChatGroupType) {
         RoomChatID = roomChatID;
         RoomChatDate = roomChatDate;
         SenderID = senderID;
@@ -79,5 +83,7 @@ public class RoomChatLeftShowResult {
         MimeType = mimeType;
         RoomChatDateString = roomChatDateString;
         IsSqlLite = isSqlLite;
+        RoomChatGroupTitle=roomChatGroupTitle;
+        RoomChatGroupType=roomChatGroupType;
     }
 }

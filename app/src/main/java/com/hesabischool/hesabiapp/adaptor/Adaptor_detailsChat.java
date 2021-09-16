@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -122,6 +124,7 @@ this.size2=size2;
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
 
+        final RoomChatLeftShowResult lvm = vm.get(position);
         switch (ismymesssage(position)) {
             case 0:
                 setchatForMe(holder, position);
@@ -155,11 +158,11 @@ this.size2=size2;
             }
         }
 
-        if (position == scroled) {
-            // its a last item
-            layzyLoad.call();
-
-        }
+//        if (position == scroled) {
+//            // its a last item
+//            layzyLoad.call();
+//
+//        }
 
         if(select)
         {
@@ -174,16 +177,13 @@ this.size2=size2;
     private void setchatForMe(final RecyclerView.ViewHolder holder, final int position) {
         ((mysendchat) holder).lin_video.removeAllViews();
         ((mysendchat) holder).lin_audeo.removeAllViews();
-       // ((mysendchat) holder).lin_img.removeAllViews();
+        //  lin_img.removeAllViews();
         ((mysendchat) holder).lin_file.removeAllViews();
 
         ((mysendchat) holder).lin_img.setVisibility(View.GONE);
         ((mysendchat) holder).lin_video.setVisibility(View.GONE);
         ((mysendchat) holder).lin_audeo.setVisibility(View.GONE);
         ((mysendchat) holder).lin_file.setVisibility(View.GONE);
-
-
-
 
         final RoomChatLeftShowResult lvm = vm.get(position);
 
@@ -193,6 +193,11 @@ this.size2=size2;
         }else
         {
             ((mysendchat) holder).txttag.setVisibility(View.GONE);
+        }
+
+        if(lvm.RoomChatParentID==0)
+        {
+            ((mysendchat) holder).rel_parent.setVisibility(View.GONE);
         }
 
         ((mysendchat) holder).Rel.setTag(lvm.RoomChatID);
@@ -394,12 +399,20 @@ this.size2=size2;
                 //target.setDataAndType(Uri.fromFile(file),"application/pdf");
                 // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
 
+if(vm.get(position).MimeType.trim().toLowerCase().contains("pdf"))
+{
+                target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),"application/pdf");
 
+}else
+{
                 target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
 
+}
+
+                target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-                Intent intent = Intent.createChooser(target, "Open File");
+                Intent intent = Intent.createChooser(target, "بازکردن با");
                 try {
                     context.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
@@ -920,22 +933,18 @@ app.retrofit.FailRetrofit(t,context);
     }
 
     private void setchatForOther(final RecyclerView.ViewHolder holder, int position) {
+
         ((othersendchat) holder).lin_video.removeAllViews();
         ((othersendchat) holder).lin_audeo.removeAllViews();
-       // ((othersendchat) holder).lin_img.removeAllViews();
+        // r).lin_img.removeAllViews();
         ((othersendchat) holder).lin_file.removeAllViews();
 
-        ((othersendchat) holder).lin_img.setVisibility(View.GONE);
-        ((othersendchat) holder).lin_video.setVisibility(View.GONE);
-        ((othersendchat) holder).lin_audeo.setVisibility(View.GONE);
-        ((othersendchat) holder).lin_file.setVisibility(View.GONE);
-
+       ((othersendchat) holder).lin_img.setVisibility(View.GONE);
+       ((othersendchat) holder).lin_video.setVisibility(View.GONE);
+       ((othersendchat) holder).lin_audeo.setVisibility(View.GONE);
+       ((othersendchat) holder).lin_file.setVisibility(View.GONE);
 
         RoomChatLeftShowResult lvm = vm.get(position);
-        ((othersendchat) holder).Rel.setTag(lvm.RoomChatID);
-        ((othersendchat) holder).txt_time.setText(lvm.RoomChatDateString);
-        ((othersendchat) holder).txt_countsee.setText(String.valueOf(lvm.RoomChatViewNumber));
-        ((othersendchat) holder).txtnamesender.setText(lvm.SenderName);
 
         if(lvm.TagLearn)
         {
@@ -944,6 +953,16 @@ app.retrofit.FailRetrofit(t,context);
         {
             ((othersendchat) holder).txttag.setVisibility(View.GONE);
         }
+
+        if(lvm.RoomChatParentID==0)
+        {
+            ((othersendchat) holder).rel_parent.setVisibility(View.GONE);
+        }
+
+        ((othersendchat) holder).Rel.setTag(lvm.RoomChatID);
+        ((othersendchat) holder).txt_time.setText(lvm.RoomChatDateString);
+        ((othersendchat) holder).txt_countsee.setText(String.valueOf(lvm.RoomChatViewNumber));
+        ((othersendchat) holder).txtnamesender.setText(lvm.SenderName);
 
         if (app.check.EpmtyOrNull(lvm.Filename)) {
             ((othersendchat) holder).lin_text.setVisibility(View.VISIBLE);
@@ -964,9 +983,17 @@ app.retrofit.FailRetrofit(t,context);
             String message = Html.fromHtml(lvm.TextChat).toString();
             ((othersendchat) holder).txtmessage.setText(message);
 
-        } else {
+        }
+        else {
             // File Not a Text Type
+            if (!app.check.EpmtyOrNull(lvm.TextChat)) {
+                ((othersendchat) holder).lin_text.setVisibility(View.VISIBLE);
+                String message = Html.fromHtml(lvm.TextChat).toString();
+                ((othersendchat) holder).txtmessage.setText(message);
 
+            } else {
+                ((othersendchat) holder).lin_text.setVisibility(View.GONE);
+            }
             List<String> mime_types_images = new ArrayList<>();
             mime_types_images.add("image/jpeg");
             mime_types_images.add("image/png");
@@ -1016,7 +1043,7 @@ app.retrofit.FailRetrofit(t,context);
                     }
                 });*/
                 if (fileExist(lvm.RoomChatID, lvm.Filename)) {
-                    ((othersendchat) holder).img_shower.setVisibility(View.VISIBLE);
+
                     showImage(holder, position);
                 } else {
                     //Todo Dowanload file
@@ -1095,6 +1122,8 @@ app.retrofit.FailRetrofit(t,context);
     }
 
     private void gotodowanloadfile_Image(final View v, final String filename, final String urlAdress, final int position, final RecyclerView.ViewHolder holder) {
+        ((LinearLayout) v).removeAllViews();
+
         final View viewDowanload = View.inflate(context, R.layout.item_dowanload_image, null);
         Button btndowanload = viewDowanload.findViewById(R.id.btn_download);
         final TextView progress_text = viewDowanload.findViewById(R.id.progress_text);
@@ -1187,12 +1216,48 @@ app.retrofit.FailRetrofit(t,context);
     private void showImage(RecyclerView.ViewHolder holder, int position) {
 
         if (holder instanceof mysendchat) {
-            ((mysendchat) holder).img_shower.setVisibility(View.VISIBLE);
-            ((mysendchat) holder).img_shower.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+            ((mysendchat) holder).lin_img.removeAllViews();
         } else {
-            ((othersendchat) holder).img_shower.setVisibility(View.VISIBLE);
-            ((othersendchat) holder).img_shower.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+            ((othersendchat) holder).lin_img.removeAllViews();
         }
+        View viewimage = View.inflate(context, R.layout.item_showimage, null);
+        final ImageView imgShow = viewimage.findViewById(R.id.img_shower);
+//        Bitmap bitmapImage = BitmapFactory.decodeFile(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
+//        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
+//        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);
+//        imgShow.setImageBitmap(scaled);
+        imgShow.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+
+        imgShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+             View vv= app.Dialog_.dialog_creat(context,R.layout.dialog_showimage);
+             ImageView imgClose=vv.findViewById(R.id.img_close);
+             ImageView img=vv.findViewById(R.id.img);
+
+             AlertDialog a=app.Dialog_.show_dialog(context,vv);
+                img.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+
+             imgClose.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     app.Dialog_.dimos_dialog(a);
+                 }
+             });
+
+            }
+        });
+
+        //   imgShow.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+
+        if (holder instanceof mysendchat) {
+            ((mysendchat) holder).lin_img.addView(viewimage);
+        } else {
+            ((othersendchat) holder).lin_img.addView(viewimage);
+        }
+
+        //..............................................................
+
     }
 
     @Override
@@ -1349,7 +1414,7 @@ app.retrofit.FailRetrofit(t,context);
         TextView txtmessage;
         TextView txttag;
         LinearLayout lin_img;
-        ImageView img_shower;
+
         ImageView img_issqllite;
         LinearLayout lin_audeo;
         LinearLayout lin_file;
@@ -1369,7 +1434,7 @@ app.retrofit.FailRetrofit(t,context);
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
             lin_img = itemView.findViewById(R.id.lin_img);
-            img_shower = itemView.findViewById(R.id.img_shower);
+
             img_issqllite = itemView.findViewById(R.id.img_issqllite);
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
@@ -1380,6 +1445,7 @@ app.retrofit.FailRetrofit(t,context);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
             txttag = itemView.findViewById(R.id.txt_tag);
             img_popup = itemView.findViewById(R.id.imgpopup);
+
         }
     }
 
@@ -1393,7 +1459,7 @@ app.retrofit.FailRetrofit(t,context);
         LinearLayout lin_text;
         TextView txtmessage;
         LinearLayout lin_img;
-        ImageView img_shower;
+
         LinearLayout lin_audeo;
         LinearLayout lin_file;
         //    AudioPlayerView audioplaey_shower;
@@ -1414,7 +1480,7 @@ app.retrofit.FailRetrofit(t,context);
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
             lin_img = itemView.findViewById(R.id.lin_img);
-            img_shower = itemView.findViewById(R.id.img_shower);
+
             lin_audeo = itemView.findViewById(R.id.lin_audeo);
             //   audioplaey_shower = itemView.findViewById(R.id.audioplaey_shower);
             lin_video = itemView.findViewById(R.id.lin_video);
@@ -1423,6 +1489,7 @@ app.retrofit.FailRetrofit(t,context);
             txt_time = itemView.findViewById(R.id.txt_time);
             txt_countsee = itemView.findViewById(R.id.txt_countsee);
             img_popup = itemView.findViewById(R.id.imgpopup);
+
 
         }
     }

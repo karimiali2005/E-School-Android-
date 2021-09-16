@@ -204,7 +204,7 @@ try{
 	qery+=");";
 		return qery;
 	}
-	private <T> String delete_TablesbYquery(T c)
+	public  <T> String delete_TablesbYquery(T c)
 	{
 
 		String nametabel =c.getClass().getSimpleName();

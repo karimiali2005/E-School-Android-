@@ -62,7 +62,7 @@ public interface RguestApi {
     //===================InsertRoomChatMessage========================
    //
     @POST(api + "Member/RoomChatInsert")
-    Call<GetDataFromServer3> RoomChatInsert(@Query("roomChatGroupID") int roomChatGroupID, @Query("textChat") String textChat, @Query("fileName") String fileName, @Query("tagLearn") boolean tagLearn, @Query("roomChatParentId") int roomChatParentId, @Query("roomId") int roomId, @Query("teacherId") int teacherId, @Query("courseId") int courseId, @Query("parentTextChat") String parentTextChat, @Query("parentSenderName") String parentSenderName);
+    Call<GetDataFromServer3> RoomChatInsert(@Query("roomChatGroupID") int roomChatGroupID, @Query("textChat") String textChat, @Query("fileName") String fileName, @Query("tagLearn") boolean tagLearn, @Query("roomChatParentId") int roomChatParentId, @Query("roomId") int roomId, @Query("teacherId") int teacherId, @Query("courseId") int courseId, @Query("parentTextChat") String parentTextChat, @Query("parentSenderName") String parentSenderName,@Query("roomChatGroupTitle") String roomChatGroupTitle,@Query("roomChatGroupType") int roomChatGroupType);
 //============================EditeRoomChatMessage============================
 
     @POST(api + "Member/RoomChatEdit")
@@ -80,12 +80,13 @@ Call<GetDataFromServer3> RoomChatDelete(@Query("roomChatId") int roomChatId);
 @Multipart
 @POST(api+"Member/StoreFile")
 Call<GetDataFromServer3> StoreFile(@Part MultipartBody.Part file,@Query("tagLearn") String tagLearn,@Query("roomChatGroupId") int roomChatGroupId,@Query("textChat") String textChat,@Query("roomChatParentId") int roomChatParentId
-,@Query("roomId")  int roomId,@Query("teacherId")  int teacherId,@Query("courseId")  int courseId,@Query("parentTextChat")  String parentTextChat,@Query("parentSenderName")  String parentSenderName);
+,@Query("roomId")  int roomId,@Query("teacherId")  int teacherId,@Query("courseId")  int courseId,@Query("parentTextChat")  String parentTextChat,@Query("parentSenderName")  String parentSenderName
+,@Query("roomChatGroupTitle")String roomChatGroupTitle,@Query("roomChatGroupType") int roomChatGroupType);
 
     @Multipart
     @POST(api+"Member/SendRecordAudio")
     Call<GetDataFromServer3> SendRecordAudio(@Part MultipartBody.Part file,@Query("tagLearn") String tagLearn,@Query("roomChatGroupId") int roomChatGroupId,@Query("textChat") String textChat,@Query("roomChatParentId") int roomChatParentId
-            ,@Query("roomId")  int roomId,@Query("teacherId")  int teacherId,@Query("courseId")  int courseId,@Query("parentTextChat")  String parentTextChat,@Query("parentSenderName")  String parentSenderName);
+            ,@Query("roomId")  int roomId,@Query("teacherId")  int teacherId,@Query("courseId")  int courseId,@Query("parentTextChat")  String parentTextChat,@Query("parentSenderName")  String parentSenderName,@Query("roomChatGroupTitle")String roomChatGroupTitle,@Query("roomChatGroupType") int roomChatGroupType);
 //=================================================================InsertViewrOOMcHAT=====================================
 
     @POST(api + "Member/RoomChatViewInsert")

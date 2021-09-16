@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Message;
+import android.text.Html;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,9 +24,11 @@ import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.MainChat;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.Splash;
+import com.hesabischool.hesabiapp.adaptor.Adaptor_detailsChat;
 import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.hesabischool.hesabiapp.Clases.FontOverride.NOTIFICATION_CHANNEL_ID;
@@ -109,12 +114,17 @@ public class hesabi_fireBase extends FirebaseMessagingService {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, idnot,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        String message=ConvertTextMessage(ch);
+
+
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_baseline_message_24)
                 .setContentIntent(pendingIntent)
-                .setContentText(ch.textChat)
+                .setContentText(message)
                 .setContentInfo("پیام جدید").setSound(uri)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))
@@ -131,6 +141,62 @@ public class hesabi_fireBase extends FirebaseMessagingService {
 
     }
 
+    private String ConvertTextMessage(ChatMessage ch) {
+        String message="";
+        if(app.check.EpmtyOrNull(ch.textChat))
+        {
+            message=ch.roomChatGroupTitle+" ( ";
+            List<String> mime_types_images = new ArrayList<>();
+            mime_types_images.add("image/jpeg");
+            mime_types_images.add("image/png");
+            mime_types_images.add("image/gif");
+
+            List<String> mime_types_audios = new ArrayList<>();
+            mime_types_audios.add("audio/wav");
+            mime_types_audios.add("audio/mp3");
+            mime_types_audios.add("audio/ogg");
+            mime_types_audios.add("audio/mpeg");
+            mime_types_audios.add("audio/mp4");
+            mime_types_audios.add("audio/aac");
+            mime_types_audios.add("video/ogg");
+
+
+            List<String> mime_types_videos = new ArrayList<>();
+            mime_types_videos.add("video/mp4");
+            mime_types_videos.add("video/webm");
+            mime_types_videos.add("video/quicktime");
+
+
+            if (mime_types_images.indexOf(ch.mimeType) >= 0) {
+                message+=" تصویر ";
+
+            }
+            else if (mime_types_audios.indexOf(ch.mimeType) >= 0) {//audio
+                message+=" صدا ";
+
+//End Audeo
+            }
+            else if (mime_types_videos.indexOf(ch.mimeType) >= 0) {
+                //video
+                message+=" فیلم ";
+
+            }
+            else {
+                message+=" فایل ";
+
+            }
+message+=" )";
+
+        }else
+        {
+            message=ch.roomChatGroupTitle+" ( "+ch.textChat+" )";
+
+        }
+
+        return message;
+
+    }
+
     private void notifi_when_app_run(String json) {
 
        // Toast.makeText(context, "FireBasww", Toast.LENGTH_SHORT).show();
@@ -139,7 +205,7 @@ public class hesabi_fireBase extends FirebaseMessagingService {
 
         Type listtype=new TypeToken<ChatMessage>(){}.getType();
         ChatMessage ch= gson2.fromJson(json, listtype);
-
+        String message=ConvertTextMessage(ch);
         int idnot = ch.groupId;
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 // app.Info.FkfCompanyId=m.FkfCompanyId;
@@ -154,7 +220,7 @@ public class hesabi_fireBase extends FirebaseMessagingService {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_baseline_message_24)
                 .setContentIntent(pendingIntent)
-                .setContentText(ch.textChat)
+                .setContentText(message)
                 .setContentInfo("پیام جدید").setSound(uri)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM))

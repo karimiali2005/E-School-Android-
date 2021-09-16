@@ -56,7 +56,7 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
     int gotomessage = 0;
 
     public void gotoDetilsmessage(ChatMessage ch) {
-        Toast.makeText(context, "Adaptor:" + String.valueOf(gotomessage), Toast.LENGTH_SHORT).show();
+     //   Toast.makeText(context, "Adaptor:" + String.valueOf(gotomessage), Toast.LENGTH_SHORT).show();
         if (gotomessage < 10) {
             int position = findRoomChatRight(ch.groupId);
 
@@ -105,7 +105,7 @@ public class Adaptor_chatRight extends RecyclerView.Adapter<Adaptor_chatRight.My
 boolean s=false;
     @Override
     public void onBindViewHolder(@NonNull Adaptor_chatRight.MyviewHolder holder, final int position) {
-        MainChat.postionItem=position;
+
         imgLoader = new ImageLoader(context);
 
         imgLoader.DisplayPicture(vm.get(position).UserIDPic, holder.img_profile);
@@ -193,6 +193,7 @@ boolean s=false;
         holder.constParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MainChat.postionItem=position;
                 app.Info.checkpage.roomchatright = vm.get(position);
                 Intent i = new Intent(context, DetilsChat.class);
                 context.startActivity(i);

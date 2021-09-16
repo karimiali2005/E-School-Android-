@@ -99,12 +99,13 @@ public class dbQuery {
         }
         if(rcv.RoomLiveShows!=null&&rcv.RoomLiveShows.size()>0)
         {
+            db.delete_TablesbYquery(new RoomLiveViewModel());
             for(RoomLiveViewModel r:rcv.RoomLiveShows)
             {
                 //todo save room live show
                 try {
                    //saveTosqlAddOrUpdate(r,"RoomChatGroupTitle", String.valueOf(r.RoomChatGroupTitle));
-                    saveTosqlAddByDelete(r);
+                    saveTosqlAdd(r);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

@@ -1,4 +1,4 @@
-package com.hesabischool.hesabiapp;
+ package com.hesabischool.hesabiapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -92,7 +93,7 @@ public class MainChat extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu;
     dbConnector db;
-    public static int postionItem;
+    public  static int postionItem;
     List<RoomChatRightShowResult> sValue=new ArrayList<>();
     callForCheangeMainChat c = new callForCheangeMainChat() {
 
@@ -358,16 +359,18 @@ app.retrofit.FailRetrofit(t,context);
         img_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                edt_search.setText("");
-                rel_toolbar.setVisibility(View.GONE);
-                rel_searchbar.setVisibility(View.VISIBLE);
-                try {
-                     sValue = (List<RoomChatRightShowResult>) dq.SelesctListOrderByDesending(new RoomChatRightShowResult(), "RoomChatDate");
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                Intent i=new Intent(context,TestWebView.class);
+                startActivity(i);
+//                edt_search.setText("");
+//                rel_toolbar.setVisibility(View.GONE);
+//                rel_searchbar.setVisibility(View.VISIBLE);
+//                try {
+//                     sValue = (List<RoomChatRightShowResult>) dq.SelesctListOrderByDesending(new RoomChatRightShowResult(), "RoomChatDate");
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
         img_back.setOnClickListener(new View.OnClickListener() {
@@ -481,7 +484,7 @@ if(app.check.EpmtyOrNull(editable.toString().trim()))
                 Type listtype = new TypeToken<ChatMessage>() {
                 }.getType();
                 ChatMessage ch = gson2.fromJson(newString, listtype);
-                Toast.makeText(context, String.valueOf(ch.groupId), Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, String.valueOf(ch.groupId), Toast.LENGTH_SHORT).show();
                 ma.gotoDetilsmessage(ch);
 
             }
@@ -606,7 +609,7 @@ fs= (ArrayList<RoomChatRightShowResult>) app.copyList(s);
 
         //  shimmerRecycler.showShimmerAdapter();
         shimmerRecycler.removeAllViews();
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager layoutManager =  new LinearLayoutManager(context);
 
         layoutManager.scrollToPosition(postionItem);
         shimmerRecycler.setLayoutManager(layoutManager);
@@ -617,6 +620,7 @@ fs= (ArrayList<RoomChatRightShowResult>) app.copyList(s);
         ma = new Adaptor_chatRight(context, vm);
         shimmerRecycler.setLayoutManager(layoutManager);
         shimmerRecycler.setAdapter(ma);
+
     }
     private void SetRecyclerShowContextResualt(RecyclerView r,List<RoomChatContactResult> vm,AlertDialog aa) {
 

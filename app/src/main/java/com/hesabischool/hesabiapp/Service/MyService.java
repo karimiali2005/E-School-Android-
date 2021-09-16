@@ -133,7 +133,7 @@ int sizeForSend=0;
 
     private void setChatRoom(final RoomChatLeftShowResult r) {
 
-        app.retrofit.retrofit().RoomChatInsert(r.RoomChatGroupID, r.TextChat, r.Filename, r.TagLearn, r.RoomChatParentID, r.RoomID, r.TeacherID, r.CourseID, r.ParentTextChat, r.ParentSenderName).enqueue(new Callback<GetDataFromServer3>() {
+        app.retrofit.retrofit().RoomChatInsert(r.RoomChatGroupID, r.TextChat, r.Filename, r.TagLearn, r.RoomChatParentID, r.RoomID, r.TeacherID, r.CourseID, r.ParentTextChat, r.ParentSenderName,r.RoomChatGroupTitle,r.RoomChatGroupType).enqueue(new Callback<GetDataFromServer3>() {
             @Override
             public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
                 if (response.isSuccessful()) {

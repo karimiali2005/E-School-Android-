@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layoutDirection="rtl"
+    android:background="@color/mdtp_transparent_black"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/img_close"
+        android:background="@color/mdtp_white"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:src="@drawable/ic_baseline_close_24"
+        ></ImageView>
+<ImageView
+    android:id="@+id/img"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="centerInside"
+    android:adjustViewBounds="true"
+   >
+
+</ImageView>
+</RelativeLayout>

@@ -94,10 +94,14 @@
                 android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/txtmessage"
+                    android:textIsSelectable="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/text_color_w"
+                    android:textColorLink="@color/color_link"
+                    android:autoLink="web"
+                    android:linksClickable="true"
                     android:text="slam khobi">
 
                 </TextView>
@@ -107,13 +111,9 @@
                 android:visibility="gone"
                 android:layout_margin="@dimen/_5sdp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/img_shower"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/lessonb"></ImageView>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/lin_audeo"

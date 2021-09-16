@@ -121,23 +121,22 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size"
                     android:textColor="@color/text_color_b"
+                    android:textColorLink="@color/color_link"
+                    android:autoLink="web"
+                    android:linksClickable="true"
+                    android:textIsSelectable="true"
                     android:text="slam khobi">
 
                 </TextView>
             </LinearLayout>
             <LinearLayout
+                android:orientation="vertical"
                 android:id="@+id/lin_img"
                 android:visibility="gone"
                 android:layout_margin="@dimen/_5sdp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/img_shower"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
 
-                    ></ImageView>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/lin_audeo"

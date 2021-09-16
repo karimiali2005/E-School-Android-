@@ -1,3 +1,5 @@
+
+
 package com.hesabischool.hesabiapp;
 
 import androidx.annotation.NonNull;
@@ -103,7 +105,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     TextView txt_postion,txt_des;
     ImageView img_next,img_pre;
     RelativeLayout rel_searchdes;
-    ImageView img_tag, img_send, img_mic, img_file,img_tag2;
+    ImageView img_tag, img_send, img_mic, img_file,img_tag2,img_searchenter;
     RelativeLayout rel_searchbar;
     RelativeLayout rel_toolbar;
     CircleImageView img_profile;
@@ -170,17 +172,17 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         public void updateMessage(int oldroomchatId, RoomChatLeftShowResult newr) {
 
             final int index = findRoomChatLeft(oldroomchatId);
-                Toast.makeText(context, "update1"+newr.TextChat, Toast.LENGTH_SHORT).show();
+            //   Toast.makeText(context, "update1"+newr.TextChat, Toast.LENGTH_SHORT).show();
 
             if (index != -1) {
-                Toast.makeText(context, "update"+newr.TextChat, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "update"+newr.TextChat, Toast.LENGTH_SHORT).show();
                 ma.vm.set(index, newr);
                 shimmerRecycler.post(new Runnable() {
                     @Override
                     public void run() {
 
                         ma.notifyItemChanged(index);
-                        //  ma.notifyDataSetChanged();
+                        ma.notifyDataSetChanged();
                         //     layoutManager.scrollToPosition(finalPoslast);
                         //      ma.scroled = 0;
                     }
@@ -354,13 +356,13 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     shimmerRecycler.post(new Runnable() {
                         @Override
                         public void run() {
-                           // Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, "Goto Posetion " + String.valueOf(postion), Toast.LENGTH_SHORT).show();
 
                             layoutManager.scrollToPosition(postion);
                             ma.select = true;
                             ma.notifyItemChanged(postion);
                             //     ma.notifyDataSetChanged();
-                          //  app.progress.tryDismiss();
+                            //  app.progress.tryDismiss();
                             if(shomarande>ifshmarande)
                             {
                                 shomarande=0;
@@ -411,7 +413,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
 
             }
-          //  app.progress.tryDismiss();
+            //  app.progress.tryDismiss();
         }
 
         @Override
@@ -432,7 +434,15 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         @Override
         public void AddMessage(RoomChatLeftShowResult rchatleft) {
-            loadrecNotifyAddMessageFromSignalR(rchatleft);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    loadrecNotifyAddMessageFromSignalR(rchatleft);
+                    ma.notifyDataSetChanged();
+                }
+            });
+
         }
 
         @Override
@@ -563,7 +573,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         @Override
         public void GetUserOnlineShow(Map<String, Integer> meta) {
 
-           ShowDialogOnlineUser(meta);
+            ShowDialogOnlineUser(meta);
         }
 
 
@@ -617,14 +627,14 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                 String itemvalue="";
 
 
-for (int i=0;i<meta.size();i++)
-{
-    Object myKey = meta.keySet().toArray()[i];
-    Object myValue = meta.get(myKey);
-    Double ss= (Double) myValue;
-    itemvalue+=String.valueOf(myValue)+",";
+                for (int i=0;i<meta.size();i++)
+                {
+                    Object myKey = meta.keySet().toArray()[i];
+                    Object myValue = meta.get(myKey);
+                    Double ss= (Double) myValue;
+                    itemvalue+=String.valueOf(myValue)+",";
 
-}
+                }
                 app.progress.onCreateDialog(context);
                 app.retrofit.retrofit().RoomChatGroupOnlineShow(rcharright.RoomChatGroupID, itemvalue).enqueue(new Callback<GetDataFromServer5>() {
                     @Override
@@ -673,36 +683,26 @@ for (int i=0;i<meta.size();i++)
                             edt_search.setText("");
                             rel_searchbar.setVisibility(View.VISIBLE);
                             rel_toolbar.setVisibility(View.GONE);
-
-                            edt_search.addTextChangedListener(new TextWatcher() {
+                            img_searchenter.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                                }
-
-                                @Override
-                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                                }
-
-                                @Override
-                                public void afterTextChanged(Editable editable) {
-
+                                public void onClick(View view) {
                                     try {
                                         String where= " WHERE RoomChatGroupID = " + String.valueOf(rcharright.RoomChatGroupID);
-                                        where += " AND TextChat LIKE "+"'%"+editable.toString()+"%'";
-                                        List<RoomChatLeftShowResult> vm = (List<RoomChatLeftShowResult>) dq.SelesctListArryWhere(new RoomChatLeftShowResult(),where);
- if(vm!=null&&vm.size()>0)
- {rel_searchdes.setVisibility(View.VISIBLE);
-           String resultvalue=String.valueOf(vm.size())+" مورد یافت شد " ;
-           txt_des.setText(resultvalue);
-            ResultSerachAction(vm,vm.size(),0);
-            c.gotoPostionItem(vm.get(0).RoomChatID);
- }else
- {
-     rel_searchdes.setVisibility(View.GONE);
-     Toast.makeText(context, "نتیجه ای یافت نشد...", Toast.LENGTH_SHORT).show();
- }
+                                        String SearchWord=edt_search.getText().toString();
+                                        Toast.makeText(DetilsChat.this, SearchWord, Toast.LENGTH_SHORT).show();
+                                        where += " AND TextChat LIKE "+"\"%"+SearchWord+"%\"";
+                                        List<RoomChatLeftShowResult> vm = (List<RoomChatLeftShowResult>) dq.SelesctListArryWhereDes(new RoomChatLeftShowResult(),where,"RoomChatDate");
+                                        if(vm!=null&&vm.size()>0)
+                                        {rel_searchdes.setVisibility(View.VISIBLE);
+                                            String resultvalue=String.valueOf(vm.size())+" مورد یافت شد " ;
+                                            txt_des.setText(resultvalue);
+                                            ResultSerachAction(vm,vm.size(),0);
+                                            c.gotoPostionItem(vm.get(0).RoomChatID);
+                                        }else
+                                        {
+                                            rel_searchdes.setVisibility(View.GONE);
+                                            Toast.makeText(context, "نتیجه ای یافت نشد...", Toast.LENGTH_SHORT).show();
+                                        }
 
 
 
@@ -712,9 +712,27 @@ for (int i=0;i<meta.size();i++)
                                         e.printStackTrace();
                                     }
 
-
                                 }
                             });
+
+//                            edt_search.addTextChangedListener(new TextWatcher() {
+//                                @Override
+//                                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                                }
+//
+//                                @Override
+//                                public void afterTextChanged(Editable editable) {
+//
+//
+//
+//                                }
+//                            });
 
                         }
 
@@ -745,7 +763,7 @@ for (int i=0;i<meta.size();i++)
             img_next.setVisibility(View.VISIBLE);
         }
 
-        c.gotoPostionItem(index);
+        c.gotoPostionItem(vm.get(index).RoomChatID);
 
         img_next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -755,7 +773,7 @@ for (int i=0;i<meta.size();i++)
                 {
                     img_next.setVisibility(View.INVISIBLE);
                 }
-                c.gotoPostionItem(vm.get(i).RoomChatID);
+              //  c.gotoPostionItem(vm.get(i).RoomChatID);
                 ResultSerachAction(vm,totalSize,i);
             }
         });
@@ -768,7 +786,7 @@ for (int i=0;i<meta.size();i++)
                 {
                     img_pre.setVisibility(View.INVISIBLE);
                 }
-                c.gotoPostionItem(vm.get(i).RoomChatID);
+               // c.gotoPostionItem(vm.get(i).RoomChatID);
                 ResultSerachAction(vm,totalSize,i);
             }
         });
@@ -853,6 +871,7 @@ for (int i=0;i<meta.size();i++)
         rel_toolbar=findViewById(R.id.rel_toolbar);
         edt_search=findViewById(R.id.edt_search);
         img_back=findViewById(R.id.img_back);
+        img_searchenter=findViewById(R.id.img_searchenter);
         txt_des=findViewById(R.id.txt_des);
         txt_postion=findViewById(R.id.txt_postion);
         img_next=findViewById(R.id.img_next);
@@ -896,7 +915,7 @@ for (int i=0;i<meta.size();i++)
                     taglearn=!taglearn;
                     if(taglearn)
                     {
-                     img_tag.setImageResource(R.drawable.lessonselect);
+                        img_tag.setImageResource(R.drawable.lessonselect);
                     }
                     else
                     {
@@ -908,7 +927,7 @@ for (int i=0;i<meta.size();i++)
             img_tag2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   // Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
                     //todo tag
                     taglearnFilter=!taglearnFilter;
                     if(taglearnFilter)
@@ -934,20 +953,20 @@ for (int i=0;i<meta.size();i++)
             img_back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "click", Toast.LENGTH_SHORT).show();
+
                     edt_search.setText("");
                     rel_toolbar.setVisibility(View.VISIBLE);
                     rel_searchbar.setVisibility(View.GONE);
                     rel_searchdes.setVisibility(View.GONE);
                 }
             });
-img_profile.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        hesabi_SignalR.GetOnlineUser();
+            img_profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    hesabi_SignalR.GetOnlineUser();
 
-    }
-});
+                }
+            });
 
             edt_chat.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1004,6 +1023,8 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                         r.SenderName = app.Info.User.fullName;
                         r.RoomChatDate = s;
                         r.RoomChatDateString = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(d);
+                        r.RoomChatGroupTitle=rcharright.RoomChatTitle;
+                        r.RoomChatGroupType=rcharright.RoomChatGroupType;
                         insertToSqllite(r);
                         edt_chat.setText("");
                         removeReplyBox();
@@ -1274,7 +1295,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
             list = (List<RoomChatLeftPropertyResult>) dq.SelesctListArryWhere(new RoomChatLeftPropertyResult(), where);
             rProperty = list.get(0);
             if (rProperty != null && rProperty.PinRoomChatID != 0) {
-              //  Toast.makeText(context, String.valueOf(rProperty.PinRoomChatID), Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(context, String.valueOf(rProperty.PinRoomChatID), Toast.LENGTH_SHORT).show();
                 ChatMessage cm = new ChatMessage();
                 cm.textChat = rProperty.PinTextChat;
                 cm.roomChatId = rProperty.PinRoomChatID;
@@ -1426,6 +1447,8 @@ img_profile.setOnClickListener(new View.OnClickListener() {
             shimmerRecycler.setAdapter(ma);
             //=====================================
             final boolean[] isdown = {true};
+            final boolean[] isload = {true};
+            final int[] ifer = {5};
             shimmerRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -1435,21 +1458,49 @@ img_profile.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                  /*  if (dy > 0) //check for scroll down
+                    pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+                    if (dy < 0) //check for scroll down
                     {
-                        visibleItemCount = layoutManager.getChildCount();
-                        totalItemCount = layoutManager.getItemCount();
-                        pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            loading = false;
+//                      //  visibleItemCount = layoutManager.getChildCount();
+//                       // totalItemCount = layoutManager.getItemCount();
+//                      int  pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+//
+//                        if ((pastVisiblesItems) <= ifer[0] && isload[0]) {
+//                           layzyLoad.call();
+//                           isload[0] =false;
+//                           ifer[0] =0;
+//                        }if(!isload[0])
+//                    {
+//                        if(ifer[0]<5)
+//                        {
+//                        ifer[0]++;
+//
+//                        }else if(!isload[0])
+//                        {
+//                            ifer[0]=5;
+//                        isload[0] =true;
+//
+//                        }
+//
+//                    }
 
-                            Log.v("...", " Reached Last Item");
-                            loadMoreVideos(searchVideos);
+                        int size = 5;
+                        boolean b = (size >= pastVisiblesItems) ? true : false;
+
+                        if (b) {
+layzyLoad.call();
                         }
 
-                    }*/
-                    pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+
+                    }
+
+
+                    //...................................................................
+
+                    //...................................................................
+
+
 
                     if (countNewMessage > 0) {
                         int size = ma.vm.size() - 1;
@@ -1510,45 +1561,71 @@ img_profile.setOnClickListener(new View.OnClickListener() {
 
     private void loadrecNotify() {
 
-//        for (int i = lvm.size() - 1; i >= 0; i--) {
-//            ma.vm.add(0, lvm.get(i));
-//        }
-        //  final int poslast=(ma.vm.size())-(lvm.size())-3;
-        int poslast = ma.vm.size() - 1;
-        for (int i = 0; i < lvm.size(); i++) {
-            ma.vm.add(0, lvm.get(i));
-        }
-        ma.scroled = ma.vm.size() - 1;
 
-        poslast = ma.scroled - poslast;
-        final int finalPoslast = poslast;
-        shimmerRecycler.post(new Runnable() {
+//          final int poslast=(ma.vm.size())-(lvm.size())-3;
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                int size = ma.vm.size() - 1;
+                boolean b = (size <= pastVisiblesItems) ? true : false;
+                for (int i = lvm.size() - 1; i >= 0; i--) {
+                    ma.vm.add(0, lvm.get(i));
+                }
 
 
-                ma.notifyDataSetChanged();
-                layoutManager.scrollToPosition(finalPoslast);
-                ma.scroled = 0;
+                //...............................................................
+
+
+
+
+
+           //     int poslast = ma.vm.size() - 1;
+//                for (int i = 0; i < lvm.size(); i++) {
+//                    ma.vm.add(0, lvm.get(i));
+//                    ma.notifyItemInserted(0);
+//                }
+//
+//                ma.scroled = ma.vm.size() - 1;
+
+//                poslast = ma.scroled - poslast;
+//                final int finalPoslast = poslast;
+//                shimmerRecycler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//
+//                        layoutManager.scrollToPosition(finalPoslast);
+//                        ma.scroled = 0;
+//                      //  ma.notifyDataSetChanged();
+//                    }
+//                });
             }
         });
+
 
 
     }
 
     private void loadrecNotifyAddMessage(final RoomChatLeftShowResult r) {
 
-        shimmerRecycler.post(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ma.vm.add(r);
-                layoutManager.scrollToPosition(ma.vm.size() - 1);
-                ma.notifyItemInserted(ma.vm.size() - 1);
-                ma.notifyDataSetChanged();
+                shimmerRecycler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ma.vm.add(r);
+                        layoutManager.scrollToPosition(ma.vm.size() - 1);
+                        // ma.notifyItemInserted(ma.vm.size() - 1);
+                        ma.notifyDataSetChanged();
 
 
+                    }
+                });
             }
         });
+
+
 
 
     }
@@ -1561,16 +1638,17 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                 int size = ma.vm.size() - 1;
                 boolean b = (size <= pastVisiblesItems) ? true : false;
                 ma.vm.add(r);
+                //    ma.notifyDataSetChanged();
 
-                ma.notifyItemInserted(ma.vm.size() - 1);
-
+                // ma.notifyItemInserted(size+1);
+                //    ma.notifyDataSetChanged();
                 if (b || pastVisiblesItems == -1) {
                     //IF scrrrole down => scrool To MEssage
                     ma.size2 = -1;
                     c.gotodown();
+                    // ma.notifyDataSetChanged();
                 } else {
                     //if scroole up=> show Text Message
-                    ma.notifyDataSetChanged();
                     countNewMessage++;
                     c.setCountNewMessage();
                     if (countNewMessage > 0) {
@@ -1670,7 +1748,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
             circle_progress.setVisibility(View.VISIBLE);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, content_type, this);
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
-            app.retrofit.retrofit().StoreFile(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID, "", roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName).enqueue(new Callback<GetDataFromServer3>() {
+            app.retrofit.retrofit().StoreFile(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID, "", roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName,rcharright.RoomChatTitle,rcharright.RoomChatGroupType).enqueue(new Callback<GetDataFromServer3>() {
                 @Override
                 public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
                     if (response.isSuccessful()) {
@@ -1694,7 +1772,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                             }
 
 
-                            c.updateMessage(rclst.RoomChatID, rclst);
+                            c.updateMessage(r.RoomChatID,rclst);
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         } catch (ClassNotFoundException e) {
@@ -1726,7 +1804,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
             circle_progress.setVisibility(View.VISIBLE);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, content_type, this);
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
-            app.retrofit.retrofit().SendRecordAudio(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID, "", roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName).enqueue(new Callback<GetDataFromServer3>() {
+            app.retrofit.retrofit().SendRecordAudio(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID, "", roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName,rcharright.RoomChatTitle,rcharright.RoomChatGroupType).enqueue(new Callback<GetDataFromServer3>() {
                 @Override
                 public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
                     if (response.isSuccessful()) {
@@ -1750,7 +1828,7 @@ img_profile.setOnClickListener(new View.OnClickListener() {
                             }
 
 
-                            c.updateMessage(rclst.RoomChatID, rclst);
+                            c.updateMessage(r.RoomChatID,rclst);
                         } catch (IllegalAccessException e) {
                             e.printStackTrace();
                         } catch (ClassNotFoundException e) {

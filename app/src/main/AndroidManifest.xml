@@ -5,31 +5,34 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <!--برای گرفتن اطلاعات از سمت فایربیس -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- برای گرفتن اطلاعات از سمت فایربیس -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
-        android:requestLegacyExternalStorage="true"
-        android:usesCleartextTraffic="true"
         android:name=".Clases.FontOverride"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".CrashActivity"></activity>
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Taklif"></activity>
+        <activity android:name=".TestWebView" />
+        <activity android:name=".CrashActivity" />
         <activity
-            android:launchMode="singleTask"
             android:name=".DetilsChat"
             android:configChanges="orientation|keyboardHidden|screenLayout|screenSize"
-            android:label="chatDetails" />
-        <activity android:name=".MainChat"
-            android:launchMode="singleTask"
-            />
+            android:label="chatDetails"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".MainChat"
+            android:launchMode="singleTask" />
         <activity
             android:name=".Login"
             android:windowSoftInputMode="adjustResize" />
@@ -42,9 +45,9 @@
         </activity>
 
         <service android:name=".Service.MyService" />
-        <service android:name=".ForgerunadService.DownloadService"
-            android:foregroundServiceType="dataSync"
-            />
+        <service
+            android:name=".ForgerunadService.DownloadService"
+            android:foregroundServiceType="dataSync" />
         <service android:name=".Service.hesabi_fireBase">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -54,6 +54,15 @@ public class dbQuerySelect {
             throw ex;
         }
     }
+    public <T> T SelesctListArryWhereDes(T c,String WhereArry,String culnmeDes) throws ClassNotFoundException, IllegalAccessException {
+        try {
+            String nametabel = c.getClass().getSimpleName();
+            String query = "SELECT * FROM " + nametabel + WhereArry+ " ORDER BY " + culnmeDes + " DESC";
+            return SelectList(c, query);
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
     public <T> T SelesctListTakeAndOfcet(T c,int take,int ofcet) throws ClassNotFoundException, IllegalAccessException {
         try {
             String nametabel = c.getClass().getSimpleName();
