@@ -80,6 +80,18 @@
                 android:src="@drawable/ic_live_streaming"></ImageView>
         </LinearLayout>
     </RelativeLayout>
+    <RelativeLayout
+        android:background="#f2f4f9"
+        android:layout_below="@+id/rel_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp">
+<ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_add"
+
+    ></ImageView>
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_margin="@dimen/_5sdp"
         android:layout_below="@+id/rel_toolbar"

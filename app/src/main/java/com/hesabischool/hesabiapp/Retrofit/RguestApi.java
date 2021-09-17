@@ -4,16 +4,26 @@ package com.hesabischool.hesabiapp.Retrofit;
 import com.google.gson.JsonObject;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer10;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer11;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer12;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer13;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer14;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer5;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer6;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer7;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer8;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer9;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
+import com.hesabischool.hesabiapp.vm_ModelServer.vm_AnsverhomeWork;
+import com.hesabischool.hesabiapp.vm_ModelServer.vm_HomeworkDetailsShowByIDResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -119,5 +129,38 @@ Call<GetDataFromServer5> RoomChatGroupOnlineShow(@Query("roomChatGroupId")int ro
 Call<GetDataFromServer6> RoomChatForwardUserShow(@Query("roomChatId")int roomChatId, @Query("roomChatGroupId")int roomChatGroupId);
 @GET(api + "Member/RoomChatForwardSend")
 Call<Object> RoomChatForwardSend(@Query("listId")String listRoomCharGrupeId,@Query("roomChatId")int roomChatId);
+//==================================================Taklif========================
+@GET(api + "HomeWork/ManageHomWork")
+Call<GetDataFromServer7> ManageHomWork(@Query("idroom") int idroom, @Query("courseid") int courseid, @Query("pagenumber") int pagenumber , @Query("pagesize") int pagesize);
+
+    @GET(api + "HomeWork/ManageHomWorkDetails")
+    Call<GetDataFromServer8> ManageHomWorkDetails(@Query("idhomework") int idhomework);
+ @GET(api + "HomeWork/ManageAnswerHomWorkDetails")
+    Call<GetDataFromServer9> ManageAnswerHomWorkDetails(@Query("idhomework") int idhomework, @Query("idstudents") int idstudents);
+    @POST(api + "HomeWork/ManageAnswerHomWorkDetails")
+    Call<GetDataFromServer10> ManageAnswerHomWorkDetailsPost(@Query("vm") vm_HomeworkDetailsShowByIDResult vm, @Query("id") int id, @Query("isnumberic") boolean isnumberic, @Query("homeworkid") int homeworkid, @Query("dateend") String dateend);
+    @Multipart
+    @POST(api + "HomeWork/CreateHomeWork")
+    Call<GetDataFromServer11> CreateHomeWork(@Part MultipartBody.Part vm_Homework, @Query("roomChatGroupID") int roomChatGroupID);
+
+//================================TklifStudent////////////////////////////////////////
+    @GET(api + "HomeWork/HomeWorkStudentGet")
+    Call<GetDataFromServer12> HomeWorkStudentGet(@Query("idroom") int idroom, @Query("idcours") int idcours, @Query("pagenumber") int pagenumber, @Query("pagesize") int pagesize);
+
+    @GET(api + "HomeWork/SendHomeworkStudentGet")
+    Call<GetDataFromServer13> SendHomeworkStudentGet(@Query("id") int id);
+
+    @POST(api + "HomeWork/SendHomeworkStudent")
+    Call<GetDataFromServer13> SendHomeworkStudent(@Query("homeworkAnswer") vm_AnsverhomeWork homeworkAnswer);
+
+    @POST(api + "HomeWork/AddResponseFileHomeWork")
+    Call<Object> AddResponseFileHomeWork(@Query("homeworkanswerId") int homeworkanswerId,@Query("filenam") String filenam);
+
+ @POST(api + "HomeWork/DeleteFileHomework")
+    Call<Object> DeleteFileHomework(@Query("idanswerfile") int idanswerfile,@Query("idhomeworkAnswer") int idhomeworkAnswer);
+    @Multipart
+    @POST(api+"HomeWork/StoreFile")
+    Call<GetDataFromServer14> StoreFile(@Part MultipartBody.Part file);
+
 
 }
