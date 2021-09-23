@@ -22,7 +22,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Taklif"></activity>
+        <activity android:name=".Taklif_ListStudent_teacher"></activity>
+        <activity android:name=".AddOrEditTeacher" />
+        <activity android:name=".details_ansver_teacher" />
+        <activity android:name=".DetailsAnsver" />
+        <activity android:name=".Taklif" />
         <activity android:name=".TestWebView" />
         <activity android:name=".CrashActivity" />
         <activity

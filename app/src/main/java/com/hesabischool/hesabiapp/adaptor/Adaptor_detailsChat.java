@@ -68,7 +68,10 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -272,7 +275,11 @@ this.size2=size2;
                 ((mysendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
-            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
+
+
+
+
+            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
 
                 ((mysendchat) holder).lin_img.setVisibility(View.VISIBLE);
@@ -375,6 +382,20 @@ this.size2=size2;
             }
         });
 
+    }
+
+    private String formateDateDownLoad(String roomChatDate) {
+        // https://hesabidownload.ir/hesabischoolfiles/Normal/Month20210923/b2c95615723748a39ccaec5e41c66fe2.jpg
+        String dtStart =roomChatDate;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        try {
+            Date date = format.parse(dtStart);
+            String fDate = new SimpleDateFormat("yyyyMMdd").format(date);
+            return "Month"+fDate;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return  "";
     }
 
     private void showFile(RecyclerView.ViewHolder holder, int position) {
@@ -1026,7 +1047,9 @@ app.retrofit.FailRetrofit(t,context);
                 ((othersendchat) holder).rel_parent.setVisibility(View.GONE);
 
             }
-            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
+          //  String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
+            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
                 ((othersendchat) holder).lin_img.setVisibility(View.VISIBLE);
 

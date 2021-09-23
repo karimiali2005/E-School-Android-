@@ -2,7 +2,8 @@
 <RelativeLayout
     android:layoutDirection="rtl"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_10sdp">
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -12,10 +13,12 @@
            android:layout_height="wrap_content"
            android:orientation="horizontal">
            <TextView
-               android:minWidth="@dimen/_90sdp"
+
                android:layout_margin="@dimen/_1sdp"
                android:background="#f2f4f9"
                android:layout_gravity="center"
+               android:maxWidth="@dimen/_90sdp"
+               android:minWidth="@dimen/_90sdp"
                android:gravity="center"
                android:layout_weight="1"
                android:layout_height="wrap_content"
@@ -65,28 +68,28 @@
            android:layout_height="wrap_content"
            android:orientation="horizontal">
            <TextView
-               android:minWidth="@dimen/_90sdp"
-               android:maxWidth="@dimen/_90sdp"
+               android:id="@+id/txt_titel"
+
                android:layout_margin="@dimen/_1sdp"
                android:layout_gravity="center"
                android:gravity="center"
                android:layout_weight="1"
                android:layout_height="wrap_content"
                android:singleLine="true"
-               android:text="jkjkjkjkjkjkjkjjkjkعنوان"
+               android:text=""
                android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
-           <TextView
-               android:layout_margin="@dimen/_1sdp"
-               android:layout_gravity="center"
-               android:gravity="center"
-               android:layout_weight="1"
+               android:layout_width="@dimen/_90sdp"></TextView>
+
+           <de.hdodenhof.circleimageview.CircleImageView
+               android:id="@+id/imgtype"
+               android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:singleLine="true"
-               android:text="نوع"
-               android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
+               android:layout_weight="1"
+
+               android:src="@drawable/ic_microphone"></de.hdodenhof.circleimageview.CircleImageView>
+
            <TextView
+               android:id="@+id/txt_TotaStudentCount"
              android:minWidth="@dimen/_90sdp"
                android:layout_margin="@dimen/_1sdp"
                android:layout_gravity="center"
@@ -94,67 +97,18 @@
                android:layout_weight="1"
                android:layout_height="wrap_content"
                android:singleLine="true"
-               android:text="5"
+               android:text=""
                android:padding="@dimen/_10sdp"
                android:layout_width="wrap_content"></TextView>
            <TextView
+               android:id="@+id/txt_CountSender"
                android:layout_margin="@dimen/_1sdp"
                android:layout_gravity="center"
                android:gravity="center"
                android:layout_weight="1"
                android:layout_height="wrap_content"
                android:singleLine="true"
-               android:text="تعداد ارسالی"
-               android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_margin="@dimen/_1sdp"
-               android:background="#f2f4f9"
-               android:layout_gravity="center"
-               android:gravity="center"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:singleLine="true"
-               android:text="عنوان"
-               android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
-           <TextView
-               android:layout_margin="@dimen/_1sdp"
-
-               android:layout_gravity="center"
-               android:gravity="center"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:singleLine="true"
-               android:text="نوع"
-               android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
-           <TextView
-
-               android:layout_margin="@dimen/_1sdp"
-               android:background="#f2f4f9"
-               android:layout_gravity="center"
-               android:gravity="center"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:singleLine="true"
-               android:text="تعداد افراد کلاس"
-               android:padding="@dimen/_10sdp"
-               android:layout_width="wrap_content"></TextView>
-           <TextView
-               android:layout_margin="@dimen/_1sdp"
-
-               android:layout_gravity="center"
-               android:gravity="center"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:singleLine="true"
-               android:text="تعداد ارسالی"
+               android:text="0"
                android:padding="@dimen/_10sdp"
                android:layout_width="wrap_content"></TextView>
        </LinearLayout>
@@ -170,32 +124,85 @@
                android:layout_weight="1"
                android:layout_height="wrap_content"
                android:singleLine="true"
-               android:text="عنوان"
+               android:text="از"
+               android:padding="@dimen/_10sdp"
+               android:layout_width="wrap_content"></TextView>
+           <TextView
+               android:layout_margin="@dimen/_1sdp"
+android:id="@+id/txtstartdate"
+               android:layout_gravity="center"
+               android:gravity="center"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text=""
+               android:padding="@dimen/_10sdp"
+               android:layout_width="wrap_content"></TextView>
+           <TextView
+               android:layout_margin="@dimen/_1sdp"
+               android:background="#f2f4f9"
+               android:layout_gravity="center"
+               android:gravity="center"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text=" تا"
+               android:padding="@dimen/_10sdp"
+               android:layout_width="wrap_content"></TextView>
+           <TextView
+               android:layout_margin="@dimen/_1sdp"
+               android:id="@+id/txtEndDate"
+               android:layout_gravity="center"
+               android:gravity="center"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text=""
+               android:padding="@dimen/_10sdp"
+               android:layout_width="wrap_content"></TextView>
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_margin="@dimen/_1sdp"
+               android:background="#f2f4f9"
+               android:layout_gravity="center"
+               android:gravity="center"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:singleLine="true"
+               android:text="عملیات"
                android:padding="@dimen/_10sdp"
                android:layout_width="wrap_content"></TextView>
          <LinearLayout
+             android:layout_margin="@dimen/_1sdp"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_weight="3"
              >
              <Button
+                 android:id="@+id/btnsee"
                  android:layout_margin="@dimen/_1sdp"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_weight="1"
                  android:text="مشاهده "></Button>
              <Button
+                 android:id="@+id/btnedit"
                  android:layout_margin="@dimen/_1sdp"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_weight="1"
-                 android:text="مشاهده "></Button>
+                 android:text="ویرایش "></Button>
              <Button
+                 android:id="@+id/btndelete"
                  android:layout_margin="@dimen/_1sdp"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_weight="1"
-                 android:text="مشاهده "></Button>
+                 android:text="حذف "></Button>
          </LinearLayout>
        </LinearLayout>
    </LinearLayout>

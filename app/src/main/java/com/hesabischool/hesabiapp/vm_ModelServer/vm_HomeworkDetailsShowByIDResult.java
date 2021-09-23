@@ -14,11 +14,11 @@ public class vm_HomeworkDetailsShowByIDResult
     @SerializedName("homeworkAnswerStatusTitle")
     public String HomeworkAnswerStatusTitle ;
     @SerializedName("VisitDateTime")
-    public Date VisitDateTime ;
+    public String VisitDateTime ;
     @SerializedName("editDateTime")
-    public Date EditDateTime ;
+    public String EditDateTime ;
     @SerializedName("sendDatetime")
-    public Date SendDatetime ;
+    public String SendDatetime ;
     @SerializedName("userID")
     public int UserID ;
     @SerializedName("picName")
@@ -36,9 +36,9 @@ public class vm_HomeworkDetailsShowByIDResult
     @SerializedName("teacherComment")
     public String TeacherComment ;
     @SerializedName("homeworkAnswerSartDate")
-    public Date HomeworkAnswerSartDate ;
+    public String HomeworkAnswerSartDate ;
     @SerializedName("homeworkAnswerFinishDate")
-    public Date HomeworkAnswerFinishDate ;
+    public String HomeworkAnswerFinishDate ;
     @SerializedName("fileAnswers")
     public ArrayList<FileAnswer> FileAnswers ;
     @SerializedName("scoreTypeID")

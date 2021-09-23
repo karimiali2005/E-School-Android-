@@ -675,7 +675,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         if (menuItem.getTitle().equals(menu.getMenu().getItem(0).getTitle())) {
 
                         } else if (menuItem.getTitle().equals(menu.getMenu().getItem(1).getTitle())) {
-                            //Edite
+                            Intent i=new Intent(context,Taklif.class);
+                            startActivity(i);
 
                         }
                         else if (menuItem.getTitle().equals("جستجو")) {

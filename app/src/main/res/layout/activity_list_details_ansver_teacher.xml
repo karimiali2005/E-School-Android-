@@ -3,10 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layoutDirection="ltr"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_chat"
-    tools:context=".Taklif">
+    tools:context=".DetailsAnsver">
     <RelativeLayout
 
         android:id="@+id/rel_toolbar"
@@ -68,34 +66,9 @@
 
         </LinearLayout>
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rel_add"
-        android:background="#f2f4f9"
-        android:layout_below="@+id/rel_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_35sdp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="namedarse"
-            android:id="@+id/txt_namedares"
-            android:layout_centerInParent="true"
-            android:singleLine="true"
-            android:textStyle="bold"
-
-            ></TextView>
-<ImageView
-    android:layout_centerVertical="true"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/ic_add"
-android:background="@color/text_color_sucsses"
-    ></ImageView>
-    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
-android:id="@+id/rec"
-        android:layout_margin="@dimen/_5sdp"
-        android:layout_below="@+id/rel_add"
+        android:layout_below="@+id/rel_toolbar"
+        android:id="@+id/rec"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

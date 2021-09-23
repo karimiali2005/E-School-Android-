@@ -3,7 +3,7 @@ package com.hesabischool.hesabiapp.vm_ModelServer;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Date;
+
 
 public class HomeworkDetailShowResult
 {
@@ -19,12 +19,12 @@ public class HomeworkDetailShowResult
     public int HomeworkAnswerID ;
     @SerializedName("homeworkAnswerStatusID")
     public int HomeworkAnswerStatusID ;
-    @SerializedName("sendDatetime")
-    public Date SendDatetime ;
-    @SerializedName("homeworkAnswerSartDate")
-    public Date HomeworkAnswerSartDate ;
-    @SerializedName("homeworkAnswerFinishDate")
-    public Date HomeworkAnswerFinishDate ;
+    @SerializedName("sendStringtime")
+    public String SendStringtime ;
+    @SerializedName("homeworkAnswerSartString")
+    public String HomeworkAnswerSartString ;
+    @SerializedName("homeworkAnswerFinishString")
+    public String HomeworkAnswerFinishString ;
     @SerializedName("teacherComment")
     public String TeacherComment ;
     @SerializedName("homeworkAnswerScore")
@@ -35,10 +35,10 @@ public class HomeworkDetailShowResult
     public String HomeworkResponse ;
     @SerializedName("homeworkAnswerComment")
     public String HomeworkAnswerComment ;
-    @SerializedName("visitDateTime")
-    public Date VisitDateTime ;
-    @SerializedName("editDateTime")
-    public Date EditDateTime ;
+    @SerializedName("visitStringTime")
+    public String VisitStringTime ;
+    @SerializedName("editStringTime")
+    public String EditStringTime ;
     @SerializedName("finalScore")
     public String FinalScore ;
     @SerializedName("homeworkAnswerStatusTitle")

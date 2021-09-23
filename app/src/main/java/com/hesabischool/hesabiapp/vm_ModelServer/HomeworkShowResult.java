@@ -19,9 +19,9 @@ public class HomeworkShowResult
     @SerializedName("scoreTypeTitle")
     public String ScoreTypeTitle;
     @SerializedName("homeworkStartDate")
-    public Date HomeworkStartDate;
+    public String HomeworkStartDate;
     @SerializedName("homeworkFinishDate")
-    public Date HomeworkFinishDate;
+    public String HomeworkFinishDate;
     @SerializedName("studentAllNumber")
     public int StudentAllNumber;
     @SerializedName("studentAnswerNumber")

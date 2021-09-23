@@ -55,6 +55,9 @@ public class app {
     {
         public static LoginUserResult User=new LoginUserResult();
         public static vm_checkPage checkpage=new vm_checkPage();
+        public static int idhomework=0;
+        public static int idStudent=0;
+
 
 
         public static String Path1 ="https://hesabidownload.ir/hesabischoolfiles/";
@@ -79,15 +82,15 @@ public class app {
     public static class baseUrl
     {
 
-       // public static String signalr ="http://192.168.55.143:45457/chatGroupHub";
-        public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
+        public static String signalr ="http://192.168.230.143:45457/chatGroupHub";
+      //  public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
        //public static String retrofit ="http://192.168.234.143:4277/";
 
      //  public static String picurl ="api1/Accounts/GetUserPic";
-     //  public static String retrofit ="http://192.168.55.143:45455/";
-       public static String retrofit ="https://api.hesabischool.com/";
-     // public static String picUrl ="http://192.168.55.143:45459/";
-       public static String picUrl ="https://pic.hesabischool.com/";
+       public static String retrofit ="http://192.168.230.143:45455/";
+       //public static String retrofit ="https://api.hesabischool.com/";
+      public static String picUrl ="http://192.168.230.143:45459/";
+      // public static String picUrl ="https://pic.hesabischool.com/";
 
         //===========================Karimy================
      //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
@@ -416,6 +419,11 @@ public class app {
         }
         static public String CovertToPersianDate(String date)
         {
+            if(app.check.EpmtyOrNull(date))
+            {
+                return "";
+
+            }
             Date d=CovertStringToDate(date);
             String dp=CovertToPersianDate(d);
             return  dp;
