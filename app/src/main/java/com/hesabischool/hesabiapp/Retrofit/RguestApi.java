@@ -9,6 +9,8 @@ import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer11;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer12;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer13;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer14;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer16;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
@@ -119,7 +121,7 @@ Call<GetDataFromServer3> RoomChatLock(@Query("roomChatGroupId") int roomChatGrou
     Call<GetDataFromServer4> RoomChatContactShow();
     //========================================RoomChatGroupInsert======================================
     @POST(api + "Member/RoomChatGroupInsert")
-    Call<Object> RoomChatGroupInsert(@Query("teacherId")int teacherId,@Query("teacherTitle")String teacherTitle);
+    Call<GetDataFromServer16> RoomChatGroupInsert(@Query("teacherId")int teacherId, @Query("teacherTitle")String teacherTitle);
 //======================================ShowOnlineUser===========================================
 
 @GET(api + "Member/RoomChatGroupOnlineShow")
@@ -130,7 +132,7 @@ Call<GetDataFromServer6> RoomChatForwardUserShow(@Query("roomChatId")int roomCha
 @GET(api + "Member/RoomChatForwardSend")
 Call<Object> RoomChatForwardSend(@Query("listId")String listRoomCharGrupeId,@Query("roomChatId")int roomChatId);
 //==================================================Taklif========================
-@GET(api + "HomeWork/ManageHomWork")
+@GET("api/" + "HomeWork/ManageHomWork")
 Call<GetDataFromServer7> ManageHomWork(@Query("idroom") int idroom, @Query("courseid") int courseid, @Query("pagenumber") int pagenumber , @Query("pagesize") int pagesize);
 
     @GET(api + "HomeWork/ManageHomWorkDetails")
@@ -162,5 +164,7 @@ Call<GetDataFromServer7> ManageHomWork(@Query("idroom") int idroom, @Query("cour
     @POST(api+"HomeWork/StoreFile")
     Call<GetDataFromServer14> StoreFile(@Part MultipartBody.Part file);
 
-
+//===============================================Version==============================
+@GET("api/" + "Versioning/GetLoadVersion")
+Call<GetDataFromServer15> GetLoadVersion();
 }

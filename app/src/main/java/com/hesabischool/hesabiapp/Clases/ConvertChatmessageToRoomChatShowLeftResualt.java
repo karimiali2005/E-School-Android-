@@ -33,7 +33,7 @@ public class ConvertChatmessageToRoomChatShowLeftResualt {
        rcl.AttachMsg=chatMessage.attachMsg;
        rcl.RoomChatViewNumber=chatMessage.roomChatViewNumber;
        rcl.RoomChatDate=chatMessage.roomChatDate;
-
+rcl.mainAdress=chatMessage.mainAddress;
     return rcl;
     }
 

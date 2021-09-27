@@ -17,7 +17,9 @@ import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.ImageCash.ImageLoader;
 import com.hesabischool.hesabiapp.R;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer16;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatGroup;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
 
 import java.util.List;
@@ -63,9 +65,9 @@ public class Adaptor_ContentShow  extends RecyclerView.Adapter<Adaptor_ContentSh
               //  Intent i = new Intent(context, DetilsChat.class);
               //  context.startActivity(i);
                 app.progress.onCreateDialog(context);
-            app.retrofit.retrofit().RoomChatGroupInsert(vm.get(position).UserID,vm.get(position).FullName).enqueue(new Callback<Object>() {
+            app.retrofit.retrofit().RoomChatGroupInsert(vm.get(position).UserID,vm.get(position).FullName).enqueue(new Callback<GetDataFromServer16>() {
                 @Override
-                public void onResponse(Call<Object> call, Response<Object> response) {
+                public void onResponse(Call<GetDataFromServer16> call, Response<GetDataFromServer16> response) {
                     app.retrofit.erorRetrofit(response,context);
                     if(response.isSuccessful())
                     {
@@ -74,11 +76,30 @@ public class Adaptor_ContentShow  extends RecyclerView.Adapter<Adaptor_ContentSh
                       //  app.Info.checkpage.roomchatright = vm.get(position);
                        // Intent i = new Intent(context, DetilsChat.class);
                       //  context.startActivity(i);
+                        RoomChatGroup rcg=response.body().value;
+                        RoomChatRightShowResult rcr=new RoomChatRightShowResult();
+rcr.TextChat="";
+        rcr.TeacherID=rcg.TeacherId;
+rcr.RoomChatDate=rcg.RoomChatGroupCreateDateTime;
+rcr.RoomChatTitle=rcg.RoomChatGroupTitle;
+rcr.RoomChatGroupID=rcg.RoomChatGroupId;
+rcr.RoomChatGroupType=rcg.RoomChatGroupType;
+rcr.CourseID=rcg.CourseId;
+rcr.MessageNewNumber=0;
+rcr.RoomID=rcg.RoomId;
+rcr.PicName="";
+rcr.UserIDPic=vm.get(position).UserID;
+
+
+
+                        app.Info.checkpage.roomchatright =rcr ;
+                        Intent i = new Intent(context, DetilsChat.class);
+                        context.startActivity(i);
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Object> call, Throwable t) {
+                public void onFailure(Call<GetDataFromServer16> call, Throwable t) {
 app.retrofit.FailRetrofit(t,context);
                 }
             });

@@ -2,19 +2,31 @@ package com.hesabischool.hesabiapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.database.dbConnector;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
+import com.hesabischool.hesabiapp.vm_ModelServer.VersioningViewModel;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Splash extends AppCompatActivity {
 Context context;
@@ -37,7 +49,15 @@ dbConnector db;
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+if(app.net.isNetworkConnected(context))
+{
+  // chekuserexist();
+   GetVersion();
+}else
+{
                     chekuserexist();
+
+}
 
                 }
             },1000);
@@ -47,6 +67,88 @@ dbConnector db;
         }
 
 
+    }
+
+    private void GetVersion() {
+      app.progress.onCreateDialog(context);
+      app.retrofit.retrofit().GetLoadVersion().enqueue(new Callback<GetDataFromServer15>() {
+          @Override
+          public void onResponse(Call<GetDataFromServer15> call, Response<GetDataFromServer15> response) {
+              app.retrofit.erorRetrofit(response,context);
+              if(response.isSuccessful())
+              {
+                  CheckVersioning(response.body().value);
+              }
+          }
+
+          @Override
+          public void onFailure(Call<GetDataFromServer15> call, Throwable t) {
+              app.retrofit.FailRetrofit(t,context);
+          }
+      });
+
+
+    }
+
+    private void CheckVersioning(VersioningViewModel value) {
+        int versionCode = -1;
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+            // = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if(value.VersionCodeForceInstalling>versionCode)
+        {
+            View vd=app.Dialog_.dialog_creat(context,R.layout.dialog_update);
+            TextView txt=vd.findViewById(R.id.txt);
+            Button btn_dowanload=vd.findViewById(R.id.btn_download);
+            Button btn_cancel=vd.findViewById(R.id.btn_cancel);
+            btn_cancel.setVisibility(View.GONE);
+            btn_dowanload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //todo Open file Dowanload
+                    openweb(value.VersionUrlForceInstalling);
+                }
+            });
+            txt.setText("نسخه فعلی شما منسوخ شده است لطفا نسبت به بروزرسانی اقدام نمایید.");
+            app.Dialog_.show_dialog(context,vd,false);
+            //اجبار
+         //   Error = "NewVersionForce";
+         //   VersionName=value.VersionNameForceInstalling;
+
+        }
+       else if(value.VersionCodeNoForceInstalling>versionCode)
+        {
+            //نسخه جدید در دسترس است در صورت تمایل  دانلود کنید
+            View vd=app.Dialog_.dialog_creat(context,R.layout.dialog_update);
+            TextView txt=vd.findViewById(R.id.txt);
+            Button btn_dowanload=vd.findViewById(R.id.btn_download);
+            Button btn_cancel=vd.findViewById(R.id.btn_cancel);
+            txt.setText("نسخه بروز تری نسبت به نسخه فعلی در دسترس است در صورت تمایل  اقدام به دانلود نمایید.");
+            AlertDialog al=app.Dialog_.show_dialog(context,vd,true);
+            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    app.Dialog_.dimos_dialog(al);
+                }
+            });
+            btn_dowanload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //todo Open file Dowanload
+                    openweb(value.VersionUrlNoForceInstalling);
+                }
+            });
+
+
+        }else
+        {
+            chekuserexist();
+        }
     }
 
     private void chekuserexist() {
@@ -97,5 +199,9 @@ dbConnector db;
             startActivity(i);
             finish();
         }
+    }
+    private void openweb(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
     }
 }

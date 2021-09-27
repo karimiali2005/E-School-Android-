@@ -55,7 +55,7 @@ public class RoomChatLeftShowResult {
     public String RoomChatGroupTitle="-";
     @SerializedName("roomChatGroupType")
     public int RoomChatGroupType=1;
-
+  public  String mainAdress;
     public RoomChatLeftShowResult() {
     }
 

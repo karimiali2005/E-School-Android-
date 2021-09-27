@@ -50,6 +50,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.halilibo.bvpkotlin.BetterVideoPlayer;
 import com.hesabischool.hesabiapp.Clases.Download;
@@ -68,12 +70,15 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -279,7 +284,15 @@ this.size2=size2;
 
 
 
-            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+            String urlAdress ="";
+            if(app.check.EpmtyOrNull(lvm.RoomChatDate))
+            {
+                urlAdress=lvm.mainAdress;
+            }else
+            {
+                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+
+            }
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
 
                 ((mysendchat) holder).lin_img.setVisibility(View.VISIBLE);
@@ -386,72 +399,143 @@ this.size2=size2;
 
     private String formateDateDownLoad(String roomChatDate) {
         // https://hesabidownload.ir/hesabischoolfiles/Normal/Month20210923/b2c95615723748a39ccaec5e41c66fe2.jpg
-        String dtStart =roomChatDate;
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        try {
-            Date date = format.parse(dtStart);
-            String fDate = new SimpleDateFormat("yyyyMMdd").format(date);
-            return "Month"+fDate;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
+      //  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+       // DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+      try{
+          if(!app.check.EpmtyOrNull(roomChatDate))
+          {
+              Date date=app.Convert.CovertStringToDate(roomChatDate);
+              String fDate = new SimpleDateFormat("yyyyMMdd").format(date);
+              fDate=app.Convert.ConvertFAToEN(fDate);
+              return "Month"+fDate;
+          }
+
+
+      } catch (Exception ex)
+      {
+
+
+      }
+        Toast.makeText(context, roomChatDate, Toast.LENGTH_SHORT).show();
         return  "";
     }
 
     private void showFile(RecyclerView.ViewHolder holder, int position) {
+        if(vm.get(position).MimeType.trim().toLowerCase().contains("pdf")&&vm.get(position).MimeType.trim().toLowerCase().contains("asde"))
+        {
+           ShowPdf(holder,position);
 
-
-        if (holder instanceof mysendchat) {
-            ((mysendchat) holder).lin_file.removeAllViews();
-        } else {
-            //TODO FOR OTHER
-            ((othersendchat) holder).lin_file.removeAllViews();
-        }
-        View viewFILE = View.inflate(context, R.layout.item_open_file, null);
-        final Button btn_download = viewFILE.findViewById(R.id.btn_download);
-
-        btn_download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // File file = new File(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
-
-                Intent target = new Intent(Intent.ACTION_VIEW);
-
-                //target.setDataAndType(Uri.fromFile(file),"application/pdf");
-                // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
-
-if(vm.get(position).MimeType.trim().toLowerCase().contains("pdf"))
-{
-                target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),"application/pdf");
-
-}else
-{
-                target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
-
-}
-
-                target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-                Intent intent = Intent.createChooser(target, "بازکردن با");
-                try {
-                    context.startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    // Instruct the user to install a PDF reader here, or something
-                }
+        }else
+        {
+            if (holder instanceof mysendchat) {
+                ((mysendchat) holder).lin_file.removeAllViews();
+            } else {
+                //TODO FOR OTHER
+                ((othersendchat) holder).lin_file.removeAllViews();
             }
-        });
+            View viewFILE = View.inflate(context, R.layout.item_open_file, null);
+            final Button btn_download = viewFILE.findViewById(R.id.btn_download);
+
+            btn_download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // File file = new File(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
+
+                    Intent target = new Intent(Intent.ACTION_VIEW);
+
+                    //target.setDataAndType(Uri.fromFile(file),"application/pdf");
+                    // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
+                        target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
+
+                    target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                    Intent intent = Intent.createChooser(target, "بازکردن با");
+                    try {
+                        context.startActivity(intent);
+                    } catch (ActivityNotFoundException e) {
+                        // Instruct the user to install a PDF reader here, or something
+                    }
+                }
+            });
 
 
-        if (holder instanceof mysendchat) {
-            ((mysendchat) holder).lin_file.addView(viewFILE);
-        } else {
-            //todo
-            ((othersendchat) holder).lin_file.addView(viewFILE);
+            if (holder instanceof mysendchat) {
+                ((mysendchat) holder).lin_file.addView(viewFILE);
+            } else {
+                //todo
+                ((othersendchat) holder).lin_file.addView(viewFILE);
+            }
+
+
         }
+
 
     }
+private void ShowPdf(RecyclerView.ViewHolder holder, int position)
+{
+    if (holder instanceof mysendchat) {
+        ((mysendchat) holder).lin_file.removeAllViews();
+    } else {
+        ((othersendchat) holder).lin_file.removeAllViews();
+    }
+    View viewFILE = View.inflate(context, R.layout.item_open_file, null);
+    final Button btn_download = viewFILE.findViewById(R.id.btn_download);
 
+
+//        Bitmap bitmapImage = BitmapFactory.decodeFile(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
+//        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
+//        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);
+//        imgShow.setImageBitmap(scaled);
+
+    btn_download.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            View vv= app.Dialog_.dialog_creat(context,R.layout.dialog_showpdf);
+            ImageView imgClose=vv.findViewById(R.id.img_close);
+            //ImageView img=vv.findViewById(R.id.img);
+
+            PDFView pdfView =vv.findViewById(R.id.pdfView);
+            AlertDialog a=app.Dialog_.show_dialog(context,vv);
+            //photoView.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+            pdfView.fromUri(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename))
+                    .pages(0, 2, 1, 3, 3, 3) // all pages are displayed by default
+                    .enableSwipe(true) // allows to block changing pages using swipe
+                    .swipeHorizontal(false)
+                    .enableDoubletap(true)
+                    .defaultPage(10)                    // allows to draw something on the current page, usually visible in the middle of the screen
+
+                    // called on single tap, return true if handled, false to toggle scroll handle visibility
+
+                    .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
+                    .password(null)
+                    .scrollHandle(null)
+                    .enableAntialiasing(true) // improve rendering a little bit on low-res screens
+                    // spacing between pages in dp. To define spacing color, set view background
+                    .spacing(0)
+                    .invalidPageColor(Color.WHITE) // color of page that is invalid and cannot be loaded
+                    .load();
+            imgClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    app.Dialog_.dimos_dialog(a);
+                }
+            });
+
+        }
+    });
+
+    //   imgShow.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+
+    if (holder instanceof mysendchat) {
+        ((mysendchat) holder).lin_file.addView(viewFILE);
+    } else {
+        ((othersendchat) holder).lin_file.addView(viewFILE);
+    }
+
+    //..............................................................
+}
     private void openmenu(PopupMenu menu, RoomChatLeftShowResult lvm) {
 
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -1048,8 +1132,15 @@ app.retrofit.FailRetrofit(t,context);
 
             }
           //  String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile) + lvm.Filename;
-            String urlAdress = ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+            String urlAdress ="";
+            if(app.check.EpmtyOrNull(lvm.RoomChatDate))
+            {
+                urlAdress=lvm.mainAdress;
+            }else
+            {
+                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
 
+            }
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
                 ((othersendchat) holder).lin_img.setVisibility(View.VISIBLE);
 
@@ -1245,6 +1336,7 @@ app.retrofit.FailRetrofit(t,context);
         }
         View viewimage = View.inflate(context, R.layout.item_showimage, null);
         final ImageView imgShow = viewimage.findViewById(R.id.img_shower);
+
 //        Bitmap bitmapImage = BitmapFactory.decodeFile(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
 //        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
 //        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);
@@ -1256,10 +1348,10 @@ app.retrofit.FailRetrofit(t,context);
             public void onClick(View view) {
              View vv= app.Dialog_.dialog_creat(context,R.layout.dialog_showimage);
              ImageView imgClose=vv.findViewById(R.id.img_close);
-             ImageView img=vv.findViewById(R.id.img);
-
+             //ImageView img=vv.findViewById(R.id.img);
+                PhotoView photoView = (PhotoView) vv.findViewById(R.id.photo_view);
              AlertDialog a=app.Dialog_.show_dialog(context,vv);
-                img.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+                photoView.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
 
              imgClose.setOnClickListener(new View.OnClickListener() {
                  @Override

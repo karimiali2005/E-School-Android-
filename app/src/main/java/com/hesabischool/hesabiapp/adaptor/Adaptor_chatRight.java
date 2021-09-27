@@ -176,10 +176,6 @@ boolean s=false;
                     KindFile="فایل";
                     holder.txt_lastMessaage.setText(KindFile);
                 }
-
-
-
-
             }else {
 
                 holder.txt_lastMessaage.setText(Html.fromHtml(vm.get(position).TextChat));

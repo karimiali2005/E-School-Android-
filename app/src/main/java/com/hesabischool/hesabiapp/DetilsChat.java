@@ -675,9 +675,9 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         if (menuItem.getTitle().equals(menu.getMenu().getItem(0).getTitle())) {
 
                         } else if (menuItem.getTitle().equals(menu.getMenu().getItem(1).getTitle())) {
-                            Intent i=new Intent(context,Taklif.class);
-                            startActivity(i);
-
+                          //  Intent i=new Intent(context,Taklif.class);
+                          //  startActivity(i);
+                            Toast.makeText(context, "در دست ساخت", Toast.LENGTH_SHORT).show();
                         }
                         else if (menuItem.getTitle().equals("جستجو")) {
                             //Search
@@ -1431,8 +1431,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
         }
 
-        if(lvm2!=null&&lvm2.size()>0)
-        {
+
+
             //  LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             //  layoutManager.setReverseLayout(true);
             //  layoutManager.setStackFromEnd(true);
@@ -1443,7 +1443,15 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
             shimmerRecycler.setDrawingCacheEnabled(true);
             shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+        if(lvm2!=null&&lvm2.size()>0)
+        {
             ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down, size2);
+
+        }else
+        {
+
+            ma = new Adaptor_detailsChat(context, new ArrayList<>(), layzyLoad, c, fab_down, size2);
+        }
             shimmerRecycler.setLayoutManager(layoutManager);
             shimmerRecycler.setAdapter(ma);
             //=====================================
@@ -1537,10 +1545,6 @@ layzyLoad.call();
             });
 
 
-
-        }
-
-
         fab_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1615,7 +1619,19 @@ layzyLoad.call();
                 shimmerRecycler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if(ma==null)
+                        {
+                            Toast.makeText(context, "asdsddd", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(ma.vm==null)
+                        {
+                       //     ma.vm=new ArrayList<>();
                         ma.vm.add(r);
+                        }else
+                        {
+                        ma.vm.add(r);
+
+                        }
                         layoutManager.scrollToPosition(ma.vm.size() - 1);
                         // ma.notifyItemInserted(ma.vm.size() - 1);
                         ma.notifyDataSetChanged();

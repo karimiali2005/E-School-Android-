@@ -359,18 +359,17 @@ app.retrofit.FailRetrofit(t,context);
         img_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(context,TestWebView.class);
-                startActivity(i);
-//                edt_search.setText("");
-//                rel_toolbar.setVisibility(View.GONE);
-//                rel_searchbar.setVisibility(View.VISIBLE);
-//                try {
-//                     sValue = (List<RoomChatRightShowResult>) dq.SelesctListOrderByDesending(new RoomChatRightShowResult(), "RoomChatDate");
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
+
+                edt_search.setText("");
+                rel_toolbar.setVisibility(View.GONE);
+                rel_searchbar.setVisibility(View.VISIBLE);
+                try {
+                     sValue = (List<RoomChatRightShowResult>) dq.SelesctListOrderByDesending(new RoomChatRightShowResult(), "RoomChatDate");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         });
         img_back.setOnClickListener(new View.OnClickListener() {
