@@ -290,7 +290,8 @@ this.size2=size2;
                 urlAdress=lvm.mainAdress;
             }else
             {
-                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+               // urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+lvm.RoomChatFolder+"/"+ lvm.Filename;
 
             }
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {
@@ -397,29 +398,29 @@ this.size2=size2;
 
     }
 
-    private String formateDateDownLoad(String roomChatDate) {
-        // https://hesabidownload.ir/hesabischoolfiles/Normal/Month20210923/b2c95615723748a39ccaec5e41c66fe2.jpg
-
-      //  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-       // DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-      try{
-          if(!app.check.EpmtyOrNull(roomChatDate))
-          {
-              Date date=app.Convert.CovertStringToDate(roomChatDate);
-              String fDate = new SimpleDateFormat("yyyyMMdd").format(date);
-              fDate=app.Convert.ConvertFAToEN(fDate);
-              return "Month"+fDate;
-          }
-
-
-      } catch (Exception ex)
-      {
-
-
-      }
-        Toast.makeText(context, roomChatDate, Toast.LENGTH_SHORT).show();
-        return  "";
-    }
+//    private String formateDateDownLoad(String roomChatDate) {
+//        // https://hesabidownload.ir/hesabischoolfiles/Normal/Month20210923/b2c95615723748a39ccaec5e41c66fe2.jpg
+//
+//      //  SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//       // DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+////      try{
+////          if(!app.check.EpmtyOrNull(roomChatDate))
+////          {
+////              Date date=app.Convert.CovertStringToDate(roomChatDate);
+////              String fDate = new SimpleDateFormat("yyyyMMdd").format(date);
+////              fDate=app.Convert.ConvertFAToEN(fDate);
+////              return "Month"+fDate;
+////          }
+////
+////
+////      } catch (Exception ex)
+////      {
+////
+////
+////      }
+////        Toast.makeText(context, roomChatDate, Toast.LENGTH_SHORT).show();
+////        return  "";
+//    }
 
     private void showFile(RecyclerView.ViewHolder holder, int position) {
         if(vm.get(position).MimeType.trim().toLowerCase().contains("pdf")&&vm.get(position).MimeType.trim().toLowerCase().contains("asde"))
@@ -1138,7 +1139,8 @@ app.retrofit.FailRetrofit(t,context);
                 urlAdress=lvm.mainAdress;
             }else
             {
-                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+               // urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+formateDateDownLoad(lvm.RoomChatDate)+"/"+ lvm.Filename;
+                urlAdress= ((lvm.TagLearn) ? app.Info.LearnFile : app.Info.NormalFile)+lvm.RoomChatFolder+"/"+ lvm.Filename;
 
             }
             if (mime_types_images.indexOf(lvm.MimeType) >= 0) {

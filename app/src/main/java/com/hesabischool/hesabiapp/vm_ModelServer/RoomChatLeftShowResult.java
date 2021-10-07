@@ -53,13 +53,15 @@ public class RoomChatLeftShowResult {
     public boolean IsSqlLite=false;
     @SerializedName("roomChatGroupTitle")
     public String RoomChatGroupTitle="-";
+    @SerializedName("roomChatFolder")
+    public String RoomChatFolder="";
     @SerializedName("roomChatGroupType")
     public int RoomChatGroupType=1;
   public  String mainAdress;
     public RoomChatLeftShowResult() {
     }
 
-    public RoomChatLeftShowResult(int roomChatID, String roomChatDate, int senderID, String senderName, int recieverID, String recieverName, int roomID, int teacherID, int courseID, String textChat, String filename, boolean tagLearn, boolean roomChatDelete, String roomChatUpdate, int roomChatParentID, boolean attachMsg, int roomChatGroupID, String parentSenderName, String parentTextChat, int roomChatViewNumber, String mimeType, String roomChatDateString, boolean isSqlLite,String roomChatGroupTitle,int roomChatGroupType) {
+    public RoomChatLeftShowResult(int roomChatID, String roomChatDate, int senderID, String senderName, int recieverID, String recieverName, int roomID, int teacherID, int courseID, String textChat, String filename, boolean tagLearn, boolean roomChatDelete, String roomChatUpdate, int roomChatParentID, boolean attachMsg, int roomChatGroupID, String parentSenderName, String parentTextChat, int roomChatViewNumber, String mimeType, String roomChatDateString, boolean isSqlLite,String roomChatGroupTitle,int roomChatGroupType,String roomChatFolder) {
         RoomChatID = roomChatID;
         RoomChatDate = roomChatDate;
         SenderID = senderID;
@@ -85,5 +87,6 @@ public class RoomChatLeftShowResult {
         IsSqlLite = isSqlLite;
         RoomChatGroupTitle=roomChatGroupTitle;
         RoomChatGroupType=roomChatGroupType;
+        RoomChatFolder=roomChatFolder;
     }
 }
