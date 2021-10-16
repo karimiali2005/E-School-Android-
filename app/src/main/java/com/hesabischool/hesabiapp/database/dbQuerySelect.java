@@ -213,7 +213,7 @@ public class dbQuerySelect {
                 } while (cu.moveToNext());
 
             }
-
+cu.close();
             if(json.endsWith(","))
             {
                 int ii = json.lastIndexOf(",");

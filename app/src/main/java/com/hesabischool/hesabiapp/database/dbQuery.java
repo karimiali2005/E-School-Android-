@@ -61,6 +61,7 @@ public class dbQuery {
             values.put("token", vmu.token);
 
             boolean status = db.insert("User", values);
+            c.close();
             return status;
 
 
@@ -243,7 +244,7 @@ try {
                 //Insert
                 db.insert(nametabel,values);
             }
-
+cu.close();
         }catch (Exception ex)
         {
             throw ex;

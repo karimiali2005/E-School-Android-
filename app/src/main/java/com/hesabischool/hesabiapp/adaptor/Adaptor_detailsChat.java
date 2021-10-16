@@ -49,11 +49,9 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.github.barteksc.pdfviewer.PDFView;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.halilibo.bvpkotlin.BetterVideoPlayer;
+
 import com.hesabischool.hesabiapp.Clases.Download;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.DetilsChat;
@@ -67,6 +65,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer6;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatForwardUser;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftPropertyResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
+import com.potyvideo.library.AndExoPlayerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -90,7 +90,7 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public class Adaptor_detailsChat extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     Context context;
-    public List<RoomChatLeftShowResult> vm;
+    public List<RoomChatLeftShowResult> vm=new ArrayList<>();
     public int scroled = 0;
     LayzyLoad layzyLoad;
     dbQuerySelect dqs;
@@ -423,12 +423,7 @@ this.size2=size2;
 //    }
 
     private void showFile(RecyclerView.ViewHolder holder, int position) {
-        if(vm.get(position).MimeType.trim().toLowerCase().contains("pdf")&&vm.get(position).MimeType.trim().toLowerCase().contains("asde"))
-        {
-           ShowPdf(holder,position);
 
-        }else
-        {
             if (holder instanceof mysendchat) {
                 ((mysendchat) holder).lin_file.removeAllViews();
             } else {
@@ -442,22 +437,31 @@ this.size2=size2;
                 @Override
                 public void onClick(View view) {
                     // File file = new File(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
+if(vm.get(position).MimeType.contains("application/pdf")&&vm.get(position).MimeType.contains("ASDE"))
+{
 
-                    Intent target = new Intent(Intent.ACTION_VIEW);
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+    context.startActivity(browserIntent);
+}else
+{
 
-                    //target.setDataAndType(Uri.fromFile(file),"application/pdf");
-                    // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
-                        target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
+    Intent target = new Intent(Intent.ACTION_VIEW);
 
-                    target.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+    //target.setDataAndType(Uri.fromFile(file),"application/pdf");
+    // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
+    target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
 
-                    Intent intent = Intent.createChooser(target, "بازکردن با");
-                    try {
-                        context.startActivity(intent);
-                    } catch (ActivityNotFoundException e) {
-                        // Instruct the user to install a PDF reader here, or something
-                    }
+    target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+    Intent intent = Intent.createChooser(target, "بازکردن با");
+    try {
+        context.startActivity(intent);
+    } catch (ActivityNotFoundException e) {
+        // Instruct the user to install a PDF reader here, or something
+    }
+}
+
+
                 }
             });
 
@@ -470,73 +474,10 @@ this.size2=size2;
             }
 
 
-        }
 
 
     }
-private void ShowPdf(RecyclerView.ViewHolder holder, int position)
-{
-    if (holder instanceof mysendchat) {
-        ((mysendchat) holder).lin_file.removeAllViews();
-    } else {
-        ((othersendchat) holder).lin_file.removeAllViews();
-    }
-    View viewFILE = View.inflate(context, R.layout.item_open_file, null);
-    final Button btn_download = viewFILE.findViewById(R.id.btn_download);
 
-
-//        Bitmap bitmapImage = BitmapFactory.decodeFile(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
-//        int nh = (int) ( bitmapImage.getHeight() * (512.0 / bitmapImage.getWidth()) );
-//        Bitmap scaled = Bitmap.createScaledBitmap(bitmapImage, 512, nh, true);
-//        imgShow.setImageBitmap(scaled);
-
-    btn_download.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            View vv= app.Dialog_.dialog_creat(context,R.layout.dialog_showpdf);
-            ImageView imgClose=vv.findViewById(R.id.img_close);
-            //ImageView img=vv.findViewById(R.id.img);
-
-            PDFView pdfView =vv.findViewById(R.id.pdfView);
-            AlertDialog a=app.Dialog_.show_dialog(context,vv);
-            //photoView.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
-            pdfView.fromUri(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename))
-                    .pages(0, 2, 1, 3, 3, 3) // all pages are displayed by default
-                    .enableSwipe(true) // allows to block changing pages using swipe
-                    .swipeHorizontal(false)
-                    .enableDoubletap(true)
-                    .defaultPage(10)                    // allows to draw something on the current page, usually visible in the middle of the screen
-
-                    // called on single tap, return true if handled, false to toggle scroll handle visibility
-
-                    .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
-                    .password(null)
-                    .scrollHandle(null)
-                    .enableAntialiasing(true) // improve rendering a little bit on low-res screens
-                    // spacing between pages in dp. To define spacing color, set view background
-                    .spacing(0)
-                    .invalidPageColor(Color.WHITE) // color of page that is invalid and cannot be loaded
-                    .load();
-            imgClose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    app.Dialog_.dimos_dialog(a);
-                }
-            });
-
-        }
-    });
-
-    //   imgShow.setImageURI(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
-
-    if (holder instanceof mysendchat) {
-        ((mysendchat) holder).lin_file.addView(viewFILE);
-    } else {
-        ((othersendchat) holder).lin_file.addView(viewFILE);
-    }
-
-    //..............................................................
-}
     private void openmenu(PopupMenu menu, RoomChatLeftShowResult lvm) {
 
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -839,16 +780,19 @@ app.retrofit.FailRetrofit(t,context);
             @Override
             public void onClick(View view) {
                 View v = app.Dialog_.dialog_creat(context, R.layout.dilaog_play_video);
-                final BetterVideoPlayer player = v.findViewById(R.id.bvp);
+              //  final BetterVideoPlayer player = v.findViewById(R.id.bvp);
+                AndExoPlayerView andExoPlayerView = v.findViewById(R.id.andExoPlayerView);
                 final CardView cardclose = v.findViewById(R.id.cardclose);
-                player.setSource(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
+               // andExoPlayerView.setSource(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).toString());
+                HashMap<String , String> extraHeaders = new HashMap<>();
+                andExoPlayerView.setSource(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).toString(),extraHeaders);
                 final AlertDialog al = app.Dialog_.show_dialog(context, v);
 
                 cardclose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         al.dismiss();
-                        player.pause();
+
                     }
                 });
             }
@@ -1460,7 +1404,9 @@ app.retrofit.FailRetrofit(t,context);
             if (Build.VERSION.SDK_INT < 24) {
                 urifile = Uri.fromFile(new File(pathname));
             } else {
+                //urifile = Uri.fromFile(new File(pathname));
                 urifile = Uri.parse(new File(pathname).getPath()); // My work-around for new SDKs, worked for me in Android 10 using Solid Explorer Text Editor as the external editor.
+
             }
             return urifile;
         }

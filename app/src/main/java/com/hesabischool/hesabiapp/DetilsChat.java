@@ -1632,7 +1632,11 @@ layzyLoad.call();
                         ma.vm.add(r);
 
                         }
+                        if(ma.vm!=null&&ma.vm.size()>0)
+                        {
                         layoutManager.scrollToPosition(ma.vm.size() - 1);
+
+                        }
                         // ma.notifyItemInserted(ma.vm.size() - 1);
                         ma.notifyDataSetChanged();
 

@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layoutDirection="rtl"
     android:layout_height="match_parent"
     xmlns:bvp="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardclose"
         bvp:layout_constraintLeft_toLeftOf="parent"
         bvp:layout_constraintTop_toTopOf="parent"
-        android:layout_width="@dimen/_35sdp"
-        android:layout_height="@dimen/_35sdp">
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp">
         <ImageView
-            android:layout_margin="@dimen/_7sdp"
+            android:layout_margin="@dimen/_2sdp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_baseline_close_24"
             ></ImageView>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.halilibo.bvpkotlin.BetterVideoPlayer
-        android:id="@+id/bvp"
+    <com.potyvideo.library.AndExoPlayerView
+        android:id="@+id/andExoPlayerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        bvp:bvp_captionSize="20sp"
-        bvp:bvp_captionColor="@android:color/holo_blue_light"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        bvp:andexo_play_when_ready="true"
+        bvp:andexo_show_controller="true"
+        bvp:andexo_resize_mode="Fit"/>
+</RelativeLayout>
