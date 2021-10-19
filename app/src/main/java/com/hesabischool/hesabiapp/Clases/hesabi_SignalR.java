@@ -213,7 +213,23 @@ dbConnector db;
     }
 
     private void connected() {
+        if(hubConnection==null)
+        {
+            hubConnection = HubConnectionBuilder.create(app.baseUrl.signalr).build();
+            StrtSignalR();
+
+        }else
+        {
+            if(hubConnection.getConnectionState()==HubConnectionState.CONNECTED)
+            {
         hubConnection.invoke("JoinRoom", app.Info.User.userID);
+            }else
+            {
+                StrtSignalR();
+            }
+
+        }
+
     }
 
     public static void sendMessage(ChatMessage chatMessage) {

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,7 +70,7 @@ public class app {
         public static View Fileview =null;
         public static boolean isAllowDowanload =true;
         public static ArrayList<Integer> forwardList =new ArrayList<>();
-
+        public  static Uri PdfUri=null;
 
 
 

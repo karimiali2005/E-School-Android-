@@ -19,6 +19,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -46,6 +47,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,6 +59,7 @@ import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.DetilsChat;
 import com.hesabischool.hesabiapp.Interfasces.LayzyLoad;
 import com.hesabischool.hesabiapp.Interfasces.callForCheange;
+import com.hesabischool.hesabiapp.PdfActivity;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.ForgerunadService.DownloadService;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
@@ -439,17 +442,20 @@ this.size2=size2;
                     // File file = new File(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).getPath());
 if(vm.get(position).MimeType.contains("application/pdf")&&vm.get(position).MimeType.contains("ASDE"))
 {
-
-    Intent browserIntent = new Intent(Intent.ACTION_VIEW, getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename));
-    context.startActivity(browserIntent);
+//app.Info.PdfUri=getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename);
+app.Info.PdfUri=getFileContentUri(vm.get(position).RoomChatID, vm.get(position).Filename);
+Intent pdfintent=new Intent(context, PdfActivity.class);
+context.startActivity(pdfintent);
 }else
 {
 
-    Intent target = new Intent(Intent.ACTION_VIEW);
+    LoadFile(vm.get(position).RoomChatID, vm.get(position).Filename,vm.get(position).MimeType);
+   /* Intent target = new Intent(Intent.ACTION_VIEW);
 
     //target.setDataAndType(Uri.fromFile(file),"application/pdf");
     // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
-    target.setDataAndType(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename),vm.get(position).MimeType);
+    Uri uri=getFileContentUri(vm.get(position).RoomChatID, vm.get(position).Filename);
+    target.setDataAndType(uri,vm.get(position).MimeType);
 
     target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
@@ -458,7 +464,7 @@ if(vm.get(position).MimeType.contains("application/pdf")&&vm.get(position).MimeT
         context.startActivity(intent);
     } catch (ActivityNotFoundException e) {
         // Instruct the user to install a PDF reader here, or something
-    }
+    }*/
 }
 
 
@@ -1396,6 +1402,7 @@ app.retrofit.FailRetrofit(t,context);
             } else {
                 urifile = Uri.parse(outputFile.getPath()); // My work-around for new SDKs, worked for me in Android 10 using Solid Explorer Text Editor as the external editor.
             }
+
             return urifile;
         } else {
 
@@ -1408,10 +1415,95 @@ app.retrofit.FailRetrofit(t,context);
                 urifile = Uri.parse(new File(pathname).getPath()); // My work-around for new SDKs, worked for me in Android 10 using Solid Explorer Text Editor as the external editor.
 
             }
+
+
             return urifile;
         }
 
     }
+    public Uri getFileContentUri(int roomChatId,String fname)
+    {
+        final Uri[] contentUri = {null};
+        File file=null;
+        String filepath="";
+        String pathname = getLocalPathFile(roomChatId);
+        if (app.check.EpmtyOrNull(pathname)) {
+            File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
+            file=outputFile;
+            filepath=outputFile.getPath();
+        } else {
+            File outputFile=new File(pathname,fname);
+            file=outputFile;
+            filepath=outputFile.getPath();
+        }
+
+        contentUri[0] = Uri.fromFile(new File(filepath));
+
+        MediaScannerConnection.scanFile(context,
+                new String[] { file.getAbsolutePath() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        contentUri[0] =uri;
+                    }
+                });
+        MediaScannerConnection.scanFile(context, new String[] { file.getAbsolutePath() }, null,
+                (path, uri) ->
+                        contentUri[0] =uri
+        );
+
+
+        return contentUri[0];
+    }
+
+    public void  LoadFile(int roomChatId,String fname,String mimeType)
+    {
+
+        File file=null;
+
+        String pathname = getLocalPathFile(roomChatId);
+        if (app.check.EpmtyOrNull(pathname)) {
+            File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
+            file=outputFile;
+
+        } else {
+            File outputFile=new File(pathname,fname);
+            file=outputFile;
+
+        }
+
+
+
+        MediaScannerConnection.scanFile(context,
+                new String[] { file.getAbsolutePath() }, new String[]{mimeType},
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Intent target = new Intent(Intent.ACTION_VIEW);
+
+                        //target.setDataAndType(Uri.fromFile(file),"application/pdf");
+                        // target.setDataAndType(Uri.fromFile(file),"vm.get(position).MimeType");
+
+                        target.setDataAndType(uri,mimeType);
+
+                        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        Intent intent = Intent.createChooser(target, "بازکردن با");
+                        try {
+                            context.startActivity(intent);
+                        } catch (ActivityNotFoundException e) {
+                            // Instruct the user to install a PDF reader here, or something
+                        }
+                    }
+                });
+//        MediaScannerConnection.scanFile(context, new String[] { file.getAbsolutePath() }, null,
+//                (path, uri) ->
+//
+//        );
+
+
+
+
+    }
+
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(context,

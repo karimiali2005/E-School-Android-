@@ -84,7 +84,7 @@ dependencies {
         implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     //pdf Reader
   //  implementation "com.github.barteksc:android-pdf-viewer:2.8.2"
-
+ //   implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
   //  implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
 
 
