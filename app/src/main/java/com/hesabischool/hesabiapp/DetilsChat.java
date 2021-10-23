@@ -3,8 +3,10 @@
 package com.hesabischool.hesabiapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,6 +104,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetilsChat extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
+    private static final int RECORD_AUDIO_REQUEST_CODE = 1;
     TextView txt_postion,txt_des;
     ImageView img_next,img_pre;
     RelativeLayout rel_searchdes;
@@ -861,6 +864,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1042,6 +1046,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             ActivityCompat.requestPermissions(DetilsChat.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO},
                     1);
+            getPermissionToRecordAudio();
             RecordeVoice recordeVoice = new RecordeVoice(img_mic, c);
             recordeVoice.run();
             popup();
@@ -1899,5 +1904,27 @@ layzyLoad.call();
         r.RoomChatDateString = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(d);
         insertToSqlliteFile(r, file);
         return r;
+    }
+
+    public void getPermissionToRecordAudio() {
+        // 1) Use the support library version ContextCompat.checkSelfPermission(...) to avoid
+        // checking the build version since Context.checkSelfPermission(...)
+        // 2) Always check for permission (even if permission has already been granted)
+        // since the user can revoke permissions at any time through Settings
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ) {
+
+            // The permission is NOT already granted.
+            // Check if the user has been asked about this permission already and denied
+            // it. If so, we want to give more explanation about why the permission is needed.
+            // Fire off an async request to actually get the permission
+            // This will show the standard permission request dialog UI
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        RECORD_AUDIO_REQUEST_CODE);
+            }
+
+        }
     }
 }
