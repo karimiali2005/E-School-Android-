@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:name=".Clases.FontOverride"
         android:allowBackup="true"
         android:grantUriPermissions="true"
