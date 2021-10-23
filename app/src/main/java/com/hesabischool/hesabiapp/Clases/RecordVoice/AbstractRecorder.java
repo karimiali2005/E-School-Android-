@@ -41,13 +41,11 @@ public abstract class AbstractRecorder implements Recorder {
         }
         OutputStream outputStream = null;
         try {
-            file.createNewFile();
+
             outputStream = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(
                     "could not build OutputStream from" + " this file " + file.getName(), e);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return outputStream;
     }

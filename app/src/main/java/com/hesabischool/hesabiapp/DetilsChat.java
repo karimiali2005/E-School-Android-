@@ -1047,7 +1047,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.RECORD_AUDIO},
                     1);
             getPermissionToRecordAudio();
-            RecordeVoice recordeVoice = new RecordeVoice(img_mic, c);
+            RecordeVoice recordeVoice = new RecordeVoice(img_mic, c,context);
             recordeVoice.run();
             popup();
             txtnamegrupe.setText(rcharright.RoomChatTitle);
@@ -1927,4 +1927,6 @@ layzyLoad.call();
 
         }
     }
+
+    //.........................................................
 }

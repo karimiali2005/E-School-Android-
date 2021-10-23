@@ -1,5 +1,6 @@
 package com.hesabischool.hesabiapp.Clases.RecordVoice;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -23,13 +24,14 @@ import java.util.UUID;
 public class RecordeVoice {
     Recorder recorder;
     ImageView recordButton;
+    Context context;
     boolean click=false;
 callForCheange call;
     String  uniqueID;
-    public RecordeVoice(ImageView recordButton,callForCheange callForCheange) {
+    public RecordeVoice(ImageView recordButton,callForCheange callForCheange,Context context) {
         this.recordButton = recordButton;
         call=callForCheange;
-
+this.context=context;
 
 
     }
@@ -73,8 +75,12 @@ callForCheange call;
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-
-                                File f=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), uniqueID+".wav");
+                                File data = Environment.getDataDirectory();
+                                String packageName = context.getApplicationInfo().packageName;
+                                String currentDBPath = String.format("//data//%s//%s",
+                                        packageName, uniqueID+".wav");
+                                File f=new File(data,currentDBPath);
+                             //   File f=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), uniqueID+".wav");
                                 recordButton.setVisibility(View.VISIBLE);
                                 call.getFileVoice(f);
                             }
@@ -121,10 +127,16 @@ callForCheange call;
     }
 
 
-    @NonNull
+
     private File file() {
          uniqueID = UUID.randomUUID().toString();
-        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), uniqueID+".wav");
+        File data = Environment.getDataDirectory();
+        String packageName = context.getApplicationInfo().packageName;
+        String currentDBPath = String.format("//data//%s//%s",
+                packageName, uniqueID+".wav");
+        return new File(data,currentDBPath);
+      //  return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), uniqueID+".wav");
+
     }
 
 }
