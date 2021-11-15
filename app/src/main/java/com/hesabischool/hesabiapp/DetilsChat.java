@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.FileUtils;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -1447,7 +1448,8 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
             shimmerRecycler.setItemViewCacheSize(30);
 
             shimmerRecycler.setDrawingCacheEnabled(true);
-            shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+            shimmerRecycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
         if(lvm2!=null&&lvm2.size()>0)
         {
             ma = new Adaptor_detailsChat(context, lvm2, layzyLoad, c, fab_down, size2);
@@ -1770,6 +1772,7 @@ layzyLoad.call();
 
     private void uploadFile(File file, String content_type) {
         if (app.net.isNetworkConnected(context)) {
+
             final RoomChatLeftShowResult r = addfileTosqlLitePath(file, content_type);
             circle_progress.setVisibility(View.VISIBLE);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, content_type, this);
@@ -1902,7 +1905,36 @@ layzyLoad.call();
         r.SenderName = app.Info.User.fullName;
         r.RoomChatDate = s;
         r.RoomChatDateString = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(d);
-        insertToSqlliteFile(r, file);
+
+runOnUiThread(new Runnable() {
+    @Override
+    public void run() {
+        if(mime.toLowerCase().contains("pdf"))
+        {
+            //todo save in folder
+//            File data = Environment.getDataDirectory();
+//            String packageName = context.getApplicationInfo().packageName;
+//            String currentDBPath = String.format("//data//%s//%s",
+//                    packageName, file.getName());
+//           // File NewFile= new File(data,currentDBPath);
+            File NewFile=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), file.getName());
+            try {
+                app.copy(file,NewFile);
+                insertToSqlliteFile(r, NewFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }else
+        {
+            insertToSqlliteFile(r, file);
+        }
+
+    }
+});
+
+
         return r;
     }
 

@@ -21,6 +21,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -71,6 +72,8 @@ import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.potyvideo.library.AndExoPlayerView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -231,7 +234,8 @@ this.size2=size2;
                 ((mysendchat) holder).txtparentname.setText(lvm.ParentSenderName);
 
 
-            } else {
+            }
+            else {
                 //todo No parents
                 ((mysendchat) holder).rel_parent.setVisibility(View.GONE);
 
@@ -239,7 +243,8 @@ this.size2=size2;
             String message = Html.fromHtml(lvm.TextChat).toString();
             ((mysendchat) holder).txtmessage.setText(message);
 
-        } else {
+        }
+        else {
             // File Not a Text Type
             if (!app.check.EpmtyOrNull(lvm.TextChat)) {
                 ((mysendchat) holder).lin_text.setVisibility(View.VISIBLE);
@@ -668,15 +673,25 @@ app.retrofit.FailRetrofit(t,context);
         final TextView progress_text = viewDowanload.findViewById(R.id.progress_text);
         final ProgressBar progress = viewDowanload.findViewById(R.id.progress);
         ((LinearLayout) v).addView(viewDowanload);
+        final boolean[] click = {false};
         btndowanload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkPermission()) {
-                    btndowanload.setClickable(false);
-                    app.Info.Filename = filename;
-                    app.Info.Fileadress = fileadress;
-                    app.Info.Fileview=v;
-                    startDownload();
+                    click[0] =!click[0];
+                    if(click[0])
+                    {
+                        app.Info.Filename = filename;
+                        app.Info.Fileadress = fileadress;
+                        app.Info.Fileview=v;
+                        startDownload();
+                    }else
+                    {
+                        //todo close dowanload
+                        CloseDownload();
+                    }
+
+
 
                 } else {
                     requestPermission();
@@ -1391,6 +1406,20 @@ app.retrofit.FailRetrofit(t,context);
         return null;
     }
 
+    private String getLocalNameFile(int roomChatId) {
+        try {
+            List<vm_upload> vm = (List<vm_upload>) dqs.SelesctListWhere(new vm_upload(), " RoomChatID", String.valueOf(roomChatId));
+            if (vm != null && vm.size() > 0) {
+                String pathName = vm.get(0).Name;
+                return pathName;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public Uri getFileUri(int roomChatId, String fname) {
         String pathname = getLocalPathFile(roomChatId);
         if (app.check.EpmtyOrNull(pathname)) {
@@ -1458,20 +1487,13 @@ app.retrofit.FailRetrofit(t,context);
     public void  LoadFile(int roomChatId,String fname,String mimeType)
     {
 
-        File file=null;
-
-        String pathname = getLocalPathFile(roomChatId);
-        if (app.check.EpmtyOrNull(pathname)) {
-            File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
-            file=outputFile;
-
-        } else {
-            File outputFile=new File(pathname,fname);
-            file=outputFile;
-
-        }
 
 
+        String pathname = getLocalNameFile(roomChatId);
+        if (!app.check.EpmtyOrNull(pathname))
+            fname=pathname;
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fname);
 
         MediaScannerConnection.scanFile(context,
                 new String[] { file.getAbsolutePath() }, new String[]{mimeType},
@@ -1494,12 +1516,6 @@ app.retrofit.FailRetrofit(t,context);
                         }
                     }
                 });
-//        MediaScannerConnection.scanFile(context, new String[] { file.getAbsolutePath() }, null,
-//                (path, uri) ->
-//
-//        );
-
-
 
 
     }
@@ -1526,38 +1542,54 @@ app.retrofit.FailRetrofit(t,context);
 
     private void startDownload() {
 
-        if(app.Info.isAllowDowanload=true)
-        {  app.Info.isAllowDowanload=false;
-            Intent intent = new Intent(context, DownloadService.class);
-            (context).startService(intent);
-            Toast.makeText(context,"شروع دانلود...", Toast.LENGTH_SHORT).show();
-        }else
-        {
-            Toast.makeText(context,"در حال دانلود فایلی هستید بعد از اتمام کار", Toast.LENGTH_SHORT).show();
-        }
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                ((Activity)context).runOnUiThread(new Runnable() {
+                    public void run() {
+                        if(app.Info.isAllowDowanload)
+                        {  app.Info.isAllowDowanload=false;
+                            Intent intent = new Intent(context, DownloadService.class);
+                            (context).startService(intent);
+                            Toast.makeText(context,"شروع دانلود...", Toast.LENGTH_SHORT).show();
 
+                        }else
+                        {
+
+                            Toast.makeText(context,"در حال دانلود فایلی هستید بعد از اتمام کار", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+            }
+        });
+
+    }
+    private void CloseDownload() {
+
+        ((Activity)context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(!app.Info.isAllowDowanload)
+                {
+                    app.Info.isAllowDowanload=true;
+                    Intent intent = new Intent(context, DownloadService.class);
+                    (context).stopService(intent);
+                    Toast.makeText(context, "دانلود متوقف شد...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
-    private boolean isServiceRunning(String serviceName){
-        boolean serviceRunning = false;
-        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> l = am.getRunningServices(50);
-        Iterator<ActivityManager.RunningServiceInfo> i = l.iterator();
-        while (i.hasNext()) {
-            ActivityManager.RunningServiceInfo runningServiceInfo = i
-                    .next();
-
-            if(runningServiceInfo.service.getClassName().contains(serviceName)){
-
-
-                if(runningServiceInfo.foreground)
-                {
-                    serviceRunning = true;
-                }
+    private boolean isServiceRunning(Class<?> serviceClass){
+        ActivityManager manager = (ActivityManager) ((Activity)context).getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
             }
         }
-        return serviceRunning;
+        return false;
     }
 
     public class mysendchat extends RecyclerView.ViewHolder {

@@ -118,7 +118,9 @@ public class Login extends AppCompatActivity {
                 public void onResponse(Call<LoginUserResult> call, Response<LoginUserResult> response) {
                     app.retrofit.erorRetrofit(response, context);
                     if (response.isSuccessful()) {
-                        if (db.dq.AddOrUpdateUser(response.body())) {
+                        LoginUserResult  user=response.body();
+                        user.password=vm.usersPass;
+                        if (db.dq.AddOrUpdateUser(user)) {
                             app.Info.User = response.body();
                             Intent i = new Intent(context, MainChat.class);
                             startActivity(i);

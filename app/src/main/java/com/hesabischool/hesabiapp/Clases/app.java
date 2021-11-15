@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
@@ -26,6 +27,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hesabischool.hesabiapp.R;
 import com.hesabischool.hesabiapp.Retrofit.ApiServies;
 import com.hesabischool.hesabiapp.Retrofit.RguestApi;
+import com.hesabischool.hesabiapp.Splash;
 import com.hesabischool.hesabiapp.viewmodel.vm_checkPage;
 import com.hesabischool.hesabiapp.viewmodel.vm_getmessage;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
@@ -34,8 +36,12 @@ import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -59,6 +65,7 @@ public class app {
         public static int idhomework=0;
         public static int idStudent=0;
 
+        public static boolean UnAturized =false;
 
 
         public static String Path1 ="https://hesabidownload.ir/hesabischoolfiles/";
@@ -147,7 +154,17 @@ public class app {
                         Type listType = new TypeToken<vm_getmessage>(){}.getType();
                         vm_getmessage user1 = gson.fromJson(response.errorBody().string(), listType);
                         final String message=user1.message;
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+                        if(message.equals("Unauthorized"))
+                        {
+                           Info.UnAturized=true;
+                            Intent i=new Intent(context, Splash.class);
+                            context.startActivity(i);
+                            ((Activity)context).finish();
+                        }else
+                        {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        }
                     }
                     else
                     {
@@ -472,6 +489,14 @@ public class app {
             }
             return false;
         }
+        public static boolean EpmtyOrNullLive(String str)
+        {
+            if(str==null||str.trim().equals("")||str.equals("null"))
+            {
+                return true;
+            }
+            return false;
+        }
 
 
     }
@@ -553,7 +578,24 @@ public class app {
 
 
     }
-
+    public static void copy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        try {
+            OutputStream out = new FileOutputStream(dst);
+            try {
+                // Transfer bytes from in to out
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+            } finally {
+                out.close();
+            }
+        } finally {
+            in.close();
+        }
+    }
 
 
 

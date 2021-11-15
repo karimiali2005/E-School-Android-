@@ -206,65 +206,67 @@ public class MainChat extends AppCompatActivity {
                 try {
                     List<RoomLiveViewModel> lvm = (List<RoomLiveViewModel>) dq.SelesctList(new RoomLiveViewModel());
 
-                    for(RoomLiveViewModel item:lvm)
-                    {
+
+                        for (int i=0;i<lvm.size();i++)
+                        {
+                        RoomLiveViewModel item=lvm.get(i);
                         if(item.LiveType==1)
                         {
-                            menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.liver_adobe);
-
+                            //menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.liver_adobe);
+                            menuBuilder.add(1,i,1,item.RoomChatGroupTitle).setIcon(R.drawable.liver_adobe);
                         }else if(item.LiveType==2)
                         {
-                            menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.live_gitsib);
+                           // menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.live_gitsib);
+                            menuBuilder.add(2,i,2,item.RoomChatGroupTitle).setIcon(R.drawable.live_gitsib);
 
                         }else if(item.LiveType==3)
                         {
-                            menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.live_zoom);
+                           // menuBuilder.add(item.RoomChatGroupTitle).setIcon(R.drawable.live_zoom);
+                            menuBuilder.add(3,i,3,item.RoomChatGroupTitle).setIcon(R.drawable.live_zoom);
+
                         }
 
 
-                    }
+                         }
 
                     menuBuilder.setCallback(new MenuBuilder.Callback() {
                         @Override
                         public boolean onMenuItemSelected(MenuBuilder menu, MenuItem menuItem) {
                             // your "setOnMenuItemClickListener" code goes here
-                            for (int i=0;i<lvm.size();i++)
+                           int i=menuItem.getItemId();
+
+                            if(lvm.get(i)!=null)
                             {
-                                if(lvm.get(i).RoomChatGroupTitle.equals(menuItem.getTitle()))
+                                if(!app.check.EpmtyOrNullLive(lvm.get(i).LivePassword)&&!app.check.EpmtyOrNullLive(lvm.get(i).LiveUsername))
                                 {
-                                   if(!app.check.EpmtyOrNull(lvm.get(i).LivePassword)&&!app.check.EpmtyOrNull(lvm.get(i).LiveUsername))
-                                   {
-                                     View vdl=app.Dialog_.dialog_creat(context,R.layout.dialog_live);
-                                      TextView txt=vdl.findViewById(R.id.txt);
-                                       Button btn=vdl.findViewById(R.id.btn_enter);
-                                       String message="";
-                                       if(!app.check.EpmtyOrNull(lvm.get(i).LiveUsername))
-                                       {
+                                    View vdl=app.Dialog_.dialog_creat(context,R.layout.dialog_live);
+                                    TextView txt=vdl.findViewById(R.id.txt);
+                                    Button btn=vdl.findViewById(R.id.btn_enter);
+                                    String message="";
+                                    if(!app.check.EpmtyOrNullLive(lvm.get(i).LiveUsername))
+                                    {
                                         message+=" نام کاربری: "+lvm.get(i).LiveUsername+"\n";
-                                       }
-                                       if(!app.check.EpmtyOrNull(lvm.get(i).LivePassword))
-                                       {
-                                           message+=" کلمه عبور: "+lvm.get(i).LivePassword+"\n";
+                                    }
+                                    if(!app.check.EpmtyOrNullLive(lvm.get(i).LivePassword))
+                                    {
+                                        message+=" کلمه عبور: "+lvm.get(i).LivePassword+"\n";
 
-                                       }
-                                       txt.setText(message);
-                                       int finalI = i;
-                                       btn.setOnClickListener(new View.OnClickListener() {
-                                           @Override
-                                           public void onClick(View view) {
-                                               openweb(lvm.get(finalI).LiveAddress);
-                                           }
-                                       });
-                                       app.Dialog_.show_dialog(context,vdl,true);
+                                    }
+                                    txt.setText(message);
+                                    int finalI = i;
+                                    btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            openweb(lvm.get(finalI).LiveAddress);
+                                        }
+                                    });
+                                    app.Dialog_.show_dialog(context,vdl,true);
 
-                                   }else
-                                   {
-                                       //todo open webview
-                                       openweb(lvm.get(i).LiveAddress);
-                                   }
-                                    return false;
+                                }else
+                                {
+                                    //todo open webview
+                                    openweb(lvm.get(i).LiveAddress);
                                 }
-
                             }
                             return false;
                         }

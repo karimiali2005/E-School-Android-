@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -21,12 +22,17 @@ import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.database.dbConnector;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
+import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.VersioningViewModel;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.hesabischool.hesabiapp.Login.getAndroidVersion;
+import static com.hesabischool.hesabiapp.Login.getDeviceName;
 
 public class Splash extends AppCompatActivity {
 Context context;
@@ -152,6 +158,7 @@ if(app.net.isNetworkConnected(context))
     }
 
     private void chekuserexist() {
+
         String query = "SELECT * FROM User ";
         Cursor c = null;
         c = db.select(query);
@@ -171,12 +178,23 @@ if(app.net.isNetworkConnected(context))
             app.Info.User.userTypeID=c.getInt(c.getColumnIndex("userTypeID"));
             app.Info.User.userTypeTitle=c.getString(c.getColumnIndex("userTypeTitle"));
 
+//todo if For Refresh
+            if(app.Info.UnAturized)
+            {
+                LoginViewModel vmu=new LoginViewModel();
+                vmu.usersName =  app.Info.User.irNational;
+                vmu.usersPass = app.Info.User.password;
+                vmu.mobileName = getDeviceName();
+                vmu.PlatfornName = getAndroidVersion();
+                vmu.TokenFireBase= FirebaseInstanceId.getInstance().getToken();
+                Send(vmu);
 
+            }else
+            {
+                Intent i=new Intent(context,MainChat.class);
+                //=========================================Get ChatMessage If app Open By Notification ============================
 
-            Intent i=new Intent(context,MainChat.class);
-            //=========================================Get ChatMessage If app Open By Notification ============================
-
-           String newString="";
+                String newString="";
                 Bundle extras = getIntent().getExtras();
                 if(extras != null) {
                     newString= extras.getString("idc");
@@ -187,18 +205,69 @@ if(app.net.isNetworkConnected(context))
                     }
                 }
 
-            //=================================================================================================================
+                //=================================================================================================================
 
 
-            startActivity(i);
-            finish();
-        }else
+                startActivity(i);
+                finish();
+            }
+
+
+        }
+        else
         {
             Intent i=new Intent(context,Login.class);
             //    Intent i=new Intent(context,MainChat.class);
             startActivity(i);
             finish();
         }
+    }
+    private void Send(LoginViewModel vm) {
+        try {
+
+            app.progress.onCreateDialog(context);
+            app.retrofit.retrofit().Login(vm).enqueue(new Callback<LoginUserResult>() {
+                @Override
+                public void onResponse(Call<LoginUserResult> call, Response<LoginUserResult> response) {
+                    app.retrofit.erorRetrofit(response, context);
+                    if (response.isSuccessful()) {
+                        LoginUserResult  user=response.body();
+                        user.password=vm.usersPass;
+                        if (db.dq.AddOrUpdateUser(user)) {
+                            app.Info.User = response.body();
+                            Intent i = new Intent(context, MainChat.class);
+                            startActivity(i);
+                            finish();
+
+                        } else {
+                            Toast.makeText(context, R.string.problam, Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                    else
+                    {
+                        db.DeleteValueAllTable();
+                        Intent i=new Intent(context,Login.class);
+                        startActivity(i);
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LoginUserResult> call, Throwable t) {
+                    app.retrofit.FailRetrofit(t, context);
+
+                }
+            });
+
+
+
+        } catch (Exception ex) {
+            throw ex;
+        }
+
+
     }
     private void openweb(String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

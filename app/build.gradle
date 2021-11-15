@@ -70,8 +70,11 @@ dependencies {
     //progress .......
     implementation 'com.github.lzyzsd:circleprogress:1.2.1'
     //SignalR
-    implementation 'com.microsoft.signalr:signalr:3.0.0'
-    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+  //  implementation 'com.microsoft.signalr:signalr:3.0.0'
+    implementation 'com.microsoft.signalr:signalr:5.0.11'
+    implementation 'org.slf4j:slf4j-jdk14:2.0.0-alpha5'
+  //  implementation 'org.slf4j:slf4j-jdk14:
+    //2.0.0-alpha5'
 
 //    implementation ('com.github.adrielcafe:AndroidAudioRecorder:0.3.0'){ exclude group: 'com.kailashdabhi:om-recorder', module: 'library' }
 //    implementation 'com.kailashdabhi:om-recorder:1.1.5'

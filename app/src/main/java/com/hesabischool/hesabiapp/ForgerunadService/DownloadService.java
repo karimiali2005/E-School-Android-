@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.widget.Toast;
@@ -48,7 +49,7 @@ public class DownloadService extends IntentService {
                 .setContentTitle("دانلود")
                 .setContentText(" درحال دانلود فایل")
                 .setAutoCancel(true);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());
         Toast.makeText(this, "شروع دانلود", Toast.LENGTH_SHORT).show();
         initDownload();
 
@@ -103,7 +104,7 @@ public class DownloadService extends IntentService {
 
         }
     }
-    private void downloadFile(final ResponseBody body, final String filename) {
+   /* private void downloadFile(final ResponseBody body, final String filename) {
 
         final Thread thread = new Thread(new Runnable() {
 
@@ -170,6 +171,72 @@ public class DownloadService extends IntentService {
 
         thread.start();
 
+    }*/
+
+    private void downloadFile(final ResponseBody body, final String filename) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try  {
+                    try
+                    {
+                        int count;
+                        byte data[] = new byte[1024 * 4];
+                        long fileSize = body.contentLength();
+                        InputStream bis = new BufferedInputStream(body.byteStream(), 1024 * 8);
+                        File outputFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+                        OutputStream output = new FileOutputStream(outputFile);
+                        long total = 0;
+                        long startTime = System.currentTimeMillis();
+                        int timeCount = 1;
+                        // count = bis.read(data);
+                        while ((count = bis.read(data)) != -1) {
+
+                            total += count;
+                            totalFileSize = (int) (fileSize / (Math.pow(1024, 2)));
+                            double current = Math.round(total / (Math.pow(1024, 2)));
+
+                            int progress = (int) ((total * 100) / fileSize);
+
+                            long currentTime = System.currentTimeMillis() - startTime;
+
+                            Download download = new Download();
+                            download.setTotalFileSize(totalFileSize);
+
+                            if (currentTime > 1000 * timeCount) {
+
+                                download.setCurrentFileSize((int) current);
+                                download.setProgress(progress);
+                                sendNotification(download);
+                                timeCount++;
+                            }
+
+                            output.write(data, 0, count);
+                        }
+                        onDownloadComplete();
+                        output.flush();
+                        output.close();
+                        bis.close();
+                        onDestroy();
+
+                    }catch (Exception ex)
+                    {
+                        Toast.makeText(DownloadService.this, " دانلود با خطا روبرو شده است ", Toast.LENGTH_SHORT).show();
+                        onDestroy();
+                        try {
+                            throw ex;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }
 
     private void sendNotification(Download download){
@@ -177,7 +244,7 @@ public class DownloadService extends IntentService {
         sendIntent(download);
         notificationBuilder.setProgress(100,download.getProgress(),false);
         notificationBuilder.setContentText("در حال دانلود فایل "+ download.getCurrentFileSize() +"/"+totalFileSize +" MB");
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());
     }
 
     private void sendIntent(Download download){
@@ -193,19 +260,19 @@ public class DownloadService extends IntentService {
         download.setProgress(100);
         sendIntent(download);
 
-        notificationManager.cancel(0);
+        notificationManager.cancel(1);
         notificationBuilder.setProgress(0,0,false);
         notificationBuilder.setContentText("فایل دانلود شد");
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());
 
-
-        Handler handler=new Handler();
-        handler.postDelayed(new Runnable() {
+        AsyncTask.execute(new Runnable() {
+            @Override
             public void run() {
-              notificationManager.cancel(0);
-              onDestroy();
+                notificationManager.cancel(1);
+                onDestroy();
             }
-        }, 5000);
+        });
+
     }
 
     @Override
@@ -213,4 +280,8 @@ public class DownloadService extends IntentService {
         notificationManager.cancel(0);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
