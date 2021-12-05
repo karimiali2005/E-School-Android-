@@ -298,7 +298,7 @@ android:id="@+id/img_pre"
             android:textSize="@dimen/_8sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_2sdp"
-            app:layout_constraintLeft_toRightOf="@+id/txt_time"></TextView>
+           ></TextView>
        <com.google.android.material.floatingactionbutton.FloatingActionButton
            android:id="@+id/fab_down"
            android:padding="@dimen/_5sdp"
