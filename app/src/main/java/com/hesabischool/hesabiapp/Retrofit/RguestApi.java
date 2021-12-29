@@ -11,6 +11,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer13;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer14;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer16;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer17;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
@@ -23,6 +24,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatViewModel;
+import com.hesabischool.hesabiapp.vm_ModelServer.SettingContextViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.UserPicViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.vm_AnsverhomeWork;
 import com.hesabischool.hesabiapp.vm_ModelServer.vm_HomeworkDetailsShowByIDResult;
@@ -56,7 +58,9 @@ public interface RguestApi {
 
     @POST(api + "Accounts/Authenticate")
     Call<LoginUserResult> Login(@Body LoginViewModel loginViewModel);
-
+    //===============================================GEtSetting==============================
+    @GET(api + "Accounts/SettingGet")
+    Call<SettingContextViewModel> SettingGet();
     // ======================EndLogin=======================================
 //=========================RightChat======================================
     @GET(api + "Member/RoomChatRight")
@@ -167,4 +171,6 @@ Call<GetDataFromServer7> ManageHomWork(@Query("idroom") int idroom, @Query("cour
 //===============================================Version==============================
 @GET("api/" + "Versioning/GetLoadVersion")
 Call<GetDataFromServer15> GetLoadVersion();
+
+
 }

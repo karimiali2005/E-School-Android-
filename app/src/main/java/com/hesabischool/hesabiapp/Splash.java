@@ -22,8 +22,10 @@ import com.hesabischool.hesabiapp.Clases.ExceptionHandler;
 import com.hesabischool.hesabiapp.Clases.app;
 import com.hesabischool.hesabiapp.database.dbConnector;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer17;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
+import com.hesabischool.hesabiapp.vm_ModelServer.SettingContextViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.VersioningViewModel;
 
 import io.github.inflationx.viewpump.ViewPumpContextWrapper;
@@ -206,7 +208,23 @@ if(app.net.isNetworkConnected(context))
                 }
 
                 //=================================================================================================================
+app.retrofit.retrofit().SettingGet().enqueue(new Callback<SettingContextViewModel>() {
+    @Override
+    public void onResponse(Call<SettingContextViewModel> call, Response<SettingContextViewModel> response) {
+        app.retrofit.erorRetrofit(response,context);
 
+        if(response.isSuccessful())
+        {
+
+
+        }
+    }
+
+    @Override
+    public void onFailure(Call<SettingContextViewModel> call, Throwable t) {
+app.retrofit.FailRetrofit(t,context);
+    }
+});
 
                 startActivity(i);
                 finish();
