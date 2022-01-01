@@ -1004,7 +1004,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                     if (isEdite) {
                         //Todo Edite
                         if (app.net.CheckCommunication(context)) {
-                            SendMessageForEdite(edt_chat.getText().toString());
+                            SendMessageForEdite(edt_chat.getText().toString().replaceAll("\n","<br/>"));
                         }
                     } else {
                         RoomChatLeftShowResult r = new RoomChatLeftShowResult();
@@ -1013,7 +1013,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                         String s = String.valueOf(df.format("yyyy-MM-ddThh:mm:ss", d));
 
                         r.RoomChatGroupID = rcharright.RoomChatGroupID;
-                        r.TextChat = edt_chat.getText().toString();
+                        r.TextChat = edt_chat.getText().toString().replaceAll("\n","<br/>");
                         r.Filename = "";
 
                         r.TagLearn = taglearn;
@@ -1777,10 +1777,12 @@ layzyLoad.call();
             circle_progress.setVisibility(View.VISIBLE);
             ProgressRequestBody fileBody = new ProgressRequestBody(file, content_type, this);
             MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
-            app.retrofit.retrofit().StoreFile(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID, "", roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName,rcharright.RoomChatTitle,rcharright.RoomChatGroupType).enqueue(new Callback<GetDataFromServer3>() {
+            String Mesage=edt_chat.getText().toString().replaceAll("\n","<br/>");
+            app.retrofit.retrofit().StoreFile(filePart, String.valueOf(taglearn), rcharright.RoomChatGroupID,Mesage, roomChatParentId, rcharright.RoomID, rcharright.TeacherID, rcharright.CourseID, parentTextChat, parentSenderName,rcharright.RoomChatTitle,rcharright.RoomChatGroupType).enqueue(new Callback<GetDataFromServer3>() {
                 @Override
                 public void onResponse(Call<GetDataFromServer3> call, Response<GetDataFromServer3> response) {
                     if (response.isSuccessful()) {
+                        edt_chat.setText("");
                         int lastIdRoomChat = r.RoomChatID;
                         GetDataFromServer3 lr = response.body();
                         //   GetDataFromServer rl = new GetDataFromServer();

@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "917114364862",
-    "project_id": "hesabiapp-b7328",
-    "storage_bucket": "hesabiapp-b7328.appspot.com"
+    "project_number": "128287431237",
+    "project_id": "hesabiapp-e20e7",
+    "storage_bucket": "hesabiapp-e20e7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:917114364862:android:32ac7cc096a1397f2f8fef",
+        "mobilesdk_app_id": "1:128287431237:android:7c39b21b5aa5587f8b612c",
         "android_client_info": {
           "package_name": "com.hesabischool.hesabiapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "917114364862-sskcj7b6detts7avfcv7i0892k0t4dcu.apps.googleusercontent.com",
+          "client_id": "128287431237-22iqr866uv6ams8ematqkn0f96sa15bt.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBww5irLlrRfNmUUiilILnKG-i6bPHxmdQ"
+          "current_key": "AIzaSyDGeV6rXHgUT_sSbs8_ec7ykp48TjW7gec"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "917114364862-sskcj7b6detts7avfcv7i0892k0t4dcu.apps.googleusercontent.com",
+              "client_id": "128287431237-22iqr866uv6ams8ematqkn0f96sa15bt.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
