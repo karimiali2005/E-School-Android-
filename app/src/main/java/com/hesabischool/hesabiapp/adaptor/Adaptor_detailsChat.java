@@ -29,6 +29,7 @@ import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,6 +79,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -134,11 +136,16 @@ this.size2=size2;
         }
         return null;
     }
-
+    String currentDateShow= "2000-02-02";
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
 
         final RoomChatLeftShowResult lvm = vm.get(position);
+
+
+
+
+
         switch (ismymesssage(position)) {
             case 0:
                 setchatForMe(holder, position);
@@ -147,6 +154,24 @@ this.size2=size2;
                 setchatForOther(holder, position);
                 break;
         }
+
+        if (lvm !=null && lvm.RoomChatDate!=null && currentDateShow.compareTo(lvm.RoomChatDate.substring(0,10) )!=0)
+        {
+
+            currentDateShow =lvm.RoomChatDate.substring(0,10) ;
+
+            if(holder instanceof mysendchat)
+            {
+                ((mysendchat)holder).rel_ShowDate.setVisibility(View.VISIBLE);
+                ((mysendchat)holder).rel_ShowDateText.setText(app.Convert.CovertToPersianDateSmall(currentDateShow) );
+
+            }else
+            {
+                ((othersendchat)holder).rel_ShowDate.setVisibility(View.VISIBLE);
+                ((othersendchat)holder).rel_ShowDateText.setText(app.Convert.CovertToPersianDateSmall(currentDateShow));
+            }
+        }
+
 //Check For Show Message Dont Read
         if(position==size2)
         {
@@ -391,6 +416,7 @@ this.size2=size2;
 //                  }
 //
 //              }
+
               if (app.Info.User.userTypeID==4)
               {
                //Teacher
@@ -806,6 +832,9 @@ app.retrofit.FailRetrofit(t,context);
                 final CardView cardclose = v.findViewById(R.id.cardclose);
                // andExoPlayerView.setSource(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).toString());
                 HashMap<String , String> extraHeaders = new HashMap<>();
+                int k=vm.get(position).RoomChatID;
+                String st2= vm.get(position).Filename;
+                String st=getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).toString();
                 andExoPlayerView.setSource(getFileUri(vm.get(position).RoomChatID, vm.get(position).Filename).toString(),extraHeaders);
                 final AlertDialog al = app.Dialog_.show_dialog(context, v);
 
@@ -1186,17 +1215,18 @@ app.retrofit.FailRetrofit(t,context);
             public void onClick(View view) {
                 final PopupMenu menu = new PopupMenu(context, ((othersendchat) holder).img_popup);
                 rPropertyResult=callForCheange.getPeroperty();
-                if (app.Info.User.userTypeID==4)
-                {
-                    //Teacher
-                    menu.getMenu().add("حذف");
-                    menu.getMenu().add("ویرایش");
-                    menu.getMenu().add("سنجاق");
-                }
+                if(DetilsChat.isAdvertise==false) {
+                    if (app.Info.User.userTypeID == 4) {
+                        //Teacher
+                        menu.getMenu().add("حذف");
+                        menu.getMenu().add("ویرایش");
+                        menu.getMenu().add("سنجاق");
+                    }
 
-                menu.getMenu().add("پاسخ");
-                menu.getMenu().add("ارسال");
-                openmenu(menu,lvm);
+                    menu.getMenu().add("پاسخ");
+                    menu.getMenu().add("ارسال");
+                    openmenu(menu, lvm);
+                }
             }
         });
 
@@ -1595,6 +1625,8 @@ app.retrofit.FailRetrofit(t,context);
     public class mysendchat extends RecyclerView.ViewHolder {
         RelativeLayout rel_parent;
         RelativeLayout rel_noReadMessage;
+        RelativeLayout rel_ShowDate;
+        TextView rel_ShowDateText;
         TextView txtparentname, txt_sumrytextparents;
         RelativeLayout Rel;
         LinearLayout lin_text;
@@ -1618,6 +1650,8 @@ app.retrofit.FailRetrofit(t,context);
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
             Rel = itemView.findViewById(R.id.Rel);
             rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
+            rel_ShowDateText=itemView.findViewById(R.id.rel_ShowDateText);
+            rel_ShowDate = itemView.findViewById(R.id.rel_ShowDate);
             lin_text = itemView.findViewById(R.id.lin_text);
             txtmessage = itemView.findViewById(R.id.txtmessage);
             lin_img = itemView.findViewById(R.id.lin_img);
@@ -1641,6 +1675,8 @@ app.retrofit.FailRetrofit(t,context);
         TextView txttag;
         RelativeLayout Rel;
         RelativeLayout rel_noReadMessage;
+        TextView rel_ShowDateText;
+        RelativeLayout rel_ShowDate;
         RelativeLayout rel_parent;
         TextView txtparentname, txt_sumrytextparents;
         LinearLayout lin_text;
@@ -1661,6 +1697,8 @@ app.retrofit.FailRetrofit(t,context);
             txttag = itemView.findViewById(R.id.txt_tag);
             rel_parent = itemView.findViewById(R.id.rel_parent);
             rel_noReadMessage = itemView.findViewById(R.id.rel_noReadMessage);
+            rel_ShowDateText = itemView.findViewById(R.id.rel_ShowDateText);
+            rel_ShowDate = itemView.findViewById(R.id.rel_ShowDate);
             txtparentname = itemView.findViewById(R.id.txtparentname);
             txt_sumrytextparents = itemView.findViewById(R.id.txt_sumrytextparents);
             Rel = itemView.findViewById(R.id.Rel);

@@ -49,8 +49,11 @@ import com.hesabischool.hesabiapp.database.dbConnector;
 import com.hesabischool.hesabiapp.database.dbQuerySelect;
 import com.hesabischool.hesabiapp.viewmodel.vm_sendoflinechat;
 import com.hesabischool.hesabiapp.vm_ModelServer.ChatMessage;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer18;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
+import com.hesabischool.hesabiapp.vm_ModelServer.LoginUserResult;
+import com.hesabischool.hesabiapp.vm_ModelServer.LoginViewModel;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatContactResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatLeftShowResult;
 import com.hesabischool.hesabiapp.vm_ModelServer.RoomChatRightShowResult;
@@ -423,6 +426,48 @@ if(app.check.EpmtyOrNull(editable.toString().trim()))
         startActivity(browserIntent);
     }
 
+    private void SendUserSetTicket() {
+        try {
+            app.progress.onCreateDialog(context);
+            app.retrofit.retrofit().UserSetTicket().enqueue(new Callback<GetDataFromServer18>() {
+                @Override
+                public void onResponse(Call<GetDataFromServer18> call, Response<GetDataFromServer18> response) {
+                    app.retrofit.erorRetrofit(response, context);
+                    if (response.isSuccessful()) {
+                        GetDataFromServer18  ticket=response.body();
+
+                        if (ticket!=null) {
+                            if(app.Info.User.userTypeID==1)
+                            {
+                                openweb("https://www.hesabischool.com/ReportCardStudent/Index?returnUrl=/Member/RoomChat?ticket="+ticket.value);
+                            }
+                            else
+                            {
+                                openweb("https://www.hesabischool.com/ReportCardParent/ReportCardParentShow?returnUrl=/Member/RoomChat?ticket="+ticket.value);
+                            }
+
+                        } else {
+                            Toast.makeText(context, R.string.problam, Toast.LENGTH_SHORT).show();
+                        }
+
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetDataFromServer18> call, Throwable t) {
+                    app.retrofit.FailRetrofit(t, context);
+
+                }
+            });
+        } catch (Exception ex) {
+            throw ex;
+        }
+
+
+    }
+
+
     private void NavigationViewCheck() {
         NavigationView nav = findViewById(R.id.nav);
         menu=findViewById(R.id.ic_menu);
@@ -445,6 +490,12 @@ if(app.check.EpmtyOrNull(editable.toString().trim()))
                     finish();
               //  Toast.makeText(context, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
 
+
+                }
+                if(menuItem.getTitle().equals("کارنامه"))
+                {
+
+                    SendUserSetTicket();
 
                 }
                 return false;

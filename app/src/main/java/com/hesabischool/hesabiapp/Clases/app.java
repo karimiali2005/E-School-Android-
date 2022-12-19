@@ -68,7 +68,7 @@ public class app {
         public static boolean UnAturized =false;
 
 
-        public static String Path1 ="https://hesabidownload.ir/hesabischoolfiles/";
+        public static String Path1 ="";
         public static String LearnFile ="Learn/";
         public static String NormalFile ="Normal/";
 
@@ -90,19 +90,19 @@ public class app {
     public static class baseUrl
     {
 
-      // public static String signalr ="http://192.168.227.143:45457/chatGroupHub";
-        public static String signalr ="https://chat.hesabischool.com/chatGroupHub";
-       //public static String retrofit ="http://192.168.234.143:4277/";
+      // public static String signalr ="";
+        public static String signalr ="";
+       //public static String retrofit ="";
 
       // public static String picurl ="api1/Accounts/GetUserPic";
-     //  public static String retrofit ="http://192.168.227.143:45455/";
-       public static String retrofit ="https://api.hesabischool.com/";
-      //public static String picUrl ="http://192.168.227.143:45459/";
-     public static String picUrl ="https://pic.hesabischool.com/";
+     //  public static String retrofit ="";
+       public static String retrofit ="";
+      //public static String picUrl ="";
+     public static String picUrl ="";
 
         //===========================Karimy================
-     //   public static String signalr ="http://192.168.1.3:45455/chatGroupHub";
-      //  public static String retrofit ="http://192.168.1.3:45459/";
+     //   public static String signalr ="";
+      //  public static String retrofit ="";
     }
     public static class retrofit
     {
@@ -398,7 +398,21 @@ public class app {
                 return null;
             }
         }
+        static public Date CovertStringToDateSmall(String dateMiladi)
+        {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateInString = dateMiladi;
 
+            try {
+
+                Date date = formatter.parse(dateInString);
+                return date;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         static public String CovertToPersianDate(Date date)
         {
             if(null == date) {
@@ -434,6 +448,33 @@ public class app {
 
 
             return dateTime;
+        }
+
+        static public String CovertToPersianDateSmall(Date date)
+        {
+            if(null == date) {
+                return "";
+            }
+
+            PersianCalendar persianCalendar = new PersianCalendar();
+            persianCalendar.setTime(date);
+
+            String dateTime=persianCalendar.getPersianShortDate();
+
+
+
+            return dateTime;
+        }
+        static public String CovertToPersianDateSmall(String date)
+        {
+            if(app.check.EpmtyOrNull(date))
+            {
+                return "";
+
+            }
+            Date d=CovertStringToDateSmall(date);
+            String dp=CovertToPersianDateSmall(d);
+            return  dp;
         }
         static public String CovertToPersianDate(String date)
         {

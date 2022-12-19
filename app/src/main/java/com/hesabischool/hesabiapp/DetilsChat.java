@@ -154,6 +154,7 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     TextView txt_badeg;
     int pastVisiblesItems = -1;
     public static boolean islock = false;
+    public static boolean isAdvertise = false;
     ImageLoader  imgLoader;
     ///
     private int mScreenWidth = 0;
@@ -954,7 +955,33 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
 
             imgLoader = new ImageLoader(context);
 
-            imgLoader.DisplayPicture(rcharright.UserIDPic, img_profile);
+            if(rcharright.RoomChatGroupType==3)
+            {
+                img_profile.setImageResource(R.drawable.finance2);
+            }
+            else if(rcharright.RoomChatGroupType==4)
+            {
+                img_profile.setImageResource(R.drawable.discipline2);
+            }
+            else if(rcharright.RoomChatGroupType==5)
+            {
+                img_profile.setImageResource(R.drawable.reportcard2);
+            }
+            else if(rcharright.RoomChatGroupType==6)
+            {
+                img_profile.setImageResource(R.drawable.actions_flag_black_icon);
+            }
+            else if(rcharright.RoomChatGroupType==7)
+            {
+                img_profile.setImageResource(R.drawable.fav);
+            }
+            else
+            {
+                imgLoader.DisplayPicture(rcharright.UserIDPic, img_profile);
+            }
+
+
+
 
             img_back.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1309,6 +1336,15 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
                 c.pinMessage(cm);
             }
             islock = rProperty.CloseChat;
+            if(rProperty.RoomChatGroupType==3 ||rProperty.RoomChatGroupType==4 ||rProperty.RoomChatGroupType==5 || rProperty.RoomChatGroupType==6 ||rProperty.RoomChatGroupType==7) {
+                isAdvertise=true;
+            }
+            else
+            {
+                isAdvertise=false;
+            }
+
+
             PeropertySeting();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -1319,13 +1355,21 @@ public class DetilsChat extends AppCompatActivity implements ProgressRequestBody
     }
 
     private void PeropertySeting() {
-        if (app.Info.User.userTypeID == 4) {   //Teacher
-            img_lock.setVisibility(View.VISIBLE);
-        } else {
-            if (islock) {
-                rel_message.setVisibility(View.GONE);
+        if(rcharright.RoomChatGroupType==3 ||rcharright.RoomChatGroupType==4 ||rcharright.RoomChatGroupType==5 || rcharright.RoomChatGroupType==6 ||rcharright.RoomChatGroupType==7)
+        {
+            rel_message.setVisibility(View.GONE);
+        }
+        else {
+            if (app.Info.User.userTypeID == 4) {   //Teacher
+                img_lock.setVisibility(View.VISIBLE);
             } else {
-                rel_message.setVisibility(View.VISIBLE);
+
+                if (islock) {
+                    rel_message.setVisibility(View.GONE);
+                } else {
+                    rel_message.setVisibility(View.VISIBLE);
+                }
+
             }
         }
         if (islock) {
@@ -1578,39 +1622,43 @@ layzyLoad.call();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int size = ma.vm.size() - 1;
+                /*int size = ma.vm.size() - 1;
                 boolean b = (size <= pastVisiblesItems) ? true : false;
                 for (int i = lvm.size() - 1; i >= 0; i--) {
                     ma.vm.add(0, lvm.get(i));
-                }
 
+                }
+*/
 
                 //...............................................................
 
 
 
+                pastVisiblesItems = layoutManager.findLastVisibleItemPosition();
+
+                int size = lvm.size() ;
+                for (int i = 0; i < lvm.size(); i++) {
+                    ma.vm.add(0, lvm.get(i));
+                  //  ma.notifyin notifyiteminserted(0);
+                }
+                layoutManager.scrollToPosition(pastVisiblesItems+size);
+                ma.notifyDataSetChanged();
 
 
-           //     int poslast = ma.vm.size() - 1;
-//                for (int i = 0; i < lvm.size(); i++) {
-//                    ma.vm.add(0, lvm.get(i));
-//                    ma.notifyItemInserted(0);
-//                }
-//
-//                ma.scroled = ma.vm.size() - 1;
+                /*ma.scroled = ma.vm.size() - 1;
 
-//                poslast = ma.scroled - poslast;
-//                final int finalPoslast = poslast;
-//                shimmerRecycler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//
-//                        layoutManager.scrollToPosition(finalPoslast);
-//                        ma.scroled = 0;
-//                      //  ma.notifyDataSetChanged();
-//                    }
-//                });
+                poslast = ma.scroled - poslast;
+                final int finalposlast = poslast;
+                shimmerRecycler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+
+                        layoutManager.scrollToPosition(finalposlast);
+                        ma.scroled = 0;
+                        ma.notifyDataSetChanged();
+                    }
+                });*/
             }
         });
 

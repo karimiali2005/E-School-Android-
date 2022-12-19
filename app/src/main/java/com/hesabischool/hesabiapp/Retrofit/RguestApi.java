@@ -12,6 +12,7 @@ import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer14;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer15;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer16;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer17;
+import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer18;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer2;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer3;
 import com.hesabischool.hesabiapp.vm_ModelServer.GetDataFromServer4;
@@ -172,5 +173,8 @@ Call<GetDataFromServer7> ManageHomWork(@Query("idroom") int idroom, @Query("cour
 @GET("api/" + "Versioning/GetLoadVersion")
 Call<GetDataFromServer15> GetLoadVersion();
 
+//Ticket
+    @POST(api + "Accounts/UserSetTicket")
+    Call<GetDataFromServer18> UserSetTicket();
 
 }

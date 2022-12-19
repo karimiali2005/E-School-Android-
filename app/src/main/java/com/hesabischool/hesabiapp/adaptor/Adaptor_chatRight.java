@@ -108,7 +108,32 @@ boolean s=false;
 
         imgLoader = new ImageLoader(context);
 
-        imgLoader.DisplayPicture(vm.get(position).UserIDPic, holder.img_profile);
+         if(vm.get(position).RoomChatGroupType==3)
+        {
+            holder.img_profile.setImageResource(R.drawable.finance2);
+        }
+         else if(vm.get(position).RoomChatGroupType==4)
+         {
+             holder.img_profile.setImageResource(R.drawable.discipline2);
+         }
+         else if(vm.get(position).RoomChatGroupType==5)
+         {
+             holder.img_profile.setImageResource(R.drawable.reportcard2);
+         }
+         else if(vm.get(position).RoomChatGroupType==6)
+         {
+             holder.img_profile.setImageResource(R.drawable.actions_flag_black_icon);
+         }
+         else if(vm.get(position).RoomChatGroupType==7)
+         {
+             holder.img_profile.setImageResource(R.drawable.fav);
+         }
+         else
+         {
+             imgLoader. DisplayPicture(vm.get(position).UserIDPic, holder.img_profile);
+         }
+
+
 
 
         if (vm.get(position).MessageNewNumber != 0) {
